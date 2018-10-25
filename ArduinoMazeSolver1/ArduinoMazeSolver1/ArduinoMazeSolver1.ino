@@ -18,15 +18,13 @@
  */
 #include "MeOrion.h"
 
-MeDCMotor motor1(PORT_1);
+MeDCMotor motor1(M1);
 
-MeDCMotor motor2(PORT_2);
+MeDCMotor motor2(M2);
 
-MeDCMotor motor3(M1);
+uint8_t motorSpeed = 127;
 
-MeDCMotor motor4(M2);
-
-uint8_t motorSpeed = 100;
+//TODO: Varijabla koja pamti omjer između vremena potrebnog za okretanje kod brzine = 127 za 90° i trenutne brzine i koristi se za delay
 
 void setup()
 {
@@ -34,24 +32,31 @@ void setup()
 
 void loop()
 {
-  motor1.run(motorSpeed); /* value: between -255 and 255. */
-  motor2.run(motorSpeed); /* value: between -255 and 255. */
-  motor3.run(motorSpeed);
-  motor4.run(motorSpeed);
-  delay(2000);
-  motor1.stop();
-  motor2.stop();
-  motor3.stop();
-  motor4.stop();
-  delay(100);
-  motor1.run(-motorSpeed);
-  motor2.run(-motorSpeed);
-  motor3.run(-motorSpeed);
-  motor4.run(-motorSpeed);
-  delay(2000);
-  motor1.stop();
-  motor2.stop();
-  motor3.stop();
-  motor4.stop();
-  delay(2000);
+  Skreni('l',motorSpeed); 
+
+  delay(450);
+
+  PokreniMotore(0);
+
+  delay(1000);
+}
+
+void PokreniMotore(uint8_t motorSpeed)
+{
+  motor1.run(-motorSpeed); /* value: between -255 and 255. */
+  motor2.run(motorSpeed);
+}
+
+void Skreni(char smijer, uint8_t motorSpeed)
+{
+  if(smijer == 'l')
+  {
+    motor1.run(motorSpeed); /* value: between -255 and 255. */
+    motor2.run(motorSpeed);
+  }
+  else
+  {
+    motor2.run(-motorSpeed); /* value: between -255 and 255. */
+    motor1.run(-motorSpeed);
+  }
 }
