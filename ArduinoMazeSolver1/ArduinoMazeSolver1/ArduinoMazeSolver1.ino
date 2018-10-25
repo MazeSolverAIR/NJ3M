@@ -25,6 +25,7 @@ MeDCMotor motor2(M2);
 uint8_t motorSpeed = 127;
 
 //TODO: Varijabla koja pamti omjer između vremena potrebnog za okretanje kod brzine = 127 za 90° i trenutne brzine i koristi se za delay
+//TODO: implementirati v = s / t ; s = stupnjevi , v = brzina, t = delay
 
 void setup()
 {
