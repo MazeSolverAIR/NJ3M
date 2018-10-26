@@ -4,22 +4,22 @@ MeDCMotor motor1(M1);
 
 MeDCMotor motor2(M2);
 
-uint8_t brzinaMotora = 127;
+uint8_t brzinaMotora = 100;
 
-const uint8_t brzinaKodOmjera = 127;
+const uint8_t brzinaKodOmjera = 255;
 
 float omjerConst = 0;
 
 void setup()
 {
   const float stupnjeviZaOmjer = 90;
-  const float delayZaOmjer = 472;
+  const float delayZaOmjer = 255;
   omjerConst = stupnjeviZaOmjer / delayZaOmjer;
 }
 
 void loop()
 {
-  Skreni('l', 360, brzinaMotora); 
+  Skreni('l', 90, brzinaMotora); 
 
   ZaustaviMotore();
 
@@ -59,5 +59,5 @@ float IzracunajVrijemeRotacije(int stupnjevi, uint8_t motorSpeed)
 {
   float vrijeme = 0;
   
-  return vrijeme = stupnjevi/((motorSpeed/brzinaKodOmjera)*omjerConst);
+  return vrijeme = stupnjevi/(((float)motorSpeed/brzinaKodOmjera)*omjerConst);
 }
