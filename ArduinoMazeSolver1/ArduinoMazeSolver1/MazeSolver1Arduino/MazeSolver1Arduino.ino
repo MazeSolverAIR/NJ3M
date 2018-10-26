@@ -1,24 +1,22 @@
-#include "Motori.h"
+#include "Motors.h"
 
-
-MeUltrasonicSensor senzor;
-
-Motori motors(M1, M2);
 
 void setup()
 {
-	senzor = MeUltrasonicSensor(3);
 
 }
 
 void loop()
 {
+	MeUltrasonicSensor senzor;
+
+	Motors motors;
+
 	if (senzor.distanceCm() > 15)
 		motors.KreniNaprijed(150);
 
 	else
 		motors.Skreni('d', 90, 150);
-
 }
 
 

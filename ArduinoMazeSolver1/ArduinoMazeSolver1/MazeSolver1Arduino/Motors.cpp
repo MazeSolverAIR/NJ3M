@@ -1,31 +1,28 @@
-#include "Motori.h"
+#include "Motors.h"
 
-
-MeDCMotor leftMotor;
-MeDCMotor rightMotor;
-
-
-
-
-Motori::Motori(uint8_t pinRight, uint8_t pinLeft)
+Motors::Motors()
 {
-	leftMotor = MeDCMotor(pinLeft);
-	rightMotor = MeDCMotor(pinRight);
+	MeDCMotor rightMotor(M2);
+	MeDCMotor leftMotor(M1);
 }
 
-void Motori:: KreniNaprijed(uint16_t brzinaKretanja)
+Motors::~Motors()
+{
+}
+
+void Motors::KreniNaprijed(uint16_t brzinaKretanja)
 {
 	leftMotor.run(-brzinaKretanja);
 	rightMotor.run(brzinaKretanja);
 }
 
-void Motori:: Zaustavi()
+void Motors::Zaustavi()
 {
 	leftMotor.stop();
 	rightMotor.stop();
 }
 
-void Motori:: Skreni(char smijer, int stupnjevi, uint16_t motorSpeed)
+void Motors::Skreni(char smijer, uint16_t stupnjevi, uint16_t motorSpeed)
 {
 	float vrijemeTrajanjaRotacije = IzracunajVrijemeRotacije(stupnjevi, motorSpeed);
 	if (smijer == 'l')
@@ -42,17 +39,10 @@ void Motori:: Skreni(char smijer, int stupnjevi, uint16_t motorSpeed)
 	delay((int)vrijemeTrajanjaRotacije);
 }
 
-float Motori::IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t motorSpeed)
+float Motors::IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t motorSpeed)
 {
 	float vrijeme = 0;
 	float omjerConst = 90 / 255;
 
 	return vrijeme = stupnjevi / (((float)motorSpeed / 255)*omjerConst);
 }
-
-Motori::~Motori()
-{
-
-}
-
-

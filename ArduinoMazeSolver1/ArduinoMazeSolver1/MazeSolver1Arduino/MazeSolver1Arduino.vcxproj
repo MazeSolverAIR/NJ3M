@@ -89,10 +89,14 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\MazeSolver1Arduino;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\libraries;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\libraries;C:\Users\Matija\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\variants\standard;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)__vm\.MazeSolver1Arduino.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;F_CPU=16000000L;ARDUINO=10807;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -112,13 +116,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Motori.h" />
+    <ClInclude Include="Motors.h" />
     <ClInclude Include="__vm\.MazeSolver1Arduino.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Motori.cpp" />
+    <ClCompile Include="Motors.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM3" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

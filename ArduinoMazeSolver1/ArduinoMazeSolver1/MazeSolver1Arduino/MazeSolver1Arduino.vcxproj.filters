@@ -21,12 +21,12 @@
     <ClInclude Include="__vm\.MazeSolver1Arduino.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Motori.h">
+    <ClInclude Include="Motors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Motori.cpp">
+    <ClCompile Include="Motors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
