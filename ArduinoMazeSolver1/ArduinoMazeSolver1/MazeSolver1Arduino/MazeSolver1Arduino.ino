@@ -1,16 +1,17 @@
 #include "Motors.h"
 
+MeUltrasonicSensor senzor;
+
+Motors motors;
 
 void setup()
 {
-
+	senzor = MeUltrasonicSensor(3);
+	motors = Motors();
 }
 
 void loop()
 {
-	MeUltrasonicSensor senzor;
-
-	Motors motors;
 
 	if (senzor.distanceCm() > 15)
 		motors.KreniNaprijed(150);

@@ -8,6 +8,7 @@ Motors::Motors()
 
 Motors::~Motors()
 {
+	
 }
 
 void Motors::KreniNaprijed(uint16_t brzinaKretanja)
