@@ -11,17 +11,26 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
 import android.util.Log;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
 
 public class Bluetooth extends Activity {
     private final Context context;
     BluetoothAdapter mBluetoothAdapter;
+    private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    private DeviceListAdapter mDeviceListAdapter;
+    ListView lvNewDevices;
+    private Layout device_adapter_view;
 
-    public Bluetooth(Context context, BluetoothAdapter mBluetoothAdapter){
+    public Bluetooth(Context context, BluetoothAdapter mBluetoothAdapter, Layout device_adapter_view){
         this.context = context;
         this.mBluetoothAdapter = mBluetoothAdapter;
+        this.device_adapter_view = device_adapter_view;
     }
 
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -44,6 +53,22 @@ public class Bluetooth extends Activity {
                         Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
                         break;
                 }
+            }
+        }
+    };
+
+    private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            Log.d(TAG, "onReceive: ACTION FOUND.");
+
+            if (action.equals(BluetoothDevice.ACTION_FOUND)){
+                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
+                mBTDevices.add(device);
+                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+                lvNewDevices.setAdapter(mDeviceListAdapter);
             }
         }
     };
@@ -78,11 +103,19 @@ public class Bluetooth extends Activity {
 
     public void discover(){
         if(mBluetoothAdapter.isDiscovering()){
+            checkBTPermissions();
             mBluetoothAdapter.cancelDiscovery();
             mBluetoothAdapter.startDiscovery();
+
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
         }
         if(!mBluetoothAdapter.isDiscovering()){
+            checkBTPermissions();
             mBluetoothAdapter.startDiscovery();
+
+            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
         }
     }
 }
