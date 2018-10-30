@@ -2,10 +2,12 @@ package hr.foi.nj3m.androidmazesolver1;
 
 import android.content.Intent;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class loadingScreen extends AppCompatActivity {
+    private static int SPLASH_TIME_OUT = 4000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,16 +16,14 @@ public class loadingScreen extends AppCompatActivity {
 
         //OtvaranjeGlavneForme
 
-        new CountDownTimer(5000, 1000) {
-            public void onFinish() {
-                otvoriGlavniProzor();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent homeIntent = new Intent(loadingScreen.this, MainActivity.class);
+                startActivity(homeIntent);
+                finish();
             }
-
-            public void onTick(long millisUntilFinished) {
-                // millisUntilFinished    The amount of time until finished.
-            }
-        }.start();
-
+        }, SPLASH_TIME_OUT);
 
     }
 
