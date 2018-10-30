@@ -1,5 +1,6 @@
 package hr.foi.nj3m.androidmazesolver1;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,14 +19,14 @@ public class MainActivity extends AppCompatActivity {
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Tu ide funkcionalnost za Bluetooth**
-                Toast.makeText(getApplicationContext(),"Povezivanje Bluetoothom",Toast.LENGTH_LONG).show();
+                openListOfDevices();
             }
         });
 
     }
 
-
-
-
+    public void openListOfDevices(){
+        Intent intent = new Intent(this,ListOfDevices.class);
+        startActivity(intent);
+    }
 }

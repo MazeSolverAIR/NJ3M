@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/ic_pronadimbot"
+    tools:context=".ListOfDevices">
+
+    <ImageView
+        android:layout_width="570px"
+        android:layout_height="1313px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/ic_pozadinatipki" />
+    <ImageView
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="86dp"
+        android:id="@+id/imageView3"
+        android:layout_width="366px"
+        android:layout_height="62px"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="97dp"
+        android:contentDescription="TODO"
+        app:srcCompat="@drawable/popisuredaja"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="16dp" />
+</RelativeLayout>
