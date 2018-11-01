@@ -2,7 +2,7 @@
 #include "MeMCore.h"
 #include "Arduino.h"
 
-uint16_t brzinaKretanja = 100;
+uint16_t brzinaKretanja = 127;
 
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
@@ -25,19 +25,7 @@ void setup()
 
 void loop() 
 {
-
-	if (button.pressed() && stisnutGumb)
-	{
-		stisnutGumb = false;
-		modRadnje++;
-
-		if (modRadnje > 2)
-			modRadnje = 0;
-	}
-	if (!button.pressed())
-	{
-		stisnutGumb = true;
-	}
+	IzvrsiRadnjuMijenjanjaModa();
 
 	switch (modRadnje)
 	{
@@ -56,6 +44,22 @@ void loop()
 
 }
 
+void IzvrsiRadnjuMijenjanjaModa()
+{
+	if (button.pressed() && stisnutGumb)
+	{
+		stisnutGumb = false;
+		modRadnje++;
+
+		if (modRadnje>2)
+			modRadnje = 0;
+	}
+	if (!button.pressed() && !stisnutGumb)
+	{
+		stisnutGumb = true;
+	}
+}
+
 void UpaliBlueTooth()
 {
 	if (Serial.available() > 0) {
@@ -72,13 +76,11 @@ void IzbjegavajPrepreke()
 {
 	if (ultraSonic.distanceCm() > 20)
 	{
-		Kreni(150);
+		Kreni(brzinaKretanja);
 	}
 	else
 	{
-		ZaustaviMotore();
-		delay(1000);
-
+		Skreni('l', 90, brzinaKretanja);
 	}
 }
 
