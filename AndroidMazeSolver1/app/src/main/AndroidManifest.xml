@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".ListOfDevices"></activity>
+        <activity android:name=".ListOfDevices" />
+        <activity android:name=".ConnectedDialog"></activity>
     </application>
 
 </manifest>
