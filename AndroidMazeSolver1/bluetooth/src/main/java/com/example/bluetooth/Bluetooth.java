@@ -67,8 +67,8 @@ public class Bluetooth extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
                 mBTDevices.add(device);
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                lvNewDevices.setAdapter(mDeviceListAdapter);
+                //mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+                //lvNewDevices.setAdapter(mDeviceListAdapter);
             }
         }
     };
