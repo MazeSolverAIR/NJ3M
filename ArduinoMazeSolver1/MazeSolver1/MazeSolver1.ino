@@ -74,23 +74,16 @@ void UpaliBlueTooth()
 {
 	if (bluetooth.available())
 	{
-		while ((readdata = bluetooth.read()) != (int)-1)
+		if (bluetooth.readString().length() > 0)
 		{
 			Skreni('l', 90, brzinaKretanja);
-			table[count] = readdata;
-			count++;
-			delay(1);
-		}
-		for (i = 0; i < count; i++)
-		{
-			Serial.write(table[i]);
 		}
 	}
-	if (Serial.available())
+	/*if (Serial.available())
 	{
 		outDat = Serial.read();
 		bluetooth.write(outDat);
-	}
+	}*/
 }
 
 void IzbjegavajPrepreke()
