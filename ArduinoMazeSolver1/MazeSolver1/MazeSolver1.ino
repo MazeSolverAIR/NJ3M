@@ -2,7 +2,7 @@
 #include "MeMCore.h"
 #include "Arduino.h"
 
-uint16_t brzinaKretanja = 100;
+uint16_t brzinaKretanja = 127;
 
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
@@ -10,6 +10,8 @@ MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
+
+MeBluetooth bTooth = MeBluetooth(NC);
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
@@ -20,24 +22,15 @@ void setup()
 {
 	button.setpin(A7);
 
-	Serial.begin(38400);
+	Serial.begin(115200);
+
+	bTooth.begin(115200);
+	
 }
 
 void loop() 
 {
-
-	if (button.pressed() && stisnutGumb)
-	{
-		stisnutGumb = false;
-		modRadnje++;
-
-		if (modRadnje > 2)
-			modRadnje = 0;
-	}
-	if (!button.pressed())
-	{
-		stisnutGumb = true;
-	}
+	IzvrsiRadnjuMijenjanjaModa();
 
 	switch (modRadnje)
 	{
@@ -56,29 +49,52 @@ void loop()
 
 }
 
+void IzvrsiRadnjuMijenjanjaModa()
+{
+	if (button.pressed() && stisnutGumb)
+	{
+		stisnutGumb = false;
+		modRadnje++;
+
+		if (modRadnje>2)
+			modRadnje = 0;
+	}
+	if (!button.pressed() && !stisnutGumb)
+	{
+		stisnutGumb = true;
+	}
+}
+
 void UpaliBlueTooth()
 {
-	if (Serial.available() > 0) {
-		state = Serial.read();
+	if (bTooth.available() > 0)
+	{
+		state = bTooth.read();
 	}
+	/*if (Serial.available() > 0) {
+		state = Serial.read();
+	}*/
 
-	if (state == '1') {
+	if (state == 1)
+	{
 		Kreni(brzinaKretanja);
 		state = 0;
 	}
+	/*if (state == '1') {
+		Kreni(brzinaKretanja);
+		state = 0;
+	}*/
 }
 
 void IzbjegavajPrepreke()
 {
 	if (ultraSonic.distanceCm() > 20)
 	{
-		Kreni(150);
+		Kreni(brzinaKretanja);
 	}
 	else
 	{
-		ZaustaviMotore();
-		delay(1000);
-
+		Skreni('l', 90, brzinaKretanja);
 	}
 }
 
