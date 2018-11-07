@@ -11,6 +11,8 @@ MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
 
+MeBluetooth bTooth = MeBluetooth(NC);
+
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
@@ -20,7 +22,10 @@ void setup()
 {
 	button.setpin(A7);
 
-	Serial.begin(38400);
+	Serial.begin(115200);
+
+	bTooth.begin(115200);
+	
 }
 
 void loop() 
@@ -62,14 +67,23 @@ void IzvrsiRadnjuMijenjanjaModa()
 
 void UpaliBlueTooth()
 {
-	if (Serial.available() > 0) {
-		state = Serial.read();
+	if (bTooth.available() > 0)
+	{
+		state = bTooth.read();
 	}
+	/*if (Serial.available() > 0) {
+		state = Serial.read();
+	}*/
 
-	if (state == '1') {
+	if (state == 1)
+	{
 		Kreni(brzinaKretanja);
 		state = 0;
 	}
+	/*if (state == '1') {
+		Kreni(brzinaKretanja);
+		state = 0;
+	}*/
 }
 
 void IzbjegavajPrepreke()
