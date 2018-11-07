@@ -1,5 +1,6 @@
 
 #include "MeMCore.h"
+#include <SoftwareSerial.h>
 #include "Arduino.h"
 
 uint16_t brzinaKretanja = 127;
@@ -11,20 +12,23 @@ MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
 
-MeBluetooth bTooth = MeBluetooth(NC);
+MeBluetooth bluetooth(PORT_3);
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
-int state = 0;
+int readdata = 0, i = 0, count = 0;
+char outDat;
+
+unsigned char table[128] = { 0 };
 
 void setup() 
 {
 	button.setpin(A7);
 
 	Serial.begin(115200);
-
-	bTooth.begin(115200);
+	bluetooth.begin(115200);    //The factory default baud rate is 115200
+	Serial.println("Bluetooth Start!");
 	
 }
 
@@ -38,6 +42,7 @@ void loop()
 		IzbjegavajPrepreke();
 		break;
 	case 1:
+		ZaustaviMotore();
 		UpaliBlueTooth();
 		break;
 	case 2:
@@ -67,23 +72,25 @@ void IzvrsiRadnjuMijenjanjaModa()
 
 void UpaliBlueTooth()
 {
-	if (bTooth.available() > 0)
+	if (bluetooth.available())
 	{
-		state = bTooth.read();
+		while ((readdata = bluetooth.read()) != (int)-1)
+		{
+			Skreni('l', 90, brzinaKretanja);
+			table[count] = readdata;
+			count++;
+			delay(1);
+		}
+		for (i = 0; i < count; i++)
+		{
+			Serial.write(table[i]);
+		}
 	}
-	/*if (Serial.available() > 0) {
-		state = Serial.read();
-	}*/
-
-	if (state == 1)
+	if (Serial.available())
 	{
-		Kreni(brzinaKretanja);
-		state = 0;
+		outDat = Serial.read();
+		bluetooth.write(outDat);
 	}
-	/*if (state == '1') {
-		Kreni(brzinaKretanja);
-		state = 0;
-	}*/
 }
 
 void IzbjegavajPrepreke()
