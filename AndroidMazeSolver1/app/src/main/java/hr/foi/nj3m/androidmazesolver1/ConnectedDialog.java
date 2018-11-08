@@ -1,5 +1,6 @@
 package hr.foi.nj3m.androidmazesolver1;
 
+import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
