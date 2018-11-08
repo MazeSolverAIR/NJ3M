@@ -12,38 +12,30 @@ MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
 
-MeBluetooth bluetooth(PORT_3);
+MeBluetooth bluetooth = MeBluetooth();
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
-int readdata = 0, i = 0, count = 0;
-char outDat;
-
-unsigned char table[128] = { 0 };
 
 void setup() 
 {
 	button.setpin(A7);
-
-	Serial.begin(115200);
-	bluetooth.begin(115200);    //The factory default baud rate is 115200
-	Serial.println("Bluetooth Start!");
-	
+	bluetooth.begin(9600);
 }
 
 void loop() 
 {
-	IzvrsiRadnjuMijenjanjaModa();
+	IzvrsiPritisakTipke();
 
 	switch (modRadnje)
 	{
 	case 0:
-		IzbjegavajPrepreke();
+		IzvrsiRadnjuBT(CitajBluetooth());
+		ZaustaviMotore();
 		break;
 	case 1:
-		ZaustaviMotore();
-		UpaliBlueTooth();
+		IzbjegavajPrepreke();
 		break;
 	case 2:
 		ZaustaviMotore();
@@ -54,7 +46,7 @@ void loop()
 
 }
 
-void IzvrsiRadnjuMijenjanjaModa()
+void IzvrsiPritisakTipke()
 {
 	if (button.pressed() && stisnutGumb)
 	{
@@ -70,20 +62,20 @@ void IzvrsiRadnjuMijenjanjaModa()
 	}
 }
 
-void UpaliBlueTooth()
+String CitajBluetooth()
 {
+	String returnString = "";
 	if (bluetooth.available())
 	{
-		if (bluetooth.readString().length() > 0)
-		{
-			Skreni('l', 90, brzinaKretanja);
-		}
+		returnString = bluetooth.readString();
 	}
-	/*if (Serial.available())
-	{
-		outDat = Serial.read();
-		bluetooth.write(outDat);
-	}*/
+	return returnString;
+}
+
+void IzvrsiRadnjuBT(String btPoruka)
+{
+	if(btPoruka.length()>0)
+		Skreni('l', 90, brzinaKretanja);
 }
 
 void IzbjegavajPrepreke()
