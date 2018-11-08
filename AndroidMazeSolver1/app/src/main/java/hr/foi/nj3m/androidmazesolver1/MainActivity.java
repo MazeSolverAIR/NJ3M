@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +23,8 @@ import com.example.bluetooth.Bluetooth;
 
 import android.widget.ImageButton;
 import android.widget.Toast;
-
+import static android.os.Environment.DIRECTORY_DCIM;
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.content.ContentValues.TAG;
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        File mFileTemp = new File(getExternalFilesDir(DIRECTORY_DCIM)+File.separator+"MazeSolverPictures","Maze.png");
+        mFileTemp.getParentFile().mkdirs();
+        galleryAddPic();
     }
 
     public void openListOfDevices(){
@@ -80,4 +86,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(getExternalFilesDir(DIRECTORY_DCIM)+File.separator+"MazeSolverPictures");
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 }
