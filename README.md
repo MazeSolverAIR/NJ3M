@@ -4,7 +4,7 @@ Trello:
 https://trello.com/b/t7M7RF6B/product-backlog
 
 Projektna dokumentacija:
-https://onedrive.live.com/view.aspx?cid=707f4f1a627105df&page=view&resid=707F4F1A627105DF!610&parId=707F4F1A627105DF!609&authkey=!AIjpMfyEUKDeUwg&app=Word
+https://1drv.ms/f/s!At8FcWIaT39whGH0lk40gU-v2mSt
 
 Tehnička dokumentacija:
-https://onedrive.live.com/view.aspx?cid=707f4f1a627105df&page=view&resid=707F4F1A627105DF!611&parId=707F4F1A627105DF!609&authkey=!AIjpMfyEUKDeUwg&app=Word
+https://1drv.ms/w/s!At8FcWIaT39whGPJC1E-W6VFLpwX
