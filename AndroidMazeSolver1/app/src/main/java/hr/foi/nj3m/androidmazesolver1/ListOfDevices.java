@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class ListOfDevices extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     Bluetooth bluetooth;
+    Communication communication;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
@@ -53,5 +54,8 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         bluetooth.createBond(mBTDevices, position);
+
+        Intent connection = new Intent(ListOfDevices.this, ConnectedDialog.class);
+        startActivity(connection);
     }
 }
