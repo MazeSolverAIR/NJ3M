@@ -74,8 +74,16 @@ String CitajBluetooth()
 
 void IzvrsiRadnjuBT(String btPoruka)
 {
-	if(btPoruka.length()>0)
+	if (btPoruka.length() > 0)
+	{
+		PosaljiBTPoruku();
 		Skreni('l', 90, brzinaKretanja);
+	}
+}
+
+void PosaljiBTPoruku()
+{
+	bluetooth.sendString("Hello android!");
 }
 
 void IzbjegavajPrepreke()
@@ -117,9 +125,9 @@ void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 	delay(IzracunajVrijemeRotacije(stupnjevi, brzina));
 }
 
-float IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
+int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 {
-	float vrijemeOkretanje = (((float)stupnjevi * 676) / (float)brzina)+(360/stupnjevi);
+	int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
 
 	return vrijemeOkretanje;
 }

@@ -17,7 +17,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import hr.foi.nj3m.core.interfaces.IRobotMessenger;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 import static android.content.ContentValues.TAG;
