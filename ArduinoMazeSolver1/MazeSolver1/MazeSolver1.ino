@@ -2,6 +2,7 @@
 #include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
+#include "Enumeracije.h"
 
 uint16_t brzinaKretanja = 127;
 
@@ -16,6 +17,7 @@ MeBluetooth bluetooth = MeBluetooth();
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
+
 
 
 void setup() 
@@ -39,7 +41,7 @@ void loop()
 		break;
 	case 2:
 		ZaustaviMotore();
-	default:	
+	default:
 		ZaustaviMotore();
 		break;
 	}
@@ -78,12 +80,30 @@ void IzvrsiRadnjuBT(String btPoruka)
 	{
 		PosaljiBTPoruku();
 		Skreni('l', 90, brzinaKretanja);
+
+		/*
+		switch (Enumeracije::DohvatiRadnjuIzStringa(btPoruka))
+		{
+			case KreniNaprijed:
+				Kreni(brzinaKretanja);
+				break;
+			case ZaustaviSe:
+				ZaustaviMotore();
+				break;
+			case RotirajSe:
+				Skreni();
+				break;
+
+			default:
+				break;
+		}*/
 	}
 }
 
 void PosaljiBTPoruku()
 {
 	bluetooth.sendString("Hello android!");
+	bluetooth.sendString("PUZS:" + ultraSonic.distanceCm);
 }
 
 void IzbjegavajPrepreke()
