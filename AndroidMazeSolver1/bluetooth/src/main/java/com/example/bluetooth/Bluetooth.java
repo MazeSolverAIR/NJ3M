@@ -17,10 +17,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import hr.foi.nj3m.core.interfaces.IRobotMessenger;
+import hr.foi.nj3m.interfaces.IRobotMessenger;
+
 import static android.content.ContentValues.TAG;
 
-public class Bluetooth extends Activity {
-    private final Context context;
+public class Bluetooth extends Activity implements IRobotMessenger {
+    private Context context;
     BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     private DeviceListAdapter mDeviceListAdapter;
@@ -31,6 +34,11 @@ public class Bluetooth extends Activity {
         this.context = context;
         this.mBluetoothAdapter = mBluetoothAdapter;
         this.device_adapter_view = device_adapter_view;
+    }
+
+    public Bluetooth()
+    {
+
     }
 
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -117,5 +125,40 @@ public class Bluetooth extends Activity {
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
         }
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return false;
+    }
+
+    @Override
+    public byte[] receive() {
+        return new byte[0];
+    }
+
+    @Override
+    public boolean runForward(int speed) {
+        return false;
+    }
+
+    @Override
+    public boolean runBackward(int speed) {
+        return false;
+    }
+
+    @Override
+    public boolean turnLeft(int degrees, int speed) {
+        return false;
+    }
+
+    @Override
+    public boolean turnRight(int degrees, int speed) {
+        return false;
+    }
+
+    @Override
+    public boolean stopMoving() {
+        return false;
     }
 }
