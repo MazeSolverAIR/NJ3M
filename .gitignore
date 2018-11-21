@@ -259,3 +259,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+AndroidMazeSolver1/core/build/outputs/logs/manifest-merger-debug-report.txt
+AndroidMazeSolver1/core/build/intermediates/incremental/packageDebugResources/merger.xml
+AndroidMazeSolver1/core/build/intermediates/incremental/packageDebugResources/merged.dir/values/values.xml
+AndroidMazeSolver1/core/build/intermediates/incremental/packageDebugResources/compile-file-map.properties
