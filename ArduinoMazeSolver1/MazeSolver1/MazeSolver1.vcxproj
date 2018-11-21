@@ -77,7 +77,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\MazeSolver1;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\utility;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\libraries;C:\Users\Matija\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\variants\standard;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\MazeSolver1;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\utility;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\libraries;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\libraries;C:\Users\Matija\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\arduino\avr\variants\standard;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\ArduinoIDE\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.MazeSolver1.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=10806;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -116,7 +116,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Enumeracije.h" />
     <ClInclude Include="__vm\.MazeSolver1.vsarduino.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Enumeracije.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
