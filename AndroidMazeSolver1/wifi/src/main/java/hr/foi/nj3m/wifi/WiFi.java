@@ -1,36 +1,39 @@
 package hr.foi.nj3m.wifi;
 
+import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
-public class WiFi implements IRobotMessenger {
+import static hr.foi.nj3m.wifi.WiFiSender.createWiFiSender;
 
-    public WiFi() {
+public class WiFi implements IConnections {
 
+    private static WiFi InstanceOfWiFi;
+
+    public static WiFi getWiFiInstance() {
+        return InstanceOfWiFi;
+    }
+
+    public static WiFi createWiFiInstance() {
+        if (InstanceOfWiFi == null)
+            InstanceOfWiFi = new WiFi();
+
+        return InstanceOfWiFi;
+    }
+
+    private WiFi() {
+        //konstruktor
+    }
+
+
+    @Override
+    public IRobotMessenger connect() {
+        return createWiFiSender();
     }
 
     @Override
-    public boolean runForward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean runBackward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnLeft(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnRight(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean stopMoving() {
-        return false;
+    public boolean disconnect() {
+        InstanceOfWiFi = null;
+        return true;
     }
 
     @Override
@@ -38,8 +41,4 @@ public class WiFi implements IRobotMessenger {
         return false;
     }
 
-    @Override
-    public byte[] receive() {
-        return new byte[0];
-    }
 }

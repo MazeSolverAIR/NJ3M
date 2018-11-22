@@ -17,11 +17,13 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 import static android.content.ContentValues.TAG;
+import static com.example.bluetooth.BluetoothSender.createWiFiSender;
 
-public class Bluetooth extends Activity implements IRobotMessenger {
+public class Bluetooth extends Activity implements IConnections {
     private Context context;
     BluetoothAdapter mBluetoothAdapter;
     private ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
@@ -132,32 +134,13 @@ public class Bluetooth extends Activity implements IRobotMessenger {
     }
 
     @Override
-    public byte[] receive() {
-        return new byte[0];
+    public IRobotMessenger connect() {
+        return createWiFiSender();
     }
 
     @Override
-    public boolean runForward(int speed) {
+    public boolean disconnect() {
         return false;
     }
 
-    @Override
-    public boolean runBackward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnLeft(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnRight(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean stopMoving() {
-        return false;
-    }
 }

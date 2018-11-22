@@ -19,13 +19,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.bluetooth.Bluetooth;
 
 import android.widget.ImageButton;
 import android.widget.Toast;
 import static android.os.Environment.DIRECTORY_DCIM;
 import java.io.File;
 import java.util.ArrayList;
+
+import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.interfaces.IConnections;
+import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 import static android.content.ContentValues.TAG;
 
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         File mFileTemp = new File(getExternalFilesDir(DIRECTORY_DCIM)+File.separator+"MazeSolverPictures","Maze.png");
         mFileTemp.getParentFile().mkdirs();
         galleryAddPic();
+
     }
 
     public void openListOfDevices(){

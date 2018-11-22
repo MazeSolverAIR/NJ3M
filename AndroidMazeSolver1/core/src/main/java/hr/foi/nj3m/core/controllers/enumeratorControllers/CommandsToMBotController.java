@@ -4,10 +4,10 @@ import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class CommandsToMBotController {
 
-    public String getStringFromComantEnum(CommandsToMBot command) {
+    public String getStringFromComandEnum(CommandsToMBot command) {
         switch (command) {
             case Kreni:
-                return "Kreni naprije";
+                return "Kreni naprijed";
             case ZaustaviSe:
                 return "Zaustavi se";
             case Rotiraj:

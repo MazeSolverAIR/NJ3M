@@ -13,6 +13,5 @@ public interface IRobotMessenger {
 
     boolean stopMoving();
 
-    boolean isAvailable();
     byte[] receive();
 }
