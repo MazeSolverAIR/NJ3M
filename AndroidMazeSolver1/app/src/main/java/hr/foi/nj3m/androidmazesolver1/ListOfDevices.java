@@ -21,6 +21,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
+    BluetoothDevice mBTDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +55,10 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         bluetooth.createBond(mBTDevices, position);
+        mBTDevice = mBTDevices.get(position);
+        communication = new Communication(ListOfDevices.this);
 
-        Intent connection = new Intent(ListOfDevices.this, ConnectedDialog.class);
+        Intent connection = new Intent(ListOfDevices.this, MainMenu.class);
         startActivity(connection);
     }
 }

@@ -26,6 +26,7 @@ public class Communication {
 
     public Communication(Context context) {
         this.context = context;
+        start();
     }
 
     private class ConnectThread extends Thread{
@@ -62,7 +63,7 @@ public class Communication {
                 Toast.makeText(context, "Could not connect to UUID: " /*+ MY_UUID_INSECURE*/, Toast.LENGTH_LONG).show();
             }
 
-            //connected(mSocket, mmDevice);
+            connected(mSocket, mmDevice);
         }
 
         public void cancel(){
@@ -73,12 +74,19 @@ public class Communication {
                 Toast.makeText(context, "Unable to close socket", Toast.LENGTH_LONG).show();
             }
         }
+    }
 
-        public void start(BluetoothDevice device, UUID uuid){
-            mProgressDialog = ProgressDialog.show(context, "Establishing Bluetooth connection", "Please wait...", true);
-            mConnectThread = new ConnectThread(device, uuid);
-            mConnectThread.start();
+    public synchronized void start(){
+        if(mConnectThread != null){
+            mConnectThread.cancel();
+            mConnectThread = null;
         }
+    }
+
+    public void startClient(BluetoothDevice device, UUID uuid){
+        mProgressDialog = ProgressDialog.show(context, "Establishing Bluetooth connection", "Please wait...", true);
+        mConnectThread = new ConnectThread(device, uuid);
+        mConnectThread.start();
     }
 
     private class ConnectedThread extends Thread{
@@ -106,6 +114,23 @@ public class Communication {
 
         }
 
+        public void run(){
+            byte[] buffer = new byte[1024];  // buffer store for the stream
+
+            int bytes; // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs
+            while (true) {
+                // Read from the InputStream
+                try {
+                    bytes = mInputStream.read(buffer);
+                    String incomingMessage = new String(buffer, 0, bytes);
+                } catch (IOException e) {
+                    break;
+                }
+            }
+        }
+
         public void write(byte[] bytes){
             String text = new String(bytes, Charset.defaultCharset());
             try {
@@ -122,6 +147,11 @@ public class Communication {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void connected(BluetoothSocket socket, BluetoothDevice device){
+        mConnectedThread = new ConnectedThread(socket);
+        mConnectedThread.start();
     }
 
     public void write(byte[] out){
