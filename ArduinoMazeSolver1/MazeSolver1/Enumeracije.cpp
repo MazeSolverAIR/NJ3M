@@ -1,29 +1,22 @@
 #include "Enumeracije.h"
 
-enum RadnjeMbota {
-	PrednjiUZSenzor,
-	DesnoUZSenzor,
-	LijeviUZSenzor,
-	OcitajSenzorCrte
-};
-
-enum NaredbaAndroida {
-	KreniNaprijed,
-	ZaustaviSe,
-	RotirajSe,
-	Null
-};
 
 
+Enumeracije::Enumeracije()
+{
 
-NaredbaAndroida Enumeracije::DohvatiRadnjuIzStringa(String tekst)
+}
+
+Enumeracije::NaredbaAndroida Enumeracije::DohvatiRadnjuIzStringa(String tekst)
 {
 	if (tekst == "Kreni naprijed")
-		return KreniNaprijed;
+		return Enumeracije::KreniNaprijed;
 	else if (tekst == "Zaustavi se")
-		return ZaustaviSe;
+		return Enumeracije::ZaustaviSe;
 	else if (tekst == "Skreni")
-		return RotirajSe;
-	
-	return Null;
+		return Enumeracije::RotirajSe;
+
+	return Enumeracije::Null;
 }
+
+

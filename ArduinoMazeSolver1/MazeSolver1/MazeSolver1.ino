@@ -18,10 +18,12 @@ MeBluetooth bluetooth = MeBluetooth();
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
-
+Enumeracije enums;
 
 void setup() 
 {
+	enums = Enumeracije();
+
 	button.setpin(A7);
 	bluetooth.begin(9600);
 }
@@ -78,31 +80,29 @@ void IzvrsiRadnjuBT(String btPoruka)
 {
 	if (btPoruka.length() > 0)
 	{
-		PosaljiBTPoruku();
-		Skreni('l', 90, brzinaKretanja);
-
-		/*
-		switch (Enumeracije::DohvatiRadnjuIzStringa(btPoruka))
+		switch (enums.DohvatiRadnjuIzStringa(btPoruka))
 		{
-			case KreniNaprijed:
+			case enums.KreniNaprijed:
 				Kreni(brzinaKretanja);
 				break;
-			case ZaustaviSe:
+			case enums.ZaustaviSe:
 				ZaustaviMotore();
 				break;
-			case RotirajSe:
-				Skreni();
+			case enums.RotirajSe:
+				Skreni('l', 90, brzinaKretanja);
+				ZaustaviMotore();
 				break;
 
 			default:
+				Skreni('l', 90, brzinaKretanja);
 				break;
-		}*/
+		}
+		PosaljiBTPoruku();
 	}
 }
 
 void PosaljiBTPoruku()
 {
-	bluetooth.sendString("Hello android!");
 	bluetooth.sendString("PUZS:" + ultraSonic.distanceCm);
 }
 

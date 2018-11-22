@@ -1,8 +1,23 @@
 #pragma once
-static class Enumeracije
+class Enumeracije
 {
 public:
-	static NaredbaAndroida DohvatiRadnjuIzStringa(String tekst);
+
+	enum RadnjeMbota {
+		PrednjiUZSenzor,
+		DesniUZSenzor,
+		LijeviUZSenzor,
+		OcitajSenzorCrte
+	};
+
+	enum NaredbaAndroida {
+		KreniNaprijed,
+		ZaustaviSe,
+		RotirajSe,
+		Null
+	};
+	Enumeracije();
+	NaredbaAndroida DohvatiRadnjuIzStringa(String tekst);
 
 
 };
