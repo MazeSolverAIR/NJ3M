@@ -1,4 +1,4 @@
-package hr.foi.nj3m.core.interfaces;
+package hr.foi.nj3m.core.controllers.interfaceControllers;
 
 import com.example.bluetooth.Bluetooth;
 
