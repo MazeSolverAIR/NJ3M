@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        final hr.foi.nj3m.androidmazesolver1.Bluetooth bluetooth = new hr.foi.nj3m.androidmazesolver1.Bluetooth(this, mBluetoothAdapter, mBroadcastReceiver1);
+        final hr.foi.nj3m.androidmazesolver1.Bluetooth bluetooth = new hr.foi.nj3m.androidmazesolver1.Bluetooth(this, mBluetoothAdapter, mBroadcastReceiver);
 
         final ImageButton tipkaBluetooth = (ImageButton) findViewById(R.id.btnBluetooth);
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
+    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -69,18 +69,15 @@ public class MainActivity extends AppCompatActivity {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "onReceive: STATE OFF");
+                        Toast.makeText(context, "Bluetooth isključen", Toast.LENGTH_LONG).show();
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING OFF");
                         break;
                     case BluetoothAdapter.STATE_ON:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE ON");
-                        Toast.makeText(context, "Bluetooth on", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Bluetooth uključen", Toast.LENGTH_LONG).show();
                         openListOfDevices();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
                         break;
                 }
             }

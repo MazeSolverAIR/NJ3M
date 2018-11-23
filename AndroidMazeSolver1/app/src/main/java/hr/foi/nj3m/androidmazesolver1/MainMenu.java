@@ -23,12 +23,6 @@ import java.util.UUID;
 public class MainMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
 
-    Button btnStartConnection;
-    Button btnSendString;
-    Communication communication;
-    private static final UUID mUUID = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
-    BluetoothDevice mBTDevice;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,22 +43,6 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         if(savedInstanceState==null){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new GalleryFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_gallery);}
-
-        btnStartConnection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startConnection();
-            }
-        });
-
-        btnSendString.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                byte[] bytes = "string".getBytes(Charset.defaultCharset());
-                communication.write(bytes);
-            }
-        });
-
     }
 
     @Override
@@ -91,26 +69,4 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         }else{
             super.onBackPressed();}
     }
-
-    public void startConnection(){
-        startBluetoothConnection(mBTDevice, mUUID);
-    }
-
-    public void startBluetoothConnection(BluetoothDevice device, UUID uuid){
-        communication.startClient(device, uuid);
-    }
-
-    private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
-                BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
-                    mBTDevice = mDevice;
-                }
-            }
-        }
-    };
-
 }
