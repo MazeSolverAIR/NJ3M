@@ -1,5 +1,9 @@
 package hr.foi.nj3m.androidmazesolver1;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,14 +13,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import java.nio.charset.Charset;
+import java.util.UUID;
 
 public class MainMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.main_menu);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -33,7 +43,6 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         if(savedInstanceState==null){
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new GalleryFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_gallery);}
-
     }
 
     @Override
@@ -60,5 +69,4 @@ public class MainMenu extends AppCompatActivity implements NavigationView.OnNavi
         }else{
             super.onBackPressed();}
     }
-
 }

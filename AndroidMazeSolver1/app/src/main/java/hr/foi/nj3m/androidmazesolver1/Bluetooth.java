@@ -39,6 +39,11 @@ public class Bluetooth {
             IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             context.registerReceiver(mBroadcastReceiver, BTIntent);
         }
+        if(mBluetoothAdapter.isEnabled()){
+            mBluetoothAdapter.disable();
+            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+            context.registerReceiver(mBroadcastReceiver, BTIntent);
+        }
     }
 
     public void discover(){
@@ -46,7 +51,7 @@ public class Bluetooth {
             checkBTPermissions();
             mBluetoothAdapter.cancelDiscovery();
             mBluetoothAdapter.startDiscovery();
-            Toast.makeText(context, "Discovering", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Tražim uređaje...", Toast.LENGTH_LONG).show();
 
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver, discoverDevicesIntent);
@@ -54,7 +59,7 @@ public class Bluetooth {
         if(!mBluetoothAdapter.isDiscovering()){
             checkBTPermissions();
             mBluetoothAdapter.startDiscovery();
-            //Toast.makeText(context, "Discovering", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Tražim uređaje...", Toast.LENGTH_LONG).show();
 
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             context.registerReceiver(mBroadcastReceiver, discoverDevicesIntent);
@@ -63,8 +68,8 @@ public class Bluetooth {
 
     public void createBond(ArrayList<BluetoothDevice> mBTDevices, int position){
         mBluetoothAdapter.cancelDiscovery();
-        String deviceName = mBTDevices.get(position).getName();
-        String deviceAddress = mBTDevices.get(position).getAddress();
+        //String deviceName = mBTDevices.get(position).getName();
+        //String deviceAddress = mBTDevices.get(position).getAddress();
 
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             mBTDevices.get(position).createBond();

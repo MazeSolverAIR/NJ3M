@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ListOfDevices" />
+        <activity android:name=".MainMenu"/>
         <activity android:name=".ConnectedDialog"></activity>
     </application>
 

@@ -8,6 +8,15 @@
     android:background="@drawable/ic_pronadimbot"
     tools:context=".ListOfDevices">
 
+    <Button
+        android:id="@+id/btnDiscoverDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="510dp"
+        android:text="Traži uređaje" />
+
     <ListView
         android:id="@+id/lvNewDevices"
         android:layout_width="368dp"
