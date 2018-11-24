@@ -4,6 +4,7 @@ import com.example.bluetooth.Bluetooth;
 
 import hr.foi.nj3m.interfaces.IConnections;
 
+import static com.example.bluetooth.Bluetooth.createBluetoothInstance;
 import static hr.foi.nj3m.wifi.WiFi.createWiFiInstance;
 
 public class ConnectionController {
@@ -26,7 +27,7 @@ public class ConnectionController {
     {
         if(odabranNacinKomunikacije == "bluetooth")
         {
-            InstanceOfConnection = new Bluetooth();
+            InstanceOfConnection = createBluetoothInstance();
         }
         else if(odabranNacinKomunikacije == "wifi")
         {

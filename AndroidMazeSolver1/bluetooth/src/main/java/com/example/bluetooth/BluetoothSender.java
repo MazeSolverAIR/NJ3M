@@ -6,7 +6,7 @@ public class BluetoothSender implements IRobotMessenger {
 
     private static BluetoothSender InstanceOfSender;
 
-    protected static BluetoothSender createWiFiSender()
+    protected static BluetoothSender createBluetoothSender()
     {
         if(InstanceOfSender == null)
             InstanceOfSender = new BluetoothSender();
