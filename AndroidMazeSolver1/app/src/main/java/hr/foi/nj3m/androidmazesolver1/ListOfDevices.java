@@ -25,6 +25,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.interfaces.IConnections;
+import hr.foi.nj3m.interfaces.IRobotMessenger;
+
 public class ListOfDevices extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     Bluetooth bluetooth;
@@ -34,6 +38,8 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     Button btnDiscover;
     private String deviceAddress;
     public static String EXTRA_ADDRESS = null;
+
+    IConnections iConnections;
 
     @Override
     protected void onDestroy() {
@@ -45,6 +51,8 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_devices);
+
+        iConnections = ConnectionController.creteInstance("bluetooth");
 
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
@@ -78,10 +86,12 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
-        bluetooth.createBond(mBTDevices, position);
+        IRobotMessenger iRobotMessenger = iConnections.connect(mBTDevices, position);
 
+        //Potrebno podesiti da se activity pokreće tek kad smo se uparili
         Intent connectedDialog = new Intent(ListOfDevices.this, ConnectedDialog.class);
         connectedDialog.putExtra(EXTRA_ADDRESS, deviceAddress);
         startActivity(connectedDialog);
+
     }
 }

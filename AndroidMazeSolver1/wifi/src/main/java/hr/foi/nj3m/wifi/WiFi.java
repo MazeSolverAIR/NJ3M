@@ -1,5 +1,10 @@
 package hr.foi.nj3m.wifi;
 
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+
+import java.util.ArrayList;
+
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
@@ -26,7 +31,7 @@ public class WiFi implements IConnections {
 
 
     @Override
-    public IRobotMessenger connect() {
+    public IRobotMessenger connect(ArrayList mDevices, int position) {
         return createWiFiSender();
     }
 
