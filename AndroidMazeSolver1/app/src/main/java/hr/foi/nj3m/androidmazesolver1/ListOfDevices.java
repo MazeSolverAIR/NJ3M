@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -80,6 +81,14 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
                 lvNewDevices.setAdapter(mDeviceListAdapter);
                 lvNewDevices.setOnItemClickListener(ListOfDevices.this);
             }
+            if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(device.getBondState() == BluetoothDevice.BOND_BONDED){
+                    Intent connectedDialog = new Intent(ListOfDevices.this, ConnectedDialog.class);
+                    connectedDialog.putExtra(EXTRA_ADDRESS, deviceAddress);
+                    startActivity(connectedDialog);
+                }
+            }
         }
     };
 
@@ -88,10 +97,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
         deviceAddress = mBTDevices.get(position).getAddress();
         IRobotMessenger iRobotMessenger = iConnections.connect(mBTDevices, position);
 
-        //Potrebno podesiti da se activity pokreće tek kad smo se uparili
-        Intent connectedDialog = new Intent(ListOfDevices.this, ConnectedDialog.class);
-        connectedDialog.putExtra(EXTRA_ADDRESS, deviceAddress);
-        startActivity(connectedDialog);
-
+        IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver, bondedFilter);
     }
 }
