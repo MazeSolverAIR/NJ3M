@@ -18,8 +18,13 @@ public class UltrasonicSensor implements IUltraSonic {
     }
 
     @Override
-    public String getValue() {
+    public String getFullValue() {
         return null;
+    }
+
+    public int getNumericValue()
+    {
+        return 0;
     }
 
     @Override
