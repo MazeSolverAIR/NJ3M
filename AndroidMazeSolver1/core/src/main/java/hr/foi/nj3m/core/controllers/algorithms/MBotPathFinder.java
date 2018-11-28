@@ -7,19 +7,24 @@ import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.SensorSide;
 import hr.foi.nj3m.interfaces.IUltraSonic;
 
-import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Kreni;
-import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.ZaustaviSe;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.LastCommand;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Null;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Rotate;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RunMotors;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpLeft;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpRight;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.StopMotors;
 import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Front;
 import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Left;
 import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Right;
 
 public class MBotPathFinder {
 
-    List<IUltraSonic> Sensors = null;
+    private List<IUltraSonic> Sensors = null;
 
-    IUltraSonic LeftSensor = null;
-    IUltraSonic RightSensor = null;
-    IUltraSonic FrontSensor = null;
+    private IUltraSonic LeftSensor = null;
+    private IUltraSonic RightSensor = null;
+    private IUltraSonic FrontSensor = null;
 
     public MBotPathFinder(List<IUltraSonic> sensors)
     {
@@ -40,14 +45,66 @@ public class MBotPathFinder {
         }
     }
 
-    public List<CommandsToMBot> FrontUltrasonicSearcher()
+    public List<CommandsToMBot> FindPath()
     {
         List<CommandsToMBot> finalCommandList = null;
 
-        if(FrontSensor.getNumericValue() > 10)
-            finalCommandList.add(Kreni);
-        else
-            finalCommandList.add(ZaustaviSe);
+        if(FrontSensor != null && RightSensor != null && LeftSensor != null)
+        {
+            finalCommandList.add(centerMBotThreeSensors());
+            finalCommandList.addAll(findPathThreeSensors());
+        }
+
+        else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
+        {
+            finalCommandList = findPathFrontSensor();
+        }
+
+        else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
+        {
+            finalCommandList = findPathFrontSensor();
+        }
+
+        else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
+        {
+            finalCommandList = findPathFrontSensor();
+        }
+
         return finalCommandList;
+    }
+
+    private List<CommandsToMBot> findPathThreeSensors()
+    {
+        List<CommandsToMBot> commandsToMBotList = null;
+
+        return commandsToMBotList;
+    }
+
+    private CommandsToMBot centerMBotThreeSensors()
+    {
+        CommandsToMBot returnCommand = Null;
+
+        if(LeftSensor.getNumericValue() < 5)
+            returnCommand = SpeedUpLeft;
+
+        else if(RightSensor.getNumericValue() < 5)
+            returnCommand = SpeedUpRight;
+
+        return returnCommand;
+    }
+
+    private List<CommandsToMBot> findPathFrontSensor()
+    {
+        List<CommandsToMBot> commandsToMBotList = null;
+        if(FrontSensor.getNumericValue() > 10)
+            commandsToMBotList.add(RunMotors);
+        else
+        {
+            commandsToMBotList.add(StopMotors);
+            commandsToMBotList.add(Rotate);
+            commandsToMBotList.add(LastCommand);
+        }
+
+        return commandsToMBotList;
     }
 }

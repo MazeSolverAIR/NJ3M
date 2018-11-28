@@ -5,8 +5,8 @@ import hr.foi.nj3m.interfaces.IUltraSonic;
 
 public class UltrasonicSensor implements IUltraSonic {
 
-    SensorSide SensorSide = null;
-    String CurrentValue = "";
+    private SensorSide SensorSide = null;
+    private String CurrentValue = "";
 
     public UltrasonicSensor(SensorSide sensorSide) {
         this.SensorSide = sensorSide;
@@ -19,13 +19,30 @@ public class UltrasonicSensor implements IUltraSonic {
 
     @Override
     public String getFullValue() {
-        return null;
+        //Poruka je oblika FUsS:#, tj. FrontUltrasonicSensor: broj
+
+        return CurrentValue;
     }
+
 
     public int getNumericValue()
     {
-        return 0;
+        int returnValue = 0;
+        String substring = CurrentValue.substring(CurrentValue.lastIndexOf(':'));
+
+        try{
+
+            returnValue = Integer.parseInt(substring);
+        }
+        catch (NumberFormatException ex)
+        {
+            returnValue = 0;
+        }
+
+        return returnValue;
     }
+
+
 
     @Override
     public void setCurrentValue(String currentVal) {

@@ -3,21 +3,28 @@ class Enumeracije
 {
 public:
 
-	enum RadnjeMbota {
+	enum InfoZaAndroid {
 		PrednjiUZSenzor,
 		DesniUZSenzor,
 		LijeviUZSenzor,
-		OcitajSenzorCrte
+		OcitajSenzorCrte,
+		ZadnjaPoruka,
+		Null
 	};
 
 	enum NaredbaAndroida {
 		KreniNaprijed,
 		ZaustaviSe,
 		RotirajSe,
+		UbrzajLijeviMotor,
+		UbrzajDesniMotor,
+		ZadnjaPoruka,
 		Null
 	};
 	Enumeracije();
-	NaredbaAndroida DohvatiRadnjuIzStringa(String tekst);
+	NaredbaAndroida DohvatiRadnjuIzPoruke(String tekst);
+
+	String DohvatiRadnjuIzEnuma(InfoZaAndroid);
 
 
 };

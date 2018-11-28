@@ -6,14 +6,20 @@ public class CommandsToMBotController {
 
     public String getStringFromComandEnum(CommandsToMBot command) {
         switch (command) {
-            case Kreni:
-                return "Kreni naprijed";
-            case ZaustaviSe:
-                return "Zaustavi se";
-            case Rotiraj:
-                return "Skreni";
+            case RunMotors:
+                return "RunMotors:";
+            case StopMotors:
+                return "StopMotors:";
+            case Rotate:
+                return "Rotate:";
+            case SpeedUpLeft:
+                return "SpeedUpLeft:";
+            case SpeedUpRight:
+                return "SpeedUpRight:";
+            case LastCommand:
+                return "Over:";
         }
 
-        return "Zaustavi se";
+        return "StopMotors:";
     }
 }

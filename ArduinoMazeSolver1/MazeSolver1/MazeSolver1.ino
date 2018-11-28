@@ -80,7 +80,7 @@ void IzvrsiRadnjuBT(String btPoruka)
 {
 	if (btPoruka.length() > 0)
 	{
-		switch (enums.DohvatiRadnjuIzStringa(btPoruka))
+		switch (enums.DohvatiRadnjuIzPoruke(btPoruka))
 		{
 			case enums.KreniNaprijed:
 				Kreni(brzinaKretanja);

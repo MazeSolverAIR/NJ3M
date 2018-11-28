@@ -1,8 +1,11 @@
 package hr.foi.nj3m.interfaces.Enumerations;
 
 public enum CommandsToMBot {
-    Kreni,
-    ZaustaviSe,
-    Rotiraj,
+    RunMotors,
+    StopMotors,
+    Rotate,
+    SpeedUpLeft,
+    SpeedUpRight,
+    LastCommand,
     Null
 }
