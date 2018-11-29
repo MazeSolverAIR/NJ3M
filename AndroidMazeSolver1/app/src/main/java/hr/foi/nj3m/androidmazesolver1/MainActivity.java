@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public void openListOfDevices(){
         Intent intent = new Intent(this,ListOfDevices.class);
         startActivity(intent);
+
     }
 
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

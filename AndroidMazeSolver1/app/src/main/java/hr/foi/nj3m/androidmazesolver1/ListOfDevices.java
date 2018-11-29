@@ -24,9 +24,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
@@ -68,6 +72,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
                 bluetooth.discover();
             }
         });
+
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {

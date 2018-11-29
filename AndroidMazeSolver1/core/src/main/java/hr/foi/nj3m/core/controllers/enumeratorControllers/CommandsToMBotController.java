@@ -4,7 +4,7 @@ import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class CommandsToMBotController {
 
-    public String getStringFromComandEnum(CommandsToMBot command) {
+    public static String getStringFromComandEnum(CommandsToMBot command) {
         switch (command) {
             case RunMotors:
                 return "RunMotors:";

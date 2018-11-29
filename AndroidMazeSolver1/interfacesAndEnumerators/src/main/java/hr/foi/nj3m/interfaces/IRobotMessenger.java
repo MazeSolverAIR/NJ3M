@@ -5,13 +5,7 @@ package hr.foi.nj3m.interfaces;
 //ovaj modul treba koristiti i wiFi modul i bluetooth modul
 public interface IRobotMessenger {
 
-    boolean runForward(int speed);
-    boolean runBackward(int speed);
-
-    boolean turnLeft(int degrees, int speed);
-    boolean turnRight(int degrees, int speed);
-
-    boolean stopMoving();
+    boolean sendCommand(String naredba);
 
     byte[] receive();
 }

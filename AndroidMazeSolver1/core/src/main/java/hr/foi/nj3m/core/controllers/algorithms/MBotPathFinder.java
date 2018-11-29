@@ -33,6 +33,9 @@ public class MBotPathFinder {
         setSensorVariables();
     }
 
+    public MBotPathFinder()
+    {}
+
     private void setSensorVariables() {
         for (IUltraSonic sensor : Sensors) {
             SensorSide sensorSide = sensor.getSensorSide();

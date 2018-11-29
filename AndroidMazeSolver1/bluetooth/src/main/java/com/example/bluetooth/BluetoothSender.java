@@ -1,5 +1,6 @@
 package com.example.bluetooth;
 
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class BluetoothSender implements IRobotMessenger {
@@ -20,27 +21,7 @@ public class BluetoothSender implements IRobotMessenger {
     }
 
     @Override
-    public boolean runForward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean runBackward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnLeft(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnRight(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean stopMoving() {
+    public boolean sendCommand(String naredba) {
         return false;
     }
 
