@@ -77,6 +77,9 @@ public class MBotPathFinder {
     {
         List<CommandsToMBot> commandsToMBotList = null;
 
+        commandsToMBotList.add(centerMBotThreeSensors());
+
+
         return commandsToMBotList;
     }
 
@@ -84,10 +87,10 @@ public class MBotPathFinder {
     {
         CommandsToMBot returnCommand = Null;
 
-        if(LeftSensor.getNumericValue() < 5)
+        if(LeftSensor.seesObstacle())
             returnCommand = SpeedUpLeft;
 
-        else if(RightSensor.getNumericValue() < 5)
+        else if(RightSensor.seesObstacle())
             returnCommand = SpeedUpRight;
 
         return returnCommand;
@@ -96,7 +99,7 @@ public class MBotPathFinder {
     private List<CommandsToMBot> findPathFrontSensor()
     {
         List<CommandsToMBot> commandsToMBotList = null;
-        if(FrontSensor.getNumericValue() > 10)
+        if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);
         else
         {

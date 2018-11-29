@@ -7,4 +7,6 @@ public interface IUltraSonic extends ISensors {
     SensorSide getSensorSide();
 
     int getNumericValue();
+
+    boolean seesObstacle();
 }
