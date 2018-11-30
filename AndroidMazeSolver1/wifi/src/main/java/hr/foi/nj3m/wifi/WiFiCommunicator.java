@@ -2,20 +2,20 @@ package hr.foi.nj3m.wifi;
 
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
-public class WiFiSender implements IRobotMessenger {
+public class WiFiCommunicator implements IRobotMessenger {
 
 
-    private static WiFiSender InstanceOfSender;
+    private static WiFiCommunicator InstanceOfSender;
 
-    protected static WiFiSender createWiFiSender()
+    protected static WiFiCommunicator createWiFiSender()
     {
         if(InstanceOfSender == null)
-            InstanceOfSender = new WiFiSender();
+            InstanceOfSender = new WiFiCommunicator();
 
         return InstanceOfSender;
     }
 
-    private  WiFiSender()
+    private WiFiCommunicator()
     {
 
     }

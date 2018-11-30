@@ -80,7 +80,7 @@ public class MBotPathFinder {
     {
         List<CommandsToMBot> commandsToMBotList = null;
 
-        commandsToMBotList.add(centerMBotThreeSensors());
+
 
 
         return commandsToMBotList;

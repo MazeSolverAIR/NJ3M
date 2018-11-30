@@ -1,14 +1,11 @@
 package hr.foi.nj3m.wifi;
 
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-
 import java.util.ArrayList;
 
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
-import static hr.foi.nj3m.wifi.WiFiSender.createWiFiSender;
+import static hr.foi.nj3m.wifi.WiFiCommunicator.createWiFiSender;
 
 public class WiFi implements IConnections {
 
