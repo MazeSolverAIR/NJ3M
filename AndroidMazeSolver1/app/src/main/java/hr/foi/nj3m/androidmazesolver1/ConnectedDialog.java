@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class ConnectedDialog extends AppCompatActivity {
     private boolean isBluetoothConnected = false;
 
     Button btnSendControl;
+    Button btnSkreniDesno;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class ConnectedDialog extends AppCompatActivity {
         String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
+        btnSkreniDesno = (Button) findViewById(R.id.btnSkreniDesno);
 
         new ConnectBT().execute();
 
@@ -46,6 +49,21 @@ public class ConnectedDialog extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 communication.SendData(bluetoothSocket);
+            }
+        });
+        btnSkreniDesno.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                byte[] message = "RunMotors".getBytes();
+                try {
+                    bluetoothSocket.getOutputStream().write(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                communication.SendData(bluetoothSocket);
+                String s = new String(message);
+                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+
             }
         });
     }

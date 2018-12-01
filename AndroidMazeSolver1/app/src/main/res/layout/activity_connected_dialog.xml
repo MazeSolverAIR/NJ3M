@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@drawable/ic_pronadimbot"
+    android:background="@drawable/ic_pozadina_radnizaslon"
     tools:context=".MainActivity">
 
 
@@ -13,9 +13,10 @@
         android:id="@+id/btnStartConnection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="183dp"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="598dp"
         android:text="Poveži" />
 
     <Button
@@ -23,7 +24,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="246dp"
-        android:text="Šalji" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="533dp"
+        android:layout_marginEnd="220dp"
+        android:text="Lijevo" />
+
+    <ImageView
+        android:id="@+id/imgPracenjeRobota"
+        android:layout_width="804px"
+        android:layout_height="1266px"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="21dp"
+        app:srcCompat="@drawable/ic_pracenjerobota" />
+
+    <Button
+        android:id="@+id/btnSkreniDesno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btnSendControl"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="104dp"
+        android:text="DESNO" />
 </RelativeLayout>
