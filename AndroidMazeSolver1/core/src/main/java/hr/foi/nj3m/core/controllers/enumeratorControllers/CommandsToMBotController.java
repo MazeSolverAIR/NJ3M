@@ -10,8 +10,12 @@ public class CommandsToMBotController {
                 return "RunMotors:";
             case StopMotors:
                 return "StopMotors:";
-            case Rotate:
-                return "Rotate:";
+            case RotateFull:
+                return "RotateFull:";
+            case RotateLeft:
+                return "RotateLeft:";
+            case RotateRight:
+                return "RotateRight:";
             case SpeedUpLeft:
                 return "SpeedUpLeft:";
             case SpeedUpRight:

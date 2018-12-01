@@ -1,19 +1,19 @@
-package hr.foi.nj3m.core.controllers.sensors;
+package hr.foi.nj3m.core.controllers.components;
 
-import hr.foi.nj3m.interfaces.Enumerations.SensorSide;
+import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
 
 public class UltrasonicSensor implements IUltraSonic {
 
-    private SensorSide SensorSide = null;
+    private Sides SensorSide = null;
     private String CurrentValue = "";
 
-    public UltrasonicSensor(SensorSide sensorSide) {
+    public UltrasonicSensor(Sides sensorSide) {
         this.SensorSide = sensorSide;
     }
 
     @Override
-    public SensorSide getSensorSide() {
+    public Sides getSensorSide() {
         return this.SensorSide;
     }
 
@@ -25,14 +25,14 @@ public class UltrasonicSensor implements IUltraSonic {
     }
 
 
-    public int getNumericValue()
+    public double getNumericValue()
     {
-        int returnValue = 0;
+        double returnValue = 0;
         String substring = CurrentValue.substring(CurrentValue.lastIndexOf(':'));
 
         try{
 
-            returnValue = Integer.parseInt(substring);
+            returnValue = Double.parseDouble(substring);
         }
         catch (NumberFormatException ex)
         {

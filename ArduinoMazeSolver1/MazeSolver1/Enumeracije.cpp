@@ -17,7 +17,7 @@ Enumeracije::NaredbaAndroida Enumeracije::DohvatiRadnjuIzPoruke(String tekst)
 	else if (radniTekst == "StopMotors")
 		return Enumeracije::ZaustaviSe;
 
-	else if (radniTekst == "Rotate")
+	else if (radniTekst == "RotateFull")
 		return Enumeracije::RotirajSe;
 
 	else if (radniTekst == "SpeedUpLeft")

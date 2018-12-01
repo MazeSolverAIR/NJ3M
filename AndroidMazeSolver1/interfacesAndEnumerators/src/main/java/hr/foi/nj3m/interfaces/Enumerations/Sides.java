@@ -1,6 +1,6 @@
 package hr.foi.nj3m.interfaces.Enumerations;
 
-public enum SensorSide {
+public enum Sides {
     Front,
     Left,
     Right,

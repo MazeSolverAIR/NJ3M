@@ -3,42 +3,53 @@ package hr.foi.nj3m.core.controllers.algorithms;
 
 import java.util.List;
 
+import hr.foi.nj3m.core.R;
+import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
-import hr.foi.nj3m.interfaces.Enumerations.SensorSide;
+import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
 
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.LastCommand;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Null;
-import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Rotate;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateLeft;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RunMotors;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.StopMotors;
-import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Front;
-import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Left;
-import static hr.foi.nj3m.interfaces.Enumerations.SensorSide.Right;
+import static hr.foi.nj3m.interfaces.Enumerations.Sides.Front;
+import static hr.foi.nj3m.interfaces.Enumerations.Sides.Left;
+import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
 public class MBotPathFinder {
 
     private List<IUltraSonic> Sensors = null;
 
-    private IUltraSonic LeftSensor = null;
-    private IUltraSonic RightSensor = null;
-    private IUltraSonic FrontSensor = null;
+    public IUltraSonic LeftSensor = null;
+    public IUltraSonic RightSensor = null;
+    public IUltraSonic FrontSensor = null;
 
-    public MBotPathFinder(List<IUltraSonic> sensors)
+    public List<Crossroad> CrossroadsList = null;
+
+    private MBotPathFinder Instance = null;
+
+    public MBotPathFinder createInstance(List<IUltraSonic> sensors)
+    {
+        this.Instance = new MBotPathFinder(sensors);
+
+        return this.Instance;
+    }
+
+    private MBotPathFinder(List<IUltraSonic> sensors)
     {
         this.Sensors = sensors;
 
         setSensorVariables();
     }
 
-    public MBotPathFinder()
-    {}
-
     private void setSensorVariables() {
         for (IUltraSonic sensor : Sensors) {
-            SensorSide sensorSide = sensor.getSensorSide();
+            Sides sensorSide = sensor.getSensorSide();
             if (sensorSide == Left)
                 this.LeftSensor = sensor;
             else if (sensorSide == Right)
@@ -79,8 +90,15 @@ public class MBotPathFinder {
     private List<CommandsToMBot> findPathThreeSensors()
     {
         List<CommandsToMBot> commandsToMBotList = null;
+        double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
+        if(!FrontSensor.seesObstacle())
+            commandsToMBotList.add(RunMotors);
+        else
+            commandsToMBotList.add(StopMotors);
 
+        if(Crossroad.checkIfCrossroad(sensorDistanceSum))
+            commandsToMBotList.addAll(manageCrossroad());
 
 
         return commandsToMBotList;
@@ -90,14 +108,59 @@ public class MBotPathFinder {
     {
         CommandsToMBot returnCommand = Null;
 
-        if(LeftSensor.seesObstacle())
-            returnCommand = SpeedUpLeft;
+        double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
-        else if(RightSensor.seesObstacle())
-            returnCommand = SpeedUpRight;
+        if(!Crossroad.checkIfCrossroad(sensorDistanceSum))
+        {
+            if(LeftSensor.getNumericValue() > RightSensor.getNumericValue())
+                returnCommand = SpeedUpLeft;
+
+
+            else if(RightSensor.getNumericValue() > LeftSensor.getNumericValue())
+                returnCommand = SpeedUpRight;
+        }
 
         return returnCommand;
     }
+
+    private List<CommandsToMBot> manageCrossroad()
+    {
+        List<CommandsToMBot> commandsToMBotList = null;
+        Crossroad crossroad = null;
+
+        if(this.CrossroadsList == null)
+        {
+            crossroad = new Crossroad(this);
+            this.CrossroadsList.add(crossroad);
+        }
+        else
+        {
+            /*trebam napraviti jos da provjerava zadnjeg u listi, ako je kod njega smijer kretanja == rotirajFull
+            onda predzadnjeg povecaj za jedan.....
+             */
+        }
+
+
+        commandsToMBotList.add(StopMotors);
+
+        if(Crossroad.checkCrossroadSide(this.RightSensor))
+        {
+            commandsToMBotList.add(RotateRight);
+        }
+
+        else if(Crossroad.checkCrossroadSide(this.FrontSensor))
+        {
+            commandsToMBotList.add(RunMotors);
+        }
+
+        else if(Crossroad.checkCrossroadSide(this.LeftSensor))
+        {
+            commandsToMBotList.add(RotateLeft);
+        }
+
+        return commandsToMBotList;
+    }
+
 
     private List<CommandsToMBot> findPathFrontSensor()
     {
@@ -107,7 +170,7 @@ public class MBotPathFinder {
         else
         {
             commandsToMBotList.add(StopMotors);
-            commandsToMBotList.add(Rotate);
+            commandsToMBotList.add(RotateRight);
             commandsToMBotList.add(LastCommand);
         }
 
