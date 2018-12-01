@@ -1,6 +1,6 @@
 C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Debug\Makeblock-Libraries-master\MeHostParser.cpp.o: \
- C:\Users\Matija\Documents\Arduino\libraries\Makeblock-Libraries-master\src\MeHostParser.cpp \
- C:\Users\Matija\Documents\Arduino\libraries\Makeblock-Libraries-master\src\MeHostParser.h \
+ D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\MeHostParser.cpp \
+ D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\MeHostParser.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/Arduino.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/binary.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/WCharacter.h \

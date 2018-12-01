@@ -2,7 +2,6 @@
 #include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
-#include "Enumeracije.h"
 
 uint16_t brzinaKretanja = 127;
 
@@ -18,11 +17,8 @@ MeBluetooth bluetooth = MeBluetooth();
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
-Enumeracije enums;
-
 void setup() 
 {
-	enums = Enumeracije();
 
 	button.setpin(A7);
 	bluetooth.begin(9600);
@@ -36,12 +32,8 @@ void loop()
 	{
 	case 0:
 		IzvrsiRadnjuBT(CitajBluetooth());
-		ZaustaviMotore();
 		break;
 	case 1:
-		IzbjegavajPrepreke();
-		break;
-	case 2:
 		ZaustaviMotore();
 	default:
 		ZaustaviMotore();
@@ -57,7 +49,7 @@ void IzvrsiPritisakTipke()
 		stisnutGumb = false;
 		modRadnje++;
 
-		if (modRadnje>2)
+		if (modRadnje>1)
 			modRadnje = 0;
 	}
 	if (!button.pressed() && !stisnutGumb)
@@ -66,58 +58,59 @@ void IzvrsiPritisakTipke()
 	}
 }
 
-String CitajBluetooth()
+char CitajBluetooth()
 {
-	String returnString = "";
+	//byte sEventBuffer[1024];
+	//String myString;
+	char porukica;
 	if (bluetooth.available())
 	{
-		returnString = bluetooth.readString();
+		//myString = bluetooth.readString();
+		porukica = bluetooth.read();
+		//bluetooth.readBytes((char *)sEventBuffer, 1024);
+		
 	}
-	return returnString;
+	//String myString = String((char*)sEventBuffer);
+	return porukica;
 }
 
-void IzvrsiRadnjuBT(String btPoruka)
+void IzvrsiRadnjuBT(char btPoruka)
 {
-	if (btPoruka.length() > 0)
+	if (btPoruka == 'A')
 	{
-		switch (enums.DohvatiRadnjuIzPoruke(btPoruka))
+		Kreni(brzinaKretanja);
+		/*switch (DohvatiRadnjuIzPoruke(btPoruka))
 		{
-			case enums.KreniNaprijed:
+			case KreniNaprijed:
 				Kreni(brzinaKretanja);
 				break;
-			case enums.ZaustaviSe:
+			case ZaustaviSe:
 				ZaustaviMotore();
 				break;
-			case enums.RotirajSe:
+			case RotirajSe:
 				Skreni('l', 90, brzinaKretanja);
-				ZaustaviMotore();
 				break;
 
 			default:
 				Skreni('l', 90, brzinaKretanja);
 				break;
 		}
-		PosaljiBTPoruku();
+		if (btPoruka == "RunMotors")
+			Kreni(brzinaKretanja);
+		else
+			Skreni('d', 90, brzinaKretanja);
+
+		PosaljiBTPoruku();*/
 	}
+	else if (btPoruka == 'B')
+		Skreni('d', 90, brzinaKretanja);
 }
 
 void PosaljiBTPoruku()
 {
-	String prednjiSenzor = enums.DohvatiRadnjuIzEnuma(enums.PrednjiUZSenzor);
+	//String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
 
-	bluetooth.sendString(prednjiSenzor + ultraSonic.distanceCm);
-}
-
-void IzbjegavajPrepreke()
-{
-	if (ultraSonic.distanceCm() > 20)
-	{
-		Kreni(brzinaKretanja);
-	}
-	else
-	{
-		Skreni('l', 90, brzinaKretanja);
-	}
+	//bluetooth.sendString(prednjiSenzor + ultraSonic.distanceCm);
 }
 
 void Kreni(uint16_t brzinaKretanja)
@@ -145,6 +138,7 @@ void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 		rightMotor.run(-brzina);
 	}
 	delay(IzracunajVrijemeRotacije(stupnjevi, brzina));
+	ZaustaviMotore();
 }
 
 int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
@@ -153,3 +147,64 @@ int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 
 	return vrijemeOkretanje;
 }
+
+/*String DohvatiRadnjuIzEnuma(InfoZaAndroid info)
+{
+	if (info == PrednjiUZSenzor)
+		return "FUsS:";
+
+	else if (info == DesniUZSenzor)
+		return "RUsS:";
+
+	else if (info == LijeviUZSenzor)
+		return "LUsS:";
+
+	else if (info == ZadnjiInfo)
+		return "Over:";
+
+	return "Over:";
+}
+
+NaredbaAndroida DohvatiRadnjuIzPoruke(String tekst)
+{
+	String radniTekst = tekst.substring(0, tekst.lastIndexOf(':'));
+
+	if (radniTekst == "RunMotors")
+		return KreniNaprijed;
+
+	else if (radniTekst == "StopMotors")
+		return ZaustaviSe;
+
+	else if (radniTekst == "RotateFull")
+		return RotirajSe;
+
+	else if (radniTekst == "SpeedUpLeft")
+		return UbrzajLijeviMotor;
+
+	else if (radniTekst == "SpeedUpRight")
+		return UbrzajDesniMotor;
+
+	else if (radniTekst == "Over")
+		return ZadnjaNaredba;
+
+	return Nulla;
+}
+
+enum InfoZaAndroid {
+	PrednjiUZSenzor,
+	DesniUZSenzor,
+	LijeviUZSenzor,
+	OcitajSenzorCrte,
+	ZadnjiInfo,
+	Null
+};
+
+enum NaredbaAndroida {
+	KreniNaprijed,
+	ZaustaviSe,
+	RotirajSe,
+	UbrzajLijeviMotor,
+	UbrzajDesniMotor,
+	ZadnjaNaredba,
+	Nulla
+};*/
