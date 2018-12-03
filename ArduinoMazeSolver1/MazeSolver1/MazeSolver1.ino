@@ -15,7 +15,7 @@ struct InfoZaAndroid {
 struct NaredbaAndroida {
 	String KreniNaprijed = "RunMotors";
 	String ZaustaviSe = "StopMotors";
-	String RotirajSe = "RotateFull";
+	String RotirajSeLijevo = "Lijevo";
 	String UbrzajLijeviMotor = "SpeedUpLeft";
 	String UbrzajDesniMotor = "SpeedUpRight";
 	String ZadnjaNaredba = "Over";
@@ -104,28 +104,12 @@ void IzvrsiRadnjuBT(String btPoruka)
 {
 	if (btPoruka.length() > 0)
 	{
-		/*switch (DohvatiRadnjuIzPoruke(btPoruka))
-		{
-		  case KreniNaprijed:
-			Kreni(brzinaKretanja);
-			break;
-		  case ZaustaviSe:
-			ZaustaviMotore();
-			break;
-		  case RotirajSe:
-			Skreni('l', 90, brzinaKretanja);
-			break;
-
-		  default:
-			Skreni('l', 90, brzinaKretanja);
-			break;
-		}*/
 
 		if (btPoruka == naredba.KreniNaprijed)
 		{
 			Kreni(brzinaKretanja);
 		}
-		else if (btPoruka == naredba.ZaustaviSe)
+		else if (btPoruka == naredba.RotirajSeLijevo)
 		{
 			ZaustaviMotore();
 		}
