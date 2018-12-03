@@ -3,6 +3,27 @@
 #include <SoftwareSerial.h>
 #include "Arduino.h"
 
+struct InfoZaAndroid {
+	String PrednjiUZSenzor = "FUsS:";
+	String DesniUZSenzor = "RUsS:";
+	String LijeviUZSenzor = "LUsS:";
+	String OcitajSenzorCrte = " ";
+	String ZadnjiInfo = "Over:";
+	String Null = "Null:";
+};
+
+struct NaredbaAndroida {
+	String KreniNaprijed = "RunMotors";
+	String ZaustaviSe = "StopMotors";
+	String RotirajSe = "RotateFull";
+	String UbrzajLijeviMotor = "SpeedUpLeft";
+	String UbrzajDesniMotor = "SpeedUpRight";
+	String ZadnjaNaredba = "Over";
+	String Null = "Null";
+};
+
+NaredbaAndroida naredba;
+
 uint16_t brzinaKretanja = 127;
 
 MeDCMotor leftMotor(M1);
@@ -11,7 +32,6 @@ MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
-
 
 MeBluetooth bluetooth = MeBluetooth();
 
@@ -25,9 +45,9 @@ void setup()
   button.setpin(A7);
 
   bluetooth.begin(115200);
+  bluetooth.setTimeout(25);
 }
 
-bool a = true;
 
 void loop() 
 {
@@ -36,11 +56,6 @@ void loop()
   switch (modRadnje)
   {
   case 0:
-	  if (a)
-	  {
-		  Skreni('d', 90, brzinaKretanja);
-		  a = false;
-	  }
     IzvrsiRadnjuBT(CitajBluetooth());
     break;
   case 1:
@@ -72,13 +87,10 @@ void IzvrsiPritisakTipke()
 
 String CitajBluetooth()
 {
-  //String sEventBuffer;
   String myString = "";
 
   if (bluetooth.available() > 0)
   {
-	  /*if(bluetooth.read() > 0)
-		 myString += bluetooth.readString();*/
 	  while (bluetooth.read() > 0)
 	  {
 		  myString += bluetooth.readString();
@@ -109,11 +121,11 @@ void IzvrsiRadnjuBT(String btPoruka)
 			break;
 		}*/
 
-		if (btPoruka == "RunMotors")
+		if (btPoruka == naredba.KreniNaprijed)
 		{
 			Kreni(brzinaKretanja);
 		}
-		else if (btPoruka == "Lijevo")
+		else if (btPoruka == naredba.ZaustaviSe)
 		{
 			ZaustaviMotore();
 		}
@@ -164,63 +176,4 @@ int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
   return vrijemeOkretanje;
 }
 
-/*String DohvatiRadnjuIzEnuma(InfoZaAndroid info)
-{
-  if (info == PrednjiUZSenzor)
-    return "FUsS:";
 
-  else if (info == DesniUZSenzor)
-    return "RUsS:";
-
-  else if (info == LijeviUZSenzor)
-    return "LUsS:";
-
-  else if (info == ZadnjiInfo)
-    return "Over:";
-
-  return "Over:";
-}
-
-NaredbaAndroida DohvatiRadnjuIzPoruke(String tekst)
-{
-  String radniTekst = tekst.substring(0, tekst.lastIndexOf(':'));
-
-  if (radniTekst == "RunMotors")
-    return KreniNaprijed;
-
-  else if (radniTekst == "StopMotors")
-    return ZaustaviSe;
-
-  else if (radniTekst == "RotateFull")
-    return RotirajSe;
-
-  else if (radniTekst == "SpeedUpLeft")
-    return UbrzajLijeviMotor;
-
-  else if (radniTekst == "SpeedUpRight")
-    return UbrzajDesniMotor;
-
-  else if (radniTekst == "Over")
-    return ZadnjaNaredba;
-
-  return Nulla;
-}
-
-enum InfoZaAndroid {
-  PrednjiUZSenzor,
-  DesniUZSenzor,
-  LijeviUZSenzor,
-  OcitajSenzorCrte,
-  ZadnjiInfo,
-  Null
-};
-
-enum NaredbaAndroida {
-  KreniNaprijed,
-  ZaustaviSe,
-  RotirajSe,
-  UbrzajLijeviMotor,
-  UbrzajDesniMotor,
-  ZadnjaNaredba,
-  Nulla
-};*/
