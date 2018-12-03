@@ -1,6 +1,6 @@
 C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Debug\Makeblock-Libraries-master\MeEncoderOnBoard.cpp.o: \
- D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\MeEncoderOnBoard.cpp \
- D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src\MeEncoderOnBoard.h \
+ C:\Users\Matija\Documents\Arduino\libraries\Makeblock-Libraries-master\src\MeEncoderOnBoard.cpp \
+ C:\Users\Matija\Documents\Arduino\libraries\Makeblock-Libraries-master\src\MeEncoderOnBoard.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/Arduino.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/binary.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\cores\arduino/WCharacter.h \
