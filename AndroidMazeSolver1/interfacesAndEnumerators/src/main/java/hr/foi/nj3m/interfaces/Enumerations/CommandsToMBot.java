@@ -3,10 +3,8 @@ package hr.foi.nj3m.interfaces.Enumerations;
 public enum CommandsToMBot {
     RunMotors,
     StopMotors,
-    RotateRight,
-    RotateLeft,
+    Rotate,
     SpeedUpLeft,
-    RotateFull,
     SpeedUpRight,
     LastCommand,
     Null

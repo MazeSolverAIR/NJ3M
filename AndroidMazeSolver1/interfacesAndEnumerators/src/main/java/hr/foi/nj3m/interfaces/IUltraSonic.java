@@ -1,12 +1,12 @@
 package hr.foi.nj3m.interfaces;
 
-import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.interfaces.Enumerations.SensorSide;
 
 public interface IUltraSonic extends ISensors {
 
-    Sides getSensorSide();
+    SensorSide getSensorSide();
 
-    double getNumericValue();
+    int getNumericValue();
 
     boolean seesObstacle();
 }

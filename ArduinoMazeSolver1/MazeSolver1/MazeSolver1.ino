@@ -103,9 +103,7 @@ void IzvrsiRadnjuBT(String btPoruka)
 
 void PosaljiBTPoruku()
 {
-	String prednjiSenzor = enums.DohvatiRadnjuIzEnuma(enums.PrednjiUZSenzor);
-
-	bluetooth.sendString(prednjiSenzor + ultraSonic.distanceCm);
+	bluetooth.sendString("PUZS:" + ultraSonic.distanceCm);
 }
 
 void IzbjegavajPrepreke()
