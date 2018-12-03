@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -17,16 +18,18 @@ public class Communication {
     Context context;
     String deviceAddress;
     BluetoothSocket bluetoothSocket = null;
+    int brojac;
 
     public Communication(Context context, String deviceAddress) {
         this.context = context;
         this.deviceAddress = deviceAddress;
     }
 
-    public void SendData(BluetoothSocket bluetoothSocket){
-        byte[] message = "message".getBytes();
+    public void SendData(BluetoothSocket bluetoothSocket, String message){
+        brojac=0;
+        byte[] msgBuffer = message.getBytes();
         try{
-            bluetoothSocket.getOutputStream().write(message);
+            bluetoothSocket.getOutputStream().write(msgBuffer);
         }catch (IOException e){
 
         }

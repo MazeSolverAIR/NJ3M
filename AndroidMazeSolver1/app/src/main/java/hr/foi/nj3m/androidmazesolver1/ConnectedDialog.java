@@ -48,21 +48,13 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                communication.SendData(bluetoothSocket);
+                communication.SendData(bluetoothSocket,"RRunMotors");
             }
         });
         btnSkreniDesno.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                byte[] message = "RunMotors".getBytes();
-                try {
-                    bluetoothSocket.getOutputStream().write(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                communication.SendData(bluetoothSocket);
-                String s = new String(message);
-                Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+                communication.SendData(bluetoothSocket,"LLijevo");
 
             }
         });
