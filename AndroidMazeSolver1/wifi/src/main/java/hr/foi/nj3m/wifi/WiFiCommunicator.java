@@ -21,27 +21,7 @@ public class WiFiCommunicator implements IRobotMessenger {
     }
 
     @Override
-    public boolean runForward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean runBackward(int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnLeft(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean turnRight(int degrees, int speed) {
-        return false;
-    }
-
-    @Override
-    public boolean stopMoving() {
+    public boolean sendCommand(String naredba) {
         return false;
     }
 
