@@ -12,7 +12,9 @@ MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
 
+
 MeBluetooth bluetooth = MeBluetooth();
+
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
@@ -20,191 +22,205 @@ bool stisnutGumb = true;
 void setup() 
 {
 
-	button.setpin(A7);
-	bluetooth.begin(9600);
+  button.setpin(A7);
+
+  bluetooth.begin(115200);
 }
+
+bool a = true;
 
 void loop() 
 {
-	IzvrsiPritisakTipke();
+  IzvrsiPritisakTipke();
 
-	switch (modRadnje)
-	{
-	case 0:
-		IzvrsiRadnjuBT(CitajBluetooth());
-		break;
-	case 1:
-		ZaustaviMotore();
-	default:
-		ZaustaviMotore();
-		break;
-	}
+  switch (modRadnje)
+  {
+  case 0:
+	  if (a)
+	  {
+		  Skreni('d', 90, brzinaKretanja);
+		  a = false;
+	  }
+    IzvrsiRadnjuBT(CitajBluetooth());
+    break;
+  case 1:
+    ZaustaviMotore();
+  default:
+    ZaustaviMotore();
+    break;
+  }
 
 }
 
 void IzvrsiPritisakTipke()
 {
-	if (button.pressed() && stisnutGumb)
-	{
-		stisnutGumb = false;
-		modRadnje++;
+  if (button.pressed() && stisnutGumb)
+  {
+    stisnutGumb = false;
+    modRadnje++;
 
-		if (modRadnje>1)
-			modRadnje = 0;
-	}
-	if (!button.pressed() && !stisnutGumb)
-	{
-		stisnutGumb = true;
-	}
+    if (modRadnje>1)
+      modRadnje = 0;
+  }
+  if (!button.pressed() && !stisnutGumb)
+  {
+    stisnutGumb = true;
+  }
 }
 
-char CitajBluetooth()
+
+
+String CitajBluetooth()
 {
-	//byte sEventBuffer[1024];
-	//String myString;
-	char porukica;
-	if (bluetooth.available())
-	{
-		//myString = bluetooth.readString();
-		porukica = bluetooth.read();
-		//bluetooth.readBytes((char *)sEventBuffer, 1024);
-		
-	}
-	//String myString = String((char*)sEventBuffer);
-	return porukica;
+  //String sEventBuffer;
+  String myString = "";
+
+  if (bluetooth.available() > 0)
+  {
+	  /*if(bluetooth.read() > 0)
+		 myString += bluetooth.readString();*/
+	  while (bluetooth.read() > 0)
+	  {
+		  myString += bluetooth.readString();
+	  }
+   }
+
+  return myString;
 }
 
-void IzvrsiRadnjuBT(char btPoruka)
+void IzvrsiRadnjuBT(String btPoruka)
 {
-	if (btPoruka == 'A')
+	if (btPoruka.length() > 0)
 	{
-		Kreni(brzinaKretanja);
 		/*switch (DohvatiRadnjuIzPoruke(btPoruka))
 		{
-			case KreniNaprijed:
-				Kreni(brzinaKretanja);
-				break;
-			case ZaustaviSe:
-				ZaustaviMotore();
-				break;
-			case RotirajSe:
-				Skreni('l', 90, brzinaKretanja);
-				break;
-
-			default:
-				Skreni('l', 90, brzinaKretanja);
-				break;
-		}
-		if (btPoruka == "RunMotors")
+		  case KreniNaprijed:
 			Kreni(brzinaKretanja);
-		else
-			Skreni('d', 90, brzinaKretanja);
+			break;
+		  case ZaustaviSe:
+			ZaustaviMotore();
+			break;
+		  case RotirajSe:
+			Skreni('l', 90, brzinaKretanja);
+			break;
 
-		PosaljiBTPoruku();*/
+		  default:
+			Skreni('l', 90, brzinaKretanja);
+			break;
+		}*/
+
+		if (btPoruka == "RunMotors")
+		{
+			Kreni(brzinaKretanja);
+		}
+		else if (btPoruka == "Lijevo")
+		{
+			ZaustaviMotore();
+		}
+
+
+		PosaljiBTPoruku(btPoruka);
 	}
-	else if (btPoruka == 'B')
-		Skreni('d', 90, brzinaKretanja);
 }
 
-void PosaljiBTPoruku()
+void PosaljiBTPoruku(String poruka)
 {
-	//String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
+  //String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
 
-	//bluetooth.sendString(prednjiSenzor + ultraSonic.distanceCm);
 }
 
 void Kreni(uint16_t brzinaKretanja)
 {
-	leftMotor.run(-brzinaKretanja);
-	rightMotor.run(brzinaKretanja);
+  leftMotor.run(-brzinaKretanja);
+  rightMotor.run(brzinaKretanja);
 }
 
 void ZaustaviMotore()
 {
-	leftMotor.stop();
-	rightMotor.stop();
+  leftMotor.stop();
+  rightMotor.stop();
 }
 
 void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 {
-	if (smijer == 'l')
-	{
-		leftMotor.run(brzina);
-		rightMotor.run(brzina);
-	}
-	else 
-	{
-		leftMotor.run(-brzina);
-		rightMotor.run(-brzina);
-	}
-	delay(IzracunajVrijemeRotacije(stupnjevi, brzina));
-	ZaustaviMotore();
+  if (smijer == 'l')
+  {
+    leftMotor.run(brzina);
+    rightMotor.run(brzina);
+  }
+  else 
+  {
+    leftMotor.run(-brzina);
+    rightMotor.run(-brzina);
+  }
+  delay(IzracunajVrijemeRotacije(stupnjevi, brzina));
+  ZaustaviMotore();
 }
 
 int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 {
-	int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
+  int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
 
-	return vrijemeOkretanje;
+  return vrijemeOkretanje;
 }
 
 /*String DohvatiRadnjuIzEnuma(InfoZaAndroid info)
 {
-	if (info == PrednjiUZSenzor)
-		return "FUsS:";
+  if (info == PrednjiUZSenzor)
+    return "FUsS:";
 
-	else if (info == DesniUZSenzor)
-		return "RUsS:";
+  else if (info == DesniUZSenzor)
+    return "RUsS:";
 
-	else if (info == LijeviUZSenzor)
-		return "LUsS:";
+  else if (info == LijeviUZSenzor)
+    return "LUsS:";
 
-	else if (info == ZadnjiInfo)
-		return "Over:";
+  else if (info == ZadnjiInfo)
+    return "Over:";
 
-	return "Over:";
+  return "Over:";
 }
 
 NaredbaAndroida DohvatiRadnjuIzPoruke(String tekst)
 {
-	String radniTekst = tekst.substring(0, tekst.lastIndexOf(':'));
+  String radniTekst = tekst.substring(0, tekst.lastIndexOf(':'));
 
-	if (radniTekst == "RunMotors")
-		return KreniNaprijed;
+  if (radniTekst == "RunMotors")
+    return KreniNaprijed;
 
-	else if (radniTekst == "StopMotors")
-		return ZaustaviSe;
+  else if (radniTekst == "StopMotors")
+    return ZaustaviSe;
 
-	else if (radniTekst == "RotateFull")
-		return RotirajSe;
+  else if (radniTekst == "RotateFull")
+    return RotirajSe;
 
-	else if (radniTekst == "SpeedUpLeft")
-		return UbrzajLijeviMotor;
+  else if (radniTekst == "SpeedUpLeft")
+    return UbrzajLijeviMotor;
 
-	else if (radniTekst == "SpeedUpRight")
-		return UbrzajDesniMotor;
+  else if (radniTekst == "SpeedUpRight")
+    return UbrzajDesniMotor;
 
-	else if (radniTekst == "Over")
-		return ZadnjaNaredba;
+  else if (radniTekst == "Over")
+    return ZadnjaNaredba;
 
-	return Nulla;
+  return Nulla;
 }
 
 enum InfoZaAndroid {
-	PrednjiUZSenzor,
-	DesniUZSenzor,
-	LijeviUZSenzor,
-	OcitajSenzorCrte,
-	ZadnjiInfo,
-	Null
+  PrednjiUZSenzor,
+  DesniUZSenzor,
+  LijeviUZSenzor,
+  OcitajSenzorCrte,
+  ZadnjiInfo,
+  Null
 };
 
 enum NaredbaAndroida {
-	KreniNaprijed,
-	ZaustaviSe,
-	RotirajSe,
-	UbrzajLijeviMotor,
-	UbrzajDesniMotor,
-	ZadnjaNaredba,
-	Nulla
+  KreniNaprijed,
+  ZaustaviSe,
+  RotirajSe,
+  UbrzajLijeviMotor,
+  UbrzajDesniMotor,
+  ZadnjaNaredba,
+  Nulla
 };*/
