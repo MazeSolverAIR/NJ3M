@@ -1,13 +1,17 @@
-
+﻿
 #include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
+#include "List.h"
+
+MeBuzzer buzzer = MeBuzzer();
+
 
 struct InfoZaAndroid {
-	String PrednjiUZSenzor = "FUsS:";
-	String DesniUZSenzor = "RUsS:";
-	String LijeviUZSenzor = "LUsS:";
-	String OcitajSenzorCrte = " ";
+	String PrednjiUZSenzor = "PSnz:";
+	String DesniUZSenzor = "DSnz:";
+	String LijeviUZSenzor = "LSnz:";
+	String OcitajSenzorCrte = "RdSnz";
 	String ZadnjiInfo = "Over:";
 	String Null = "Null:";
 };
@@ -15,7 +19,9 @@ struct InfoZaAndroid {
 struct NaredbaAndroida {
 	String KreniNaprijed = "RunMotors";
 	String ZaustaviSe = "StopMotors";
-	String RotirajSeLijevo = "Lijevo";
+	String RotirajSeLijevo = "RotateLeft";
+	String RotirajSeDesno = "RotateRight";
+	String UTurn = "RotateFull";
 	String UbrzajLijeviMotor = "SpeedUpLeft";
 	String UbrzajDesniMotor = "SpeedUpRight";
 	String ZadnjaNaredba = "Over";
@@ -38,6 +44,8 @@ MeBluetooth bluetooth = MeBluetooth();
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
+bool a = true;
+List robotek;
 
 void setup() 
 {
@@ -46,6 +54,13 @@ void setup()
 
   bluetooth.begin(115200);
   bluetooth.setTimeout(25);
+
+  //Kreiranje liste
+
+  robotek = List();
+  robotek.AddNode('R');
+  robotek.AddNode('O');
+  robotek.AddNode('Z');
 }
 
 
@@ -56,7 +71,12 @@ void loop()
   switch (modRadnje)
   {
   case 0:
-    IzvrsiRadnjuBT(CitajBluetooth());
+	  if (a) {
+		  buzzer.tone(700, 500);
+		  a = false;
+	  }
+    //IzvrsiRadnjuBT('');
+	  robotek.PrintElement(1);
     break;
   case 1:
     ZaustaviMotore();
@@ -100,22 +120,25 @@ String CitajBluetooth()
   return myString;
 }
 
-void IzvrsiRadnjuBT(String btPoruka)
+void IzvrsiRadnjuBT(char btPoruka)
 {
-	if (btPoruka.length() > 0)
+	if (btPoruka != 'c')
 	{
 
-		if (btPoruka == naredba.KreniNaprijed)
-		{
-			Kreni(brzinaKretanja);
-		}
-		else if (btPoruka == naredba.RotirajSeLijevo)
+		if (btPoruka == 'O')
 		{
 			ZaustaviMotore();
 		}
+		if (btPoruka == 'R')
+		{
+			Skreni('l',90,brzinaKretanja);
+		}
+		else {
+			Serial.write("Nema podataka");
+		}
 
 
-		PosaljiBTPoruku(btPoruka);
+		//PosaljiBTPoruku(btPoruka);
 	}
 }
 
@@ -158,6 +181,10 @@ int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
   int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
 
   return vrijemeOkretanje;
+}
+
+void exitLab() {
+	
 }
 
 
