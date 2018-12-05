@@ -45,6 +45,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     public static String EXTRA_ADDRESS = null;
 
     IConnections iConnections;
+    public static IRobotMessenger iRobotMessenger;
 
     @Override
     protected void onDestroy() {
@@ -57,7 +58,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_devices);
 
-        iConnections = ConnectionController.creteInstance("bluetooth");
+
 
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
@@ -100,7 +101,9 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
-        IRobotMessenger iRobotMessenger = iConnections.connect(mBTDevices, position);
+        iConnections = ConnectionController.creteInstance("bluetooth", this, deviceAddress);
+
+        iRobotMessenger = iConnections.connect(mBTDevices, position);
 
         IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, bondedFilter);

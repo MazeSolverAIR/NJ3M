@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -21,7 +22,7 @@ import java.nio.charset.Charset;
 import java.util.UUID;
 
 public class ConnectedDialog extends AppCompatActivity {
-    Communication communication;
+    //Communication communication;
     private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     BluetoothAdapter mBluetoothAdapter = null;
     BluetoothSocket bluetoothSocket = null;
@@ -40,12 +41,13 @@ public class ConnectedDialog extends AppCompatActivity {
 
         new ConnectBT().execute();
 
-        communication = new Communication(this, deviceAddress);
+        //communication = new Communication(this, deviceAddress);
 
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                communication.SendData(bluetoothSocket);
+                ListOfDevices.iRobotMessenger.sendCommand("LLijevo", bluetoothSocket);
+                //communication.SendData(bluetoothSocket);
             }
         });
     }
@@ -74,7 +76,7 @@ public class ConnectedDialog extends AppCompatActivity {
 
                     mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-                    BluetoothDevice bluetoothRobot = mBluetoothAdapter.getRemoteDevice(communication.GetAddress());
+                    BluetoothDevice bluetoothRobot = mBluetoothAdapter.getRemoteDevice(ListOfDevices.iRobotMessenger.getAddress());
 
                     bluetoothSocket = bluetoothRobot.createInsecureRfcommSocketToServiceRecord(mUUID);
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();

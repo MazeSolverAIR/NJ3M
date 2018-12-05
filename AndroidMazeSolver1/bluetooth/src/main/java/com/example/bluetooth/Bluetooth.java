@@ -3,6 +3,8 @@ package com.example.bluetooth;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.Build;
 
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ import static com.example.bluetooth.BluetoothCommunicator.createBluetoothSender;
 public class Bluetooth extends Activity implements IConnections {
 
     BluetoothAdapter mBluetoothAdapter;
+    Context context;
+    String deviceAddress;
+    BluetoothSocket bluetoothSocket = null;
 
     private static Bluetooth instanceOfBluetooth;
 
@@ -22,15 +27,17 @@ public class Bluetooth extends Activity implements IConnections {
         return instanceOfBluetooth;
     }
 
-    public static Bluetooth createBluetoothInstance(){
+    public static Bluetooth createBluetoothInstance(Context context, String deviceAddress){
         if(instanceOfBluetooth == null)
-            instanceOfBluetooth = new Bluetooth();
+            instanceOfBluetooth = new Bluetooth(context, deviceAddress);
 
         return instanceOfBluetooth;
     }
 
-    private Bluetooth(){
+    private Bluetooth(Context context, String deviceAddress){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        this.context = context;
+        this.deviceAddress = deviceAddress;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class Bluetooth extends Activity implements IConnections {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             mDevices.get(position).createBond();
         }
-        return createBluetoothSender();
+        return createBluetoothSender(context, deviceAddress);
     }
 
     @Override

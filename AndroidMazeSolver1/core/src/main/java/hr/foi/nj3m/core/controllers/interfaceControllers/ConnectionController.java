@@ -1,5 +1,8 @@
 package hr.foi.nj3m.core.controllers.interfaceControllers;
 
+import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+
 import com.example.bluetooth.Bluetooth;
 
 import hr.foi.nj3m.interfaces.IConnections;
@@ -9,6 +12,9 @@ import static hr.foi.nj3m.wifi.WiFi.createWiFiInstance;
 
 public class ConnectionController {
 
+    Context context;
+    String deviceAddress;
+
     private static IConnections InstanceOfConnection;
 
     public static IConnections getInstanceOfConnection()
@@ -16,18 +22,18 @@ public class ConnectionController {
         return InstanceOfConnection;
     }
 
-    public static IConnections creteInstance(String odabranNacinKomunikacije)
+    public static IConnections creteInstance(String odabranNacinKomunikacije, Context context, String deviceAddress)
     {
-        new ConnectionController(odabranNacinKomunikacije);
+        new ConnectionController(odabranNacinKomunikacije, context, deviceAddress);
 
         return InstanceOfConnection;
     }
 
-    private ConnectionController(String odabranNacinKomunikacije)
+    private ConnectionController(String odabranNacinKomunikacije, Context context, String deviceAddress)
     {
         if(odabranNacinKomunikacije == "bluetooth")
         {
-            InstanceOfConnection = createBluetoothInstance();
+            InstanceOfConnection = createBluetoothInstance(context, deviceAddress);
         }
         else if(odabranNacinKomunikacije == "wifi")
         {
