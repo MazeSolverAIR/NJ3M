@@ -46,7 +46,7 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListOfDevices.iRobotMessenger.sendCommand("LLijevo", bluetoothSocket);
+                ListOfDevices.iRobotMessenger.sendCommand("RRotateLeft", bluetoothSocket);
                 //communication.SendData(bluetoothSocket);
             }
         });

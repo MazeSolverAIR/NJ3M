@@ -33,7 +33,7 @@ public class ConnectionController {
     {
         if(odabranNacinKomunikacije == "bluetooth")
         {
-            InstanceOfConnection = createBluetoothInstance(context, deviceAddress);
+            InstanceOfConnection = createBluetoothInstance(context);
         }
         else if(odabranNacinKomunikacije == "wifi")
         {
