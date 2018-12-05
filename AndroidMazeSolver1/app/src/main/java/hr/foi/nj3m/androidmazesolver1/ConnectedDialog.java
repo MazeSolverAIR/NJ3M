@@ -18,7 +18,12 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.UUID;
+
+import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialog extends AppCompatActivity {
     Communication communication;
@@ -45,7 +50,7 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                communication.SendData(bluetoothSocket);
+                //communication.SendData(bluetoothSocket);
             }
         });
     }

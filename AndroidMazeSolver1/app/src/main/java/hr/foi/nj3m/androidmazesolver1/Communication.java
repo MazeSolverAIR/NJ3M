@@ -23,10 +23,10 @@ public class Communication {
         this.deviceAddress = deviceAddress;
     }
 
-    public void SendData(BluetoothSocket bluetoothSocket){
-        byte[] message = "message".getBytes();
+    public void SendData(BluetoothSocket bluetoothSocket, String message){
+        byte[] messageToSend = message.getBytes();
         try{
-            bluetoothSocket.getOutputStream().write(message);
+            bluetoothSocket.getOutputStream().write(messageToSend);
         }catch (IOException e){
 
         }

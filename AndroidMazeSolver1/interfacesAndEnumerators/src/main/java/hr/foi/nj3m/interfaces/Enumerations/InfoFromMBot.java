@@ -4,6 +4,7 @@ public enum InfoFromMBot {
     FrontUltrasonic,
     LeftUltrasonic,
     RightUltrasonic,
+    LineReader,
     LastMessage,
     Null
 }

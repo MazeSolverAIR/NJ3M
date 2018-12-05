@@ -3,7 +3,6 @@ package hr.foi.nj3m.core.controllers.algorithms;
 
 import java.util.List;
 
-import hr.foi.nj3m.core.R;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
@@ -11,6 +10,7 @@ import hr.foi.nj3m.interfaces.IUltraSonic;
 
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.LastCommand;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Null;
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateFull;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RunMotors;
@@ -18,6 +18,7 @@ import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.StopMotors;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Front;
+import static hr.foi.nj3m.interfaces.Enumerations.Sides.FullRotate;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Left;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
@@ -31,14 +32,36 @@ public class MBotPathFinder {
 
     public List<Crossroad> CrossroadsList = null;
 
-    private MBotPathFinder Instance = null;
+    private static MBotPathFinder Instance = null;
 
-    public MBotPathFinder createInstance(List<IUltraSonic> sensors)
+    public static MBotPathFinder createInstance(List<IUltraSonic> sensors)
     {
-        this.Instance = new MBotPathFinder(sensors);
+        Instance = new MBotPathFinder(sensors);
 
-        return this.Instance;
+        return Instance;
     }
+
+    public static MBotPathFinder createInstance()
+    {
+        Instance = new MBotPathFinder();
+        return Instance;
+    }
+    private MBotPathFinder()
+    {
+    }
+
+    public List<CommandsToMBot> TestMethod()
+    {
+        List<CommandsToMBot> commandsList = null;
+
+        commandsList.add(RotateLeft);
+        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
+        commandsList.add(LastCommand);
+
+        return commandsList;
+    }
+
 
     private MBotPathFinder(List<IUltraSonic> sensors)
     {
@@ -90,6 +113,8 @@ public class MBotPathFinder {
     private List<CommandsToMBot> findPathThreeSensors()
     {
         List<CommandsToMBot> commandsToMBotList = null;
+
+        //zbroj ovih dužina sa širinom mBota bi trebala biti širina staze labirinta
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
         if(!FrontSensor.seesObstacle())
@@ -98,9 +123,10 @@ public class MBotPathFinder {
             commandsToMBotList.add(StopMotors);
 
         if(Crossroad.checkIfCrossroad(sensorDistanceSum))
-            commandsToMBotList.addAll(manageCrossroad());
+            commandsToMBotList.addAll(manageCrossroad(sensorDistanceSum));
 
 
+        commandsToMBotList.add(LastCommand);
         return commandsToMBotList;
     }
 
@@ -123,40 +149,44 @@ public class MBotPathFinder {
         return returnCommand;
     }
 
-    private List<CommandsToMBot> manageCrossroad()
+    private List<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
     {
         List<CommandsToMBot> commandsToMBotList = null;
         Crossroad crossroad = null;
-
-        if(this.CrossroadsList == null)
-        {
-            crossroad = new Crossroad(this);
-            this.CrossroadsList.add(crossroad);
-        }
-        else
-        {
-            /*trebam napraviti jos da provjerava zadnjeg u listi, ako je kod njega smijer kretanja == rotirajFull
-            onda predzadnjeg povecaj za jedan.....
-             */
-        }
-
+        Sides stranaZaSkretanje = null;
 
         commandsToMBotList.add(StopMotors);
 
+        //Provjeri stranu raskrizja
         if(Crossroad.checkCrossroadSide(this.RightSensor))
         {
             commandsToMBotList.add(RotateRight);
+            stranaZaSkretanje = Right;
         }
 
         else if(Crossroad.checkCrossroadSide(this.FrontSensor))
         {
             commandsToMBotList.add(RunMotors);
+            stranaZaSkretanje = Front;
         }
 
         else if(Crossroad.checkCrossroadSide(this.LeftSensor))
         {
             commandsToMBotList.add(RotateLeft);
+            stranaZaSkretanje = Left;
         }
+
+        else if(Crossroad.CheckIfDeadEnd(this, sensorDistanceSum))
+        {
+            commandsToMBotList.add(RotateFull);
+            stranaZaSkretanje = FullRotate;
+        }
+
+        //ako je lista prazna ili ako zadnji element liste nije slijepa ulica
+        crossroad = new Crossroad(this, stranaZaSkretanje);
+        crossroad.setCrossroadSize();
+        crossroad.newVisit();
+        this.CrossroadsList.add(crossroad);
 
         return commandsToMBotList;
     }
