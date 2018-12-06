@@ -29,6 +29,13 @@ struct NaredbaAndroida {
 	String Null = "Null";
 };
 
+
+struct objektPrimljenePoruke {
+	String sadrzaj;
+};
+
+objektPrimljenePoruke* a = new objektPrimljenePoruke[];
+
 NaredbaAndroida naredba;
 
 uint16_t brzinaKretanja = 127;
@@ -59,6 +66,12 @@ void setup()
   //Kreiranje liste
   robotek = List();
   
+  a->sadrzaj += "Poruka1";
+  a->sadrzaj += "Poruka2";
+  a->sadrzaj += "Poruka3";
+  a->sadrzaj += "Poruka4";
+
+  a[0].sadrzaj = "lol";
 }
 
 
