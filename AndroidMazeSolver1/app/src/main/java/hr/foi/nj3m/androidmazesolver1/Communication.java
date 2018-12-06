@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -27,9 +28,11 @@ public class Communication {
         byte[] messageToSend = message.getBytes();
         try{
             bluetoothSocket.getOutputStream().write(messageToSend);
+            Log.d("Message:", messageToSend.length+"");
         }catch (IOException e){
 
         }
+
     }
 
     public String GetAddress(){

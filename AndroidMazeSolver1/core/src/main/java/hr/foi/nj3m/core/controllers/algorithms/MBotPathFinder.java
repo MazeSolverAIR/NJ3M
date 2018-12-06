@@ -48,16 +48,17 @@ public class MBotPathFinder {
     }
     private MBotPathFinder()
     {
+
     }
 
-    public List<CommandsToMBot> TestMethod()
+    public List<String> TestMethod()
     {
-        List<CommandsToMBot> commandsList = null;
+        List<String> commandsList = null;
 
-        commandsList.add(RotateLeft);
-        commandsList.add(StopMotors);
-        commandsList.add(RunMotors);
-        commandsList.add(LastCommand);
+        commandsList.add("RotateLeft");
+        commandsList.add("StopMotors");
+        commandsList.add("RunMotors");
+        commandsList.add("LastCommand");
 
         return commandsList;
     }

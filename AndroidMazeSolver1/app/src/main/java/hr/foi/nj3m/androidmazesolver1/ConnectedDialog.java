@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,6 +25,8 @@ import java.util.UUID;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
+
+import static java.lang.Thread.sleep;
 
 public class ConnectedDialog extends AppCompatActivity {
     Communication communication;
@@ -50,6 +53,16 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                /*MBotPathFinder finder = MBotPathFinder.createInstance();
+
+                List<String> listaNaredbi = finder.TestMethod();
+                for (String naredba:listaNaredbi)
+                {
+                    communication.SendData(bluetoothSocket, naredba);
+                }*/
+                communication.SendData(bluetoothSocket, "RRotateLeft");
+
                 //communication.SendData(bluetoothSocket);
             }
         });
