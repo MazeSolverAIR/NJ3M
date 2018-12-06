@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class ConnectedDialog extends AppCompatActivity {
 
     Button btnSendControl;
 
+    final Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,8 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
 
         new ConnectBT().execute();
+
+        ListOfDevices.iRobotMessenger.receive(handler);
 
         //communication = new Communication(this, deviceAddress);
 
