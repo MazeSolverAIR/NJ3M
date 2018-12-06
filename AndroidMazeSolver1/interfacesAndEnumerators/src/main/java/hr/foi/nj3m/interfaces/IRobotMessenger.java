@@ -12,5 +12,5 @@ public interface IRobotMessenger {
 
     String getAddress();
 
-    byte[] receive(Handler handler);
+    byte[] receive(Handler handler, BluetoothSocket bluetoothSocket);
 }

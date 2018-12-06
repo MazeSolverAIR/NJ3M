@@ -30,6 +30,7 @@ public class ConnectedDialog extends AppCompatActivity {
     private boolean isBluetoothConnected = false;
 
     Button btnSendControl;
+    Button btnConnect;
 
     final Handler handler = new Handler();
 
@@ -41,10 +42,9 @@ public class ConnectedDialog extends AppCompatActivity {
         String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
+        btnConnect = (Button) findViewById(R.id.btnStartConnection);
 
         new ConnectBT().execute();
-
-        ListOfDevices.iRobotMessenger.receive(handler);
 
         //communication = new Communication(this, deviceAddress);
 
@@ -53,6 +53,13 @@ public class ConnectedDialog extends AppCompatActivity {
             public void onClick(View v) {
                 ListOfDevices.iRobotMessenger.sendCommand("RRotateLeft", bluetoothSocket);
                 //communication.SendData(bluetoothSocket);
+            }
+        });
+
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListOfDevices.iRobotMessenger.receive(handler, bluetoothSocket);
             }
         });
     }

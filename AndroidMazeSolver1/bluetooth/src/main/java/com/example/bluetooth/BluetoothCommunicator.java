@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -55,7 +56,7 @@ public class BluetoothCommunicator implements IRobotMessenger {
 
     // TODO: 12/6/2018 POTREBNO TESTIRATI!!! 
     @Override
-    public byte[] receive(final Handler handler) {
+    public byte[] receive(final Handler handler, final BluetoothSocket bluetoothSocket) {
         final byte delimiter = 10; //ASCII kod za newline
         stopWorker = false;
         readBufferPosition = 0;
@@ -97,7 +98,16 @@ public class BluetoothCommunicator implements IRobotMessenger {
             }
         });
         workerThread.start();
-        Log.d("Primljena poruka: ", receivedData.toString());
+        try {
+            if(receivedData == "1".getBytes()){
+                Log.d("Primljena poruka: ", "Bok Nikola");
+            }
+            else
+                Log.d("Primljena poruka: ", "Unlucky Nikola");
+            Log.d("Primljena poruka: ", receivedData.toString());
+        }catch (Exception e){
+            Log.d("Primljena poruka: ", "NIČ");
+        }
         return receivedData;
     }
 }
