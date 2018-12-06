@@ -15,8 +15,9 @@ public class Crossroad {
 
     private MBotPathFinder Finder = null;
 
-    public Crossroad(MBotPathFinder finder)
+    public Crossroad(MBotPathFinder finder, Sides sideToTurn)
     {
+        this.lastTurnSide = sideToTurn;
         this.Finder = finder;
     }
 
@@ -42,11 +43,20 @@ public class Crossroad {
         if(!Finder.RightSensor.seesObstacle())
             this.maxNumberOfVisits++;
 
-        this.numberOfVisits++;
+        //zato jer se zadnji senzor ne moze provjeriti
+        maxNumberOfVisits++;
     }
 
     public void newVisit()
     {
         numberOfVisits++;
+    }
+
+    public static boolean CheckIfDeadEnd(MBotPathFinder finder, double sensorDistanceSum)
+    {
+        if(!checkIfCrossroad(sensorDistanceSum) && finder.FrontSensor.seesObstacle())
+            return true;
+
+        return false;
     }
 }

@@ -19,7 +19,14 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.UUID;
+
+import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
+
+import static java.lang.Thread.sleep;
 
 public class ConnectedDialog extends AppCompatActivity {
     //Communication communication;
@@ -46,7 +53,16 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListOfDevices.iRobotMessenger.sendCommand("RRotateLeft", bluetoothSocket);
+
+                MBotPathFinder finder = MBotPathFinder.createInstance();
+
+                List<String> listaNaredbi = finder.TestMethod();
+                for (String naredba:listaNaredbi)
+                {
+                    ListOfDevices.iRobotMessenger.sendCommand(naredba, bluetoothSocket);
+                }
+                //communication.SendData(bluetoothSocket, "RRotateLeft");
+
                 //communication.SendData(bluetoothSocket);
             }
         });
