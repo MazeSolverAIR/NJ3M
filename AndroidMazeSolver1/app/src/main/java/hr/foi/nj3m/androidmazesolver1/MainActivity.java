@@ -27,8 +27,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
+import hr.foi.nj3m.interfaces.IWireless;
 
 import static android.content.ContentValues.TAG;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     public static BluetoothAdapter mBluetoothAdapter;
+    IWireless iWireless;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageButton tipkaBluetooth = (ImageButton) findViewById(R.id.btnBluetooth);
 
+        iWireless = WirelessController.createInstance(this);
+
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetooth.enableDisableBluetooth();
+                //bluetooth.enableDisableBluetooth();
+                iWireless.enableDisable(mBroadcastReceiver);
             }
         });
 

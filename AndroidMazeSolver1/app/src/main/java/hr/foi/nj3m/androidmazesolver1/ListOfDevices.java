@@ -30,13 +30,15 @@ import java.util.UUID;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
+import hr.foi.nj3m.interfaces.IWireless;
 
 public class ListOfDevices extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    Bluetooth bluetooth;
+    //Bluetooth bluetooth;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
     public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
@@ -45,6 +47,8 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     public static String EXTRA_ADDRESS = null;
 
     IConnections iConnections;
+    public static IRobotMessenger iRobotMessenger;
+    IWireless iWireless;
 
     @Override
     protected void onDestroy() {
@@ -57,19 +61,20 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_devices);
 
-        iConnections = ConnectionController.creteInstance("bluetooth");
+        iWireless = WirelessController.createInstance(this);
 
         lvNewDevices = (ListView) findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
 
         btnDiscover = (Button) findViewById(R.id.btnDiscoverDevices);
 
-        bluetooth = new Bluetooth(this, MainActivity.mBluetoothAdapter, mBroadcastReceiver);
+        //bluetooth = new Bluetooth(this, MainActivity.mBluetoothAdapter, mBroadcastReceiver);
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetooth.discover();
+                //bluetooth.discover();
+                iWireless.discover(mBroadcastReceiver);
             }
         });
 
@@ -100,7 +105,9 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
-        IRobotMessenger iRobotMessenger = iConnections.connect(mBTDevices, position);
+        iConnections = ConnectionController.creteInstance("bluetooth", this, deviceAddress);
+
+        iRobotMessenger = iConnections.connect(mBTDevices, position);
 
         IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver, bondedFilter);

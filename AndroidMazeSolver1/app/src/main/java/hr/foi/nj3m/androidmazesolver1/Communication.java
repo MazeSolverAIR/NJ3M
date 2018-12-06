@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -24,9 +25,10 @@ public class Communication {
     }
 
     public void SendData(BluetoothSocket bluetoothSocket){
-        byte[] message = "message".getBytes();
+        byte[] message = "LLijevo".getBytes();
         try{
             bluetoothSocket.getOutputStream().write(message);
+            Log.d("TAG", "poslana poruka" + message.toString());
         }catch (IOException e){
 
         }
