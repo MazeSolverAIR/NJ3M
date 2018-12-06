@@ -97,6 +97,7 @@ public class BluetoothCommunicator implements IRobotMessenger {
             }
         });
         workerThread.start();
+        Log.d("Primljena poruka: ", receivedData.toString());
         return receivedData;
     }
 }

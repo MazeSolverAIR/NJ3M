@@ -1,6 +1,7 @@
 package hr.foi.nj3m.wifi;
 
 import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
 
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
@@ -33,7 +34,7 @@ public class WiFiCommunicator implements IRobotMessenger {
     }
 
     @Override
-    public byte[] receive() {
+    public byte[] receive(final Handler handler) {
         return new byte[0];
     }
 }
