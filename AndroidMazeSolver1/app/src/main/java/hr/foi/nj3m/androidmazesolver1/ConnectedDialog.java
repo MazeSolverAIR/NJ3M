@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,9 @@ public class ConnectedDialog extends AppCompatActivity {
     private boolean isBluetoothConnected = false;
 
     Button btnSendControl;
+    Button btnConnect;
+
+    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,7 @@ public class ConnectedDialog extends AppCompatActivity {
         String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
+        btnConnect = (Button) findViewById(R.id.btnStartConnection);
 
         new ConnectBT().execute();
 
@@ -67,6 +72,13 @@ public class ConnectedDialog extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+            }
+        });
+
+        btnConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListOfDevices.iRobotMessenger.receive(handler, bluetoothSocket);
             }
         });
     }
