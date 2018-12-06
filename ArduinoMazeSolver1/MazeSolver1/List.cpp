@@ -3,6 +3,7 @@
 #include "iostream.h"
 #include "stddef.h"
 #include "Arduino.h"
+#include "string.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ List::List() {
 	temp = NULL;
 }
 
-void List::AddNode(char addData) {
+void List::AddNode(char* addData) {
 	nodePtr n = new node;
 	n->next = NULL;
 	n->data = addData;
@@ -36,7 +37,11 @@ void List::AddNode(char addData) {
 
 }
 
-void List::DeleteNode(char delData) {
+int List::brojElemenata() {
+	return brojac;
+}
+
+void List::DeleteNode(char* delData) {
 	nodePtr delPtr = NULL;
 	temp = head;
 	curr = head;
@@ -52,26 +57,17 @@ void List::DeleteNode(char delData) {
 		curr = curr->next;
 		temp->next = curr;
 		delete delPtr;
+		brojac--;
 
 	}
 }
 
-int List::brojElemenata() {
+char* List::PrintElement(int pozicijaElementa) {
 	curr = head;
-	int brojac = 0;
-	while (curr != NULL) {
-		brojac++;
-	}
-	return brojac;
-}
-
-char List::PrintElement(int pozicijaElementa) {
-	curr = head;
-	char trenutnaNaredba;
+	char* trenutnaNaredba;
 	for (int i = 0; i<=pozicijaElementa;i++) 
 	{
 		if (i == pozicijaElementa && i==curr->elementBroj) {
-			Serial.print(curr->data);
 			trenutnaNaredba = curr->data;
 		}
 		else {

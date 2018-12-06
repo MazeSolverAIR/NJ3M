@@ -6,7 +6,7 @@ class List {
 private:
 	typedef struct node
 	{
-		char data;
+		char* data;
 		node* next;
 		int elementBroj;
 	}* nodePtr;
@@ -17,9 +17,9 @@ private:
 
 public: //funkcije liste
 	List();
-	void AddNode(char addData);
-	void DeleteNode(char delData);
-	char PrintElement(int pozicijaElementa);
+	void AddNode(char* addData);
+	void DeleteNode(char* delData);
+	char* PrintElement(int pozicijaElementa);
 	int brojElemenata();
 
 };

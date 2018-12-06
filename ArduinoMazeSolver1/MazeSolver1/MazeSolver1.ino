@@ -5,6 +5,7 @@
 #include "List.h"
 
 MeBuzzer buzzer = MeBuzzer();
+String myString;
 
 
 struct InfoZaAndroid {
@@ -56,11 +57,8 @@ void setup()
   bluetooth.setTimeout(25);
 
   //Kreiranje liste
-
   robotek = List();
-  robotek.AddNode('R');
-  robotek.AddNode('O');
-  robotek.AddNode('Z');
+  
 }
 
 
@@ -75,8 +73,10 @@ void loop()
 		  buzzer.tone(700, 500);
 		  a = false;
 	  }
-    //IzvrsiRadnjuBT('');
-	  robotek.PrintElement(1);
+	
+	CitajBluetooth();
+	IzvrsiRadnjuBT();
+	
     break;
   case 1:
     ZaustaviMotore();
@@ -105,39 +105,61 @@ void IzvrsiPritisakTipke()
 
 
 
-String CitajBluetooth()
+void CitajBluetooth()
 {
-  String myString = "";
-
-  if (bluetooth.available() > 0)
-  {
-	  while (bluetooth.read() > 0)
+	myString = "";
+	  if (bluetooth.available() > 0)
 	  {
-		  myString += bluetooth.readString();
-	  }
-   }
+		  while (bluetooth.read() > 0)
+		  {
+			  myString = bluetooth.readString();
 
-  return myString;
+		  }
+		  if (myString.length() > 0) {
+			  char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
+			  robotek.AddNode(mejmun);
+		  }	
+	   }
+
 }
 
-void IzvrsiRadnjuBT(char btPoruka)
+void IzvrsiRadnjuBT()
 {
-	if (btPoruka != 'c')
+	int brojElemenata = robotek.brojElemenata() - 1;
+	Serial.println(robotek.PrintElement(0));
+
+	if(robotek.brojElemenata()>0)
+	//if (robotek.PrintElement(brojElemenata)=="Over")
 	{
-
-		if (btPoruka == 'O')
+		
+		for (int i = 0; i < brojElemenata; i++)
 		{
-			ZaustaviMotore();
-		}
-		if (btPoruka == 'R')
-		{
-			Skreni('l',90,brzinaKretanja);
-		}
-		else {
-			Serial.write("Nema podataka");
-		}
+			Serial.println("Tu sam");
+			char* element = robotek.PrintElement(i);
+			
+			if (strcmp(element,"RotateLeft")==0) 
+			{
+				Skreni('l', 90, brzinaKretanja);
+			}
+			
+
+			if(strcmp(element, "RotateRight") == 0)
+				Skreni('d', 90, brzinaKretanja);
+
+			
+
+			if (strcmp(element, "RunMotors") == 0)
+				Kreni(brzinaKretanja);
+
+			
+
+			if (strcmp(element, "StopMotors") == 0)
+				ZaustaviMotore();
 
 
+			robotek.DeleteNode(element);
+			
+		}
 		//PosaljiBTPoruku(btPoruka);
 	}
 }
