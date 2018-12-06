@@ -57,16 +57,22 @@ public class ConnectedDialog extends AppCompatActivity {
                 MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
-                for (CommandsToMBot naredba:listaNaredbi)
+
+                ListOfDevices.iRobotMessenger.sendCommand("RRRotateLeft", bluetoothSocket);
+
+                Log.d("Saljem", "RRunMotors");
+                /*for (CommandsToMBot naredba:listaNaredbi)
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
                     ListOfDevices.iRobotMessenger.sendCommand(stringNaredba, bluetoothSocket);
+                    Log.d("Saljem", stringNaredba);
                     try {
-                        sleep(600);
+                        sleep(50);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
             }
         });
     }

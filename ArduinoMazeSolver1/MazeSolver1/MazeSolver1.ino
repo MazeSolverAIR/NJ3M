@@ -115,52 +115,55 @@ void CitajBluetooth()
 			  myString = bluetooth.readString();
 
 		  }
-		  if (myString.length() > 0) {
-			  char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
-			  robotek.AddNode(mejmun);
-		  }	
 	   }
 
+	  if (myString.length() > 0)
+	  {
+		  char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
+		  if ((mejmun != NULL) && (mejmun[0] != '\0'))
+		  {
+			  robotek.AddNode(mejmun);
+		  }
+
+	  }
 }
 
 void IzvrsiRadnjuBT()
 {
-	int brojElemenata = robotek.brojElemenata() - 1;
-	Serial.println(robotek.PrintElement(0));
+	int indexZadnjegEl = robotek.brojElemenata() - 1;
 
-	if(robotek.brojElemenata()>0)
-	//if (robotek.PrintElement(brojElemenata)=="Over")
+	if (robotek.brojElemenata() > 0) //&& strcmp(robotek.PrintElement(indexZadnjegEl), "Over") == 0)
 	{
-		
-		for (int i = 0; i < brojElemenata; i++)
+		for (int i = 0; i <= indexZadnjegEl; i++)
 		{
-			Serial.println("Tu sam");
 			char* element = robotek.PrintElement(i);
-			
-			if (strcmp(element,"RotateLeft")==0) 
+
+			if (strlen(element) <10)
 			{
-				Skreni('l', 90, brzinaKretanja);
+				Skreni('l', 180, brzinaKretanja);
 			}
-			
+			if (strlen(element) > 10)
+			{
+				Skreni('d', 180, brzinaKretanja);
+			}
+			if (strlen(element) == 10)
+			{
+				Kreni(brzinaKretanja);
+			}
+			if (strcmp(element, "RotateLeft") == 0)
+				Skreni('l', 90, brzinaKretanja);
 
-			if(strcmp(element, "RotateRight") == 0)
+			if (strcmp(element, "RotateRight") == 0)
 				Skreni('d', 90, brzinaKretanja);
-
-			
 
 			if (strcmp(element, "RunMotors") == 0)
 				Kreni(brzinaKretanja);
 
-			
-
 			if (strcmp(element, "StopMotors") == 0)
 				ZaustaviMotore();
 
-
-			robotek.DeleteNode(element);
-			
+			robotek.DeleteNode(i);
 		}
-		//PosaljiBTPoruku(btPoruka);
 	}
 }
 
