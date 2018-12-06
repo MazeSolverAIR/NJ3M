@@ -54,14 +54,14 @@ public class ConnectedDialog extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*MBotPathFinder finder = MBotPathFinder.createInstance();
+                MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<String> listaNaredbi = finder.TestMethod();
                 for (String naredba:listaNaredbi)
                 {
                     communication.SendData(bluetoothSocket, naredba);
-                }*/
-                communication.SendData(bluetoothSocket, "RRotateLeft");
+                }
+                //communication.SendData(bluetoothSocket, "RRotateLeft");
 
                 //communication.SendData(bluetoothSocket);
             }

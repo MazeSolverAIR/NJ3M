@@ -1,6 +1,7 @@
 package hr.foi.nj3m.core.controllers.algorithms;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hr.foi.nj3m.core.controllers.components.Crossroad;
@@ -51,9 +52,9 @@ public class MBotPathFinder {
 
     }
 
-    public List<String> TestMethod()
+    public ArrayList<String> TestMethod()
     {
-        List<String> commandsList = null;
+        ArrayList<String> commandsList = new ArrayList<>();
 
         commandsList.add("RotateLeft");
         commandsList.add("StopMotors");
@@ -83,9 +84,9 @@ public class MBotPathFinder {
         }
     }
 
-    public List<CommandsToMBot> FindPath()
+    public ArrayList<CommandsToMBot> FindPath()
     {
-        List<CommandsToMBot> finalCommandList = null;
+        ArrayList<CommandsToMBot> finalCommandList = new ArrayList<>();
 
         if(FrontSensor != null && RightSensor != null && LeftSensor != null)
         {
@@ -111,9 +112,9 @@ public class MBotPathFinder {
         return finalCommandList;
     }
 
-    private List<CommandsToMBot> findPathThreeSensors()
+    private ArrayList<CommandsToMBot> findPathThreeSensors()
     {
-        List<CommandsToMBot> commandsToMBotList = null;
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
         //zbroj ovih dužina sa širinom mBota bi trebala biti širina staze labirinta
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
@@ -150,9 +151,9 @@ public class MBotPathFinder {
         return returnCommand;
     }
 
-    private List<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
+    private ArrayList<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
     {
-        List<CommandsToMBot> commandsToMBotList = null;
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
         Crossroad crossroad = null;
         Sides stranaZaSkretanje = null;
 
@@ -193,9 +194,9 @@ public class MBotPathFinder {
     }
 
 
-    private List<CommandsToMBot> findPathFrontSensor()
+    private ArrayList<CommandsToMBot> findPathFrontSensor()
     {
-        List<CommandsToMBot> commandsToMBotList = null;
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
         if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);
         else
