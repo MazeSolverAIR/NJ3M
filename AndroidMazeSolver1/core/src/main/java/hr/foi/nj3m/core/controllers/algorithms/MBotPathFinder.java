@@ -52,14 +52,21 @@ public class MBotPathFinder {
 
     }
 
-    public ArrayList<String> TestMethod()
+    public ArrayList<CommandsToMBot> TestMethod()
     {
-        ArrayList<String> commandsList = new ArrayList<>();
+        ArrayList<CommandsToMBot> commandsList = new ArrayList<>();
 
-        commandsList.add("RotateLeft");
-        commandsList.add("StopMotors");
-        commandsList.add("RunMotors");
-        commandsList.add("LastCommand");
+        commandsList.add(RunMotors);
+        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
+        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
+        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
+        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
+        commandsList.add(StopMotors);
+        //commandsList.add("ROver");
 
         return commandsList;
     }

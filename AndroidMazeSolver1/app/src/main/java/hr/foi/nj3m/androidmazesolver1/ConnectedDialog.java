@@ -56,14 +56,17 @@ public class ConnectedDialog extends AppCompatActivity {
 
                 MBotPathFinder finder = MBotPathFinder.createInstance();
 
-                List<String> listaNaredbi = finder.TestMethod();
-                for (String naredba:listaNaredbi)
+                List<CommandsToMBot> listaNaredbi = finder.TestMethod();
+                for (CommandsToMBot naredba:listaNaredbi)
                 {
-                    communication.SendData(bluetoothSocket, naredba);
+                    String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
+                    communication.SendData(bluetoothSocket, stringNaredba);
+                    try {
+                        sleep(600);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                //communication.SendData(bluetoothSocket, "RRotateLeft");
-
-                //communication.SendData(bluetoothSocket);
             }
         });
     }
