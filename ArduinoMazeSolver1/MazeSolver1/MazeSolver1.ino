@@ -15,6 +15,8 @@ Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
 
+MeLineFollower lineFollower(2);
+
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 
@@ -150,4 +152,47 @@ int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 	int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
 
 	return vrijemeOkretanje;
+}
+double lineDirIndex = 10;
+
+void lineFollow() {
+	int sensorStateCenter = lineFollower.readSensors();
+
+	switch (sensorStateCenter)
+	{
+	case S1_IN_S2_IN:
+		//senzori su na centru, kreæi se ravno
+		Kreni(brzinaKretanja);
+		break;
+	case S1_IN_S2_OUT:
+		//senzor 2 je van linije
+		Kreni(brzinaKretanja);
+		if (lineDirIndex > 1) {
+			lineDirIndex--;
+		}
+		break;
+	case S1_OUT_S2_IN:
+		//senzor 1 je van linije
+		Kreni(brzinaKretanja);
+		if (lineDirIndex < 20) {
+			lineDirIndex++;
+		}
+		break;
+	case S1_OUT_S2_OUT:
+		//oba senzora su van linije
+		if (lineDirIndex == 10) {
+			Kreni(-brzinaKretanja);
+		}
+		if (lineDirIndex == 10.5) {
+			leftMotor.run(-brzinaKretanja);
+			rightMotor.run(brzinaKretanja / 1.8);
+		}
+		if (lineDirIndex < 10) {
+			//skreni lijevo			
+		}
+		if (lineDirIndex > 10.5) {
+			// skreni desno
+		}
+		break;
+	}
 }
