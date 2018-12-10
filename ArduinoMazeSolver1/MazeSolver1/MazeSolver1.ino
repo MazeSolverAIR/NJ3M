@@ -47,6 +47,7 @@ List robotek;
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 bool a = true;
+bool b = true;
 
 
 void setup()
@@ -63,7 +64,6 @@ void setup()
 	robotek.AddNode("Over");
 }
 
-
 void loop()
 {
 	IzvrsiPritisakTipke();
@@ -78,13 +78,19 @@ void loop()
 
 		//CitajBluetooth();
 		//IzvrsiRadnjuBT();
-		IzvrsiRadnjuBT(CitajBluetooth());
-
+		//IzvrsiRadnjuBT(bluetooth.readString());
+		b = true;
 		break;
 	case 1:
-		PosaljiBTPoruku();
-		ZaustaviMotore();
+
+		if (b) {
+			buzzer.tone(700, 500);
+			Serial.print("Krece");
+			b = false;
+		}
+
 		a = true;
+		break;
 	default:
 		ZaustaviMotore();
 		break;
@@ -200,12 +206,16 @@ void IzvrsiRadnjuBT(String poruka) {
 	if (poruka == "StopMotors") {
 		ZaustaviMotore();
 	}
+	if (poruka == "o") {
+		buzzer.tone(500, 200);
+		ZaustaviMotore();
+	}
 }
 
 void PosaljiBTPoruku()
 {
 	//String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
-	bluetooth.sendString("Bok Nikola!");
+	bluetooth.print("Hello");
 }
 
 void Kreni(uint16_t brzinaKretanja)
