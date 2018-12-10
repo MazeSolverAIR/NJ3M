@@ -58,9 +58,13 @@ public class ConnectedDialog extends AppCompatActivity {
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
 
-                ListOfDevices.iRobotMessenger.sendCommand("RRRotateLeft", bluetoothSocket);
-
-                Log.d("Saljem", "RRunMotors");
+                ListOfDevices.iRobotMessenger.sendCommand("RotateLeft", bluetoothSocket);
+                try {
+                    sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ListOfDevices.iRobotMessenger.sendCommand("Over", bluetoothSocket);
                 /*for (CommandsToMBot naredba:listaNaredbi)
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);

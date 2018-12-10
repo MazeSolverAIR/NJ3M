@@ -5,7 +5,6 @@
 #include "List.h"
 
 MeBuzzer buzzer = MeBuzzer();
-String myString;
 
 
 struct InfoZaAndroid {
@@ -34,7 +33,7 @@ struct objektPrimljenePoruke {
 	String sadrzaj;
 };
 
-objektPrimljenePoruke* a = new objektPrimljenePoruke[];
+objektPrimljenePoruke poljeRadnji[50];
 
 NaredbaAndroida naredba;
 
@@ -65,13 +64,7 @@ void setup()
 
   //Kreiranje liste
   robotek = List();
-  
-  a->sadrzaj += "Poruka1";
-  a->sadrzaj += "Poruka2";
-  a->sadrzaj += "Poruka3";
-  a->sadrzaj += "Poruka4";
-
-  a[0].sadrzaj = "lol";
+   
 }
 
 
@@ -93,6 +86,7 @@ void loop()
     break;
   case 1:
     ZaustaviMotore();
+	a = true;
   default:
     ZaustaviMotore();
     break;
@@ -116,68 +110,105 @@ void IzvrsiPritisakTipke()
   }
 }
 
-
-
+int index = 0;
 void CitajBluetooth()
 {
-	myString = "";
+	poljeRadnji[index].sadrzaj = bluetooth.readString();
+
+	if (poljeRadnji[index].sadrzaj.length() > 0)
+		index++;
+	/*String myString = "";
 	  if (bluetooth.available() > 0)
 	  {
 		  while (bluetooth.read() > 0)
 		  {
 			  myString = bluetooth.readString();
-
 		  }
 	   }
 
 	  if (myString.length() > 0)
 	  {
-		  char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
+		  poljeRadnji[index].sadrzaj = myString;
+
+		  index++;
+		  /*char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
 		  if ((mejmun != NULL) && (mejmun[0] != '\0'))
 		  {
 			  robotek.AddNode(mejmun);
 		  }
-
-	  }
+	  }*/
 }
 
 void IzvrsiRadnjuBT()
 {
-	int indexZadnjegEl = robotek.brojElemenata() - 1;
+	//int indexZadnjegEl = robotek.brojElemenata() - 1;
+	int chckIndex = index;
 
-	if (robotek.brojElemenata() > 0) //&& strcmp(robotek.PrintElement(indexZadnjegEl), "Over") == 0)
-	{
-		for (int i = 0; i <= indexZadnjegEl; i++)
+	if (chckIndex > 0)
+		chckIndex--;
+
+	if (poljeRadnji[0].sadrzaj == "RunMotors")
+		Kreni(brzinaKretanja);
+
+		/*if (poljeRadnji[chckIndex].sadrzaj == naredba.ZadnjaNaredba)
 		{
-			char* element = robotek.PrintElement(i);
-
-			if (strlen(element) <10)
+			for (int i = 0; i <= chckIndex; i++)
 			{
-				Skreni('l', 180, brzinaKretanja);
+				String naredbaAndroida = poljeRadnji[i].sadrzaj;
+
+				if (naredbaAndroida == naredba.KreniNaprijed)
+					Kreni(brzinaKretanja);
+
+				else if (naredbaAndroida == naredba.RotirajSeDesno)
+					Skreni('d', 90, brzinaKretanja);
+
+				else if (naredbaAndroida == naredba.RotirajSeLijevo)
+					Skreni('d', 90, brzinaKretanja);
+
+				else if (naredbaAndroida == naredba.ZaustaviSe)
+					ZaustaviMotore();
+
+				/*else if (naredbaAndroida == naredba.ZadnjaNaredba)
+				{
+					PosaljiBTPoruku();
+				}
 			}
-			if (strlen(element) > 10)
+		}*/
+
+		/*
+			if (robotek.brojElemenata() > 0) //&& strcmp(robotek.PrintElement(indexZadnjegEl), "Over") == 0)
 			{
-				Skreni('d', 180, brzinaKretanja);
-			}
-			if (strlen(element) == 10)
-			{
-				Kreni(brzinaKretanja);
-			}
-			if (strcmp(element, "RotateLeft") == 0)
-				Skreni('l', 90, brzinaKretanja);
+				for (int i = 0; i <= indexZadnjegEl; i++)
+				{
+					char* element = robotek.PrintElement(i);
 
-			if (strcmp(element, "RotateRight") == 0)
-				Skreni('d', 90, brzinaKretanja);
+					if (strlen(element) <10)
+					{
+						Skreni('l', 180, brzinaKretanja);
+					}
+					if (strlen(element) > 10)
+					{
+						Skreni('d', 180, brzinaKretanja);
+					}
+					if (strlen(element) == 10)
+					{
+						Kreni(brzinaKretanja);
+					}
+					if (strcmp(element, "RotateLeft") == 0)
+						Skreni('l', 90, brzinaKretanja);
 
-			if (strcmp(element, "RunMotors") == 0)
-				Kreni(brzinaKretanja);
+					if (strcmp(element, "RotateRight") == 0)
+						Skreni('d', 90, brzinaKretanja);
 
-			if (strcmp(element, "StopMotors") == 0)
-				ZaustaviMotore();
+					if (strcmp(element, "RunMotors") == 0)
+						Kreni(brzinaKretanja);
 
-			robotek.DeleteNode(i);
-		}
-	}
+					if (strcmp(element, "StopMotors") == 0)
+						ZaustaviMotore();
+
+					robotek.DeleteNode(i);
+				}
+			}*/
 }
 
 void PosaljiBTPoruku(String poruka)
