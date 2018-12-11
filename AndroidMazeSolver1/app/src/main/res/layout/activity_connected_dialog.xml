@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@drawable/ic_pronadimbot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:background="@drawable/ic_pozadinaradnizaslon"
     tools:context=".MainActivity">
 
 
@@ -13,9 +13,10 @@
         android:id="@+id/btnListen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="118dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="594dp"
         android:text="Listen" />
 
     <Button
@@ -23,8 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="183dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="592dp"
+        android:layout_marginEnd="15dp"
         android:text="Poveži" />
 
     <Button
@@ -33,6 +35,26 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="246dp"
+        android:layout_marginTop="592dp"
         android:text="Šalji" />
+
+    <ImageView
+        android:id="@+id/imgPracenjeRobota"
+        android:layout_width="804px"
+        android:layout_height="1266px"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="53dp"
+        app:srcCompat="@drawable/ic_pracenjerobota" />
+
+    <Switch
+        android:id="@+id/swStartStop"
+        android:layout_width="300px"
+        android:layout_height="50px"
+        android:layout_alignStart="@+id/btnListen"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="112dp"
+        android:layout_marginBottom="103dp"
+        android:text="ON / OFF" />
 </RelativeLayout>
