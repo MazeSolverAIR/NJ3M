@@ -3,12 +3,14 @@ package hr.foi.nj3m.androidmazesolver1;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +20,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -38,28 +42,40 @@ public class ConnectedDialog extends AppCompatActivity {
 
     Button btnSendControl;
     Button btnConnect;
+    Button btnListen;
 
-    final Handler handler = new Handler();
+    SendReceive sendReceive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connected_dialog);
 
-        String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
+        final String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
         btnConnect = (Button) findViewById(R.id.btnStartConnection);
+        btnListen = (Button) findViewById(R.id.btnListen);
 
-        new ConnectBT().execute();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        //new ConnectBT().execute();
 
         //communication = new Communication(this, deviceAddress);
+
+        btnListen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ServerClass serverClass = new ServerClass();
+                serverClass.start();
+            }
+        });
 
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                MBotPathFinder finder = MBotPathFinder.createInstance();
+                
+                /*MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
                 for (CommandsToMBot naredba:listaNaredbi)
@@ -71,18 +87,159 @@ public class ConnectedDialog extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
+
+                String string = "RotateLeft";
+                sendReceive.write(string.getBytes());
+                Log.d("Poslana poruka: ", string);
+                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
             }
         });
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ListOfDevices.iRobotMessenger.receive(handler, bluetoothSocket);
+                ClientClass clientClass = new ClientClass(mBluetoothAdapter.getRemoteDevice(deviceAddress));
+                clientClass.start();
+                //ListOfDevices.iRobotMessenger.receive(handler, bluetoothSocket);
             }
         });
     }
 
+    Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            if(msg.what == 1){
+                byte[] readBuffer = (byte[]) msg.obj;
+                String message = new String(readBuffer, 0, msg.arg1);
+                String workingMessage = "";
+                try {
+                    workingMessage = message.substring(0, message.lastIndexOf(';'));
+                }catch (Exception e){
+
+                }
+                Log.d("Primio sam", message);
+                if(workingMessage.contains("KreceWrite")) {
+                    Log.d("Tocna poruka", workingMessage);
+                    try {
+
+                        sleep(300);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    sendReceive.write("RotateLeft".getBytes());
+                }
+                /*Log.d("Primljena poruka: ", message);
+                //if(message == "Krece")
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();*/
+            }
+            return true;
+        }
+    });
+
+    private class ServerClass extends Thread{
+        private BluetoothServerSocket bluetoothServerSocket;
+
+        public ServerClass(){
+            try {
+                bluetoothServerSocket = mBluetoothAdapter.listenUsingRfcommWithServiceRecord("MazeSolver1", mUUID);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void run(){
+            BluetoothSocket socket = null;
+
+            while (socket == null){
+                try {
+                    socket = bluetoothServerSocket.accept();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if(socket != null){
+                    sendReceive = new SendReceive(socket);
+                    sendReceive.start();
+                    break;
+                }
+            }
+        }
+    }
+
+    private class ClientClass extends Thread{
+        private BluetoothDevice bluetoothDevice;
+        private BluetoothSocket bluetoothSocket;
+
+        public ClientClass(BluetoothDevice device){
+            bluetoothDevice = device;
+            try {
+                bluetoothSocket = device.createRfcommSocketToServiceRecord(mUUID);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void run(){
+            try {
+                bluetoothSocket.connect();
+                sendReceive = new SendReceive(bluetoothSocket);
+                sendReceive.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class SendReceive extends Thread{
+        private final BluetoothSocket bluetoothSocket;
+        private final InputStream inputStream;
+        private final OutputStream outputStream;
+
+        public SendReceive(BluetoothSocket socket){
+            bluetoothSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            try {
+                tmpIn = bluetoothSocket.getInputStream();
+                tmpOut = bluetoothSocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            inputStream = tmpIn;
+            outputStream = tmpOut;
+        }
+
+        public void run(){
+            byte[] buffer = new byte[1024];
+            int bytes;
+
+            while (true){
+                try {
+                    bytes = inputStream.read(buffer);
+                    String string = new String(buffer, "UTF-8");
+
+
+                    //Toast.makeText(getApplicationContext(), buffer.toString(), Toast.LENGTH_LONG).show();
+                    handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void write(byte[] bytes){
+            try {
+                outputStream.write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /*
     //Provjeriti izvor
     public class ConnectBT extends AsyncTask<Void, Void, Void>
     {
@@ -137,5 +294,5 @@ public class ConnectedDialog extends AppCompatActivity {
             }
 
         }
-    }
+    }*/
 }
