@@ -1,5 +1,4 @@
-﻿
-#include "MeMCore.h"
+﻿#include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
 #include "List.h"
@@ -75,7 +74,7 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-
+		ZaustaviMotore();
 		//CitajBluetooth();
 		//IzvrsiRadnjuBT();
 		//IzvrsiRadnjuBT(bluetooth.readString());
@@ -85,7 +84,10 @@ void loop()
 
 		if (b) {
 			buzzer.tone(700, 500);
-			Serial.print("Krece");
+			Serial.write("KreceWrite;");
+
+			IzvrsiRadnjuBT(bluetooth.readString());
+
 			b = false;
 		}
 
@@ -147,7 +149,7 @@ String CitajBluetooth()
 		}
 	}
 
-	return  myString;
+	return myString;
 
 }
 
