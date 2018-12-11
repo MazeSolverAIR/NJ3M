@@ -281,7 +281,7 @@ void lineFollow() {
 		break;
 	case S1_OUT_S2_OUT:
 		//oba senzora su van linije
-		
+
 		Kreni(-brzinaKretanja);
 		break;
 	}
