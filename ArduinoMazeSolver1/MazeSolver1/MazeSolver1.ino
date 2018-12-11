@@ -5,6 +5,9 @@
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
+MeDCMotor leftMotor(M1);
+MeDCMotor rightMotor(M2);
+MeUltrasonicSensor ultraSonic(3);
 
 
 struct InfoZaAndroid {
@@ -32,16 +35,16 @@ NaredbaAndroida naredba;
 
 uint16_t brzinaKretanja = 127;
 
-MeDCMotor leftMotor(M1);
-MeDCMotor rightMotor(M2);
 
-MeUltrasonicSensor ultraSonic(3);
 
 Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
 
+
 List robotek;
+MeLineFollower lineFollower(2);
+
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
@@ -58,11 +61,7 @@ void setup()
 	bluetooth.setTimeout(25);
 
 	//Kreiranje liste
-	robotek = List();
-	robotek.AddNode("RotateLeft");
-	robotek.AddNode("Over");
 }
-
 void loop()
 {
 	IzvrsiPritisakTipke();
@@ -74,10 +73,11 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		ZaustaviMotore();
+		//ZaustaviMotore();
 		//CitajBluetooth();
 		//IzvrsiRadnjuBT();
 		//IzvrsiRadnjuBT(bluetooth.readString());
+		lineFollow();
 		b = true;
 		break;
 	case 1:
@@ -93,6 +93,7 @@ void loop()
 
 		a = true;
 		break;
+
 	default:
 		ZaustaviMotore();
 		break;
@@ -259,4 +260,29 @@ void exitLab() {
 
 }
 
+void lineFollow() {
+	int sensorStateCenter = lineFollower.readSensors();
 
+	switch (sensorStateCenter)
+	{
+	case S1_IN_S2_IN:
+		//senzori su na centru, kre�i se ravno
+		Kreni(brzinaKretanja);
+		break;
+	case S1_IN_S2_OUT:
+		//senzor 2 je van linije
+		leftMotor.run(-90);
+		rightMotor.run(180);
+		break;
+	case S1_OUT_S2_IN:
+		//senzor 1 je van linije
+		leftMotor.run(180);
+		rightMotor.run(-90);
+		break;
+	case S1_OUT_S2_OUT:
+		//oba senzora su van linije
+		
+		Kreni(-brzinaKretanja);
+		break;
+	}
+}
