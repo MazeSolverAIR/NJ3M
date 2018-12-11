@@ -147,7 +147,7 @@ void IzvrsiRadnjuBT()
 	if (chckIndex > 0)
 		chckIndex--;
 
-	if (poljeRadnji[0].sadrzaj == "RunMotors")
+	if (poljeRadnji[0].sadrzaj.length() > 3)
 		Kreni(brzinaKretanja);
 
 		/*if (poljeRadnji[chckIndex].sadrzaj == naredba.ZadnjaNaredba)
