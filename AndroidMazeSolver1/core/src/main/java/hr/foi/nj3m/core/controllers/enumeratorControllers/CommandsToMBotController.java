@@ -9,7 +9,7 @@ public class CommandsToMBotController {
             case RunMotors:
                 return "RRunMotors";
             case StopMotors:
-                return "RStopMotors";
+                return "SStopMotors";
             case RotateFull:
                 return "RRotateFull";
             case RotateLeft:
@@ -17,11 +17,11 @@ public class CommandsToMBotController {
             case RotateRight:
                 return "RRotateRight";
             case SpeedUpLeft:
-                return "RSpeedUpLeft";
+                return "SSpeedUpLeft";
             case SpeedUpRight:
-                return "RSpeedUpRight";
+                return "SSpeedUpRight";
             case LastCommand:
-                return "ROver";
+                return "OOver";
         }
 
         return "RStopMotors";

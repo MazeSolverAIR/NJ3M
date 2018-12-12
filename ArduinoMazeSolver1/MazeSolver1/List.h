@@ -18,7 +18,7 @@ private:
 public: //funkcije liste
 	List();
 	void AddNode(char* addData);
-	void DeleteNode(char* delData);
+	void DeleteNode(int pozicijaElementa);
 	char* PrintElement(int pozicijaElementa);
 	int brojElemenata();
 

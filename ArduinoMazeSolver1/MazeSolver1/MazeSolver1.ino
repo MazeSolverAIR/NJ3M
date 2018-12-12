@@ -3,6 +3,18 @@
 #include "Arduino.h"
 #include "List.h"
 
+uint8_t modRadnje = -1;
+bool stisnutGumb = true;
+bool a = true;
+
+int index = 0;
+
+struct objektPrimljenePoruke {
+	String sadrzaj;
+};
+
+struct objektPrimljenePoruke poljeRadnji[50];
+
 MeBuzzer buzzer = MeBuzzer();
 String myString;
 MeDCMotor leftMotor(M1);
@@ -10,39 +22,13 @@ MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
 
 
-struct InfoZaAndroid {
-	String PrednjiUZSenzor = "PSnz:";
-	String DesniUZSenzor = "DSnz:";
-	String LijeviUZSenzor = "LSnz:";
-	String OcitajSenzorCrte = "RdSnz";
-	String ZadnjiInfo = "Over:";
-	String Null = "Null:";
-};
-
-struct NaredbaAndroida {
-	String KreniNaprijed = "RunMotors";
-	String ZaustaviSe = "StopMotors";
-	String RotirajSeLijevo = "RotateLeft";
-	String RotirajSeDesno = "RotateRight";
-	String UTurn = "RotateFull";
-	String UbrzajLijeviMotor = "SpeedUpLeft";
-	String UbrzajDesniMotor = "SpeedUpRight";
-	String ZadnjaNaredba = "Over";
-	String Null = "Null";
-};
-
-NaredbaAndroida naredba;
-
 uint16_t brzinaKretanja = 127;
-
 
 
 Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
 
-
-List robotek;
 MeLineFollower lineFollower(2);
 
 
@@ -62,6 +48,7 @@ void setup()
 
 	//Kreiranje liste
 }
+
 void loop()
 {
 	IzvrsiPritisakTipke();
@@ -73,10 +60,8 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		//ZaustaviMotore();
-		//CitajBluetooth();
-		//IzvrsiRadnjuBT();
-		//IzvrsiRadnjuBT(bluetooth.readString());
+		CitajBluetooth();
+		IzvrsiRadnjuBT();
 		lineFollow();
 		b = true;
 		break;
@@ -85,8 +70,6 @@ void loop()
 		if (b) {
 			buzzer.tone(700, 500);
 			Serial.write("KreceWrite;");
-
-			IzvrsiRadnjuBT(bluetooth.readString());
 
 			b = false;
 		}
@@ -98,8 +81,8 @@ void loop()
 		ZaustaviMotore();
 		break;
 	}
-
 }
+
 
 void IzvrsiPritisakTipke()
 {
@@ -118,102 +101,48 @@ void IzvrsiPritisakTipke()
 }
 
 
-
-/*void CitajBluetooth()
+void CitajBluetooth()
 {
-	myString = "RotateLeft";
-	if (bluetooth.available() > 0)
-	{
-		while (bluetooth.read() > 0)
-		{
-			myString = bluetooth.readString();
+	poljeRadnji[index].sadrzaj = bluetooth.readString();
 
-		}
-		if (myString.length() > 0) {
-
-		}
-	}
-	char *mejmun = (char*)myString.c_str(); //pretvorba stringa u char
-	robotek.AddNode(mejmun);
-	robotek.AddNode("Over");
-
-}*/
-
-String CitajBluetooth()
-{
-	myString = "";
-	if (bluetooth.available() > 0)
-	{
-		while (bluetooth.read() > 0)
-		{
-			myString = bluetooth.readString();
-		}
-	}
-
-	return myString;
-
+	if (poljeRadnji[index].sadrzaj.length() > 0)
+		index++;
 }
 
-/*void IzvrsiRadnjuBT()
+void IzvrsiRadnjuBT()
 {
-	int brojElemenata = robotek.brojElemenata() - 1;
-	//Serial.println(robotek.PrintElement(1));
+	int chckIndex = index;
 
-	if (robotek.PrintElement(1) == NULL) {
-		Kreni(brzinaKretanja);
-	}
+	if (chckIndex > 0)
+		chckIndex--;
 
-	if (robotek.PrintElement(brojElemenata) != NULL)
-		if (strcmp(robotek.PrintElement(brojElemenata),"Over")==0)
+	if (poljeRadnji[chckIndex].sadrzaj.equals("Over"))
 	{
-		for (int i = 0; i <= brojElemenata; i++)
+		for (int i = 0; i < chckIndex; i++)
 		{
-			Serial.println("Tu sam");
-			char* element = robotek.PrintElement(i);
+			String radnja = poljeRadnji[i].sadrzaj;
 
-			if (strcmp(element, "RotateLeft") == 0)
-			{
+			if (radnja.equals("RotateLeft"))
 				Skreni('l', 90, brzinaKretanja);
-			}
 
-			if (strcmp(element, "RotateRight") == 0)
+			else if (radnja.equals("RoteteRight"))
 				Skreni('d', 90, brzinaKretanja);
 
-
-			if (strcmp(element, "RunMotors") == 0)
+			else if (radnja.equals("RunMotors"))
 				Kreni(brzinaKretanja);
 
-
-
-			if (strcmp(element, "StopMotors") == 0)
+			else if (radnja.equals("StopMotors"))
 				ZaustaviMotore();
 
-
-			robotek.DeleteNode(element);
+			poljeRadnji[i].sadrzaj = "";
 		}
-	}
-	//PosaljiBTPoruku(btPoruka);
-}
-*/
 
-void IzvrsiRadnjuBT(String poruka) {
-	if (poruka == "RunMotors") {
-		Kreni(brzinaKretanja);
+		index = 0;
 	}
-	if (poruka == "RotateLeft") {
-		Skreni('l', 90, brzinaKretanja);
-	}
-	if (poruka == "RotateRight") {
-		Skreni('d', 90, brzinaKretanja);
-	}
-	if (poruka == "StopMotors") {
-		ZaustaviMotore();
-	}
-	if (poruka == "o") {
-		buzzer.tone(500, 200);
-		ZaustaviMotore();
-	}
+		
+
 }
+
 
 void PosaljiBTPoruku()
 {

@@ -56,17 +56,7 @@ public class MBotPathFinder {
     {
         ArrayList<CommandsToMBot> commandsList = new ArrayList<>();
 
-        commandsList.add(RunMotors);
-        commandsList.add(StopMotors);
-        commandsList.add(RunMotors);
-        commandsList.add(StopMotors);
-        commandsList.add(RunMotors);
-        commandsList.add(StopMotors);
-        commandsList.add(RunMotors);
-        commandsList.add(StopMotors);
-        commandsList.add(RunMotors);
-        commandsList.add(StopMotors);
-        //commandsList.add("ROver");
+        commandsList.add(RotateLeft);
 
         return commandsList;
     }

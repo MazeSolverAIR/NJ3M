@@ -1,6 +1,6 @@
 #include "List.h"
 #include "stdlib.h"
-#include "iostream.h"
+
 #include "stddef.h"
 #include "Arduino.h"
 #include "string.h"
@@ -37,15 +37,13 @@ void List::AddNode(char* addData) {
 
 }
 
-int List::brojElemenata() {
-	return brojac;
-}
 
-void List::DeleteNode(char* delData) {
+
+void List::DeleteNode(int pozicijaElementa) {
 	nodePtr delPtr = NULL;
 	temp = head;
 	curr = head;
-	while (curr != NULL && curr->data != delData) {
+	while (curr != NULL && curr->elementBroj != pozicijaElementa) {
 		temp = curr;
 		curr = curr->next;
 	}
@@ -58,7 +56,6 @@ void List::DeleteNode(char* delData) {
 		temp->next = curr;
 		delete delPtr;
 		brojac--;
-
 	}
 }
 
@@ -76,4 +73,9 @@ char* List::PrintElement(int pozicijaElementa) {
 		
 	}
 	return trenutnaNaredba;
+}
+
+int List::brojElemenata()
+{
+	return brojac;
 }
