@@ -74,8 +74,8 @@ public class ConnectedDialog extends AppCompatActivity {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
-                /*MBotPathFinder finder = MBotPathFinder.createInstance();
+                /*
+                MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
 
@@ -95,7 +95,7 @@ public class ConnectedDialog extends AppCompatActivity {
                 }
                 ListOfDevices.iRobotMessenger.sendCommand("Over", bluetoothSocket);
 
-                /*for (CommandsToMBot naredba:listaNaredbi)
+                for (CommandsToMBot naredba:listaNaredbi)
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
                     ListOfDevices.iRobotMessenger.sendCommand(stringNaredba, bluetoothSocket);
@@ -107,8 +107,22 @@ public class ConnectedDialog extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }*/
+
                 String string = "RotateLeft";
-                sendReceive.write(string.getBytes());
+                sendReceive.write("RotateLeft".getBytes());
+                try {
+                    sleep(35);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendReceive.write("RunMotors".getBytes());
+                try {
+                    sleep(35);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendReceive.write("Over".getBytes());
+
                 Log.d("Poslana poruka: ", string);
                 Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
             }
