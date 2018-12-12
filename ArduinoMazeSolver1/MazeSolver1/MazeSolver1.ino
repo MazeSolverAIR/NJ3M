@@ -21,7 +21,8 @@ String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
-
+MeUltrasonicSensor ultraSonicLijevi(1);
+MeUltrasonicSensor ultraSonicDesni(4);
 
 uint16_t brzinaKretanja = 127;
 
@@ -34,7 +35,6 @@ MeLineFollower lineFollower(2);
 
 void setup()
 {
-
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
@@ -132,6 +132,7 @@ void IzvrsiRadnjuBT()
 		}
 
 		index = 0;
+		readSensorValues(); //Očitaj vrijednosti senzora na robotu
 	}
 		
 
@@ -179,8 +180,26 @@ int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 	return vrijemeOkretanje;
 }
 
-void exitLab() {
 
+/*
+Čitanje vrijednosti na senzorima mBota
+Pinovi 1 i 4
+*/
+void readSensorValues()
+{
+	//SenzorPrednji
+	Serial.print("P3=");
+	Serial.print(ultraSonic.distanceCm());
+	Serial.print(";");
+	//SenzorLijevi
+	Serial.print("P1=");
+	Serial.print(ultraSonicLijevi.distanceCm());
+	Serial.print(";");
+	//SenzorDesni
+	Serial.print("P4=");
+	Serial.print(ultraSonicDesni.distanceCm());
+	Serial.print(";");
+	delay(10);
 }
 
 void lineFollow() {
