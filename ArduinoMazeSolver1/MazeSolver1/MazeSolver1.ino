@@ -6,6 +6,7 @@
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 bool a = true;
+bool b = true;
 
 int index = 0;
 
@@ -31,13 +32,6 @@ MeBluetooth bluetooth = MeBluetooth();
 
 MeLineFollower lineFollower(2);
 
-
-uint8_t modRadnje = -1;
-bool stisnutGumb = true;
-bool a = true;
-bool b = true;
-
-
 void setup()
 {
 
@@ -62,7 +56,7 @@ void loop()
 		}
 		CitajBluetooth();
 		IzvrsiRadnjuBT();
-		lineFollow();
+		//lineFollow();
 		b = true;
 		break;
 	case 1:
