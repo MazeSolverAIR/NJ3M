@@ -10,7 +10,7 @@ public class WiFiCommunicator implements IRobotMessenger {
 
     private static WiFiCommunicator InstanceOfSender;
 
-    protected static WiFiCommunicator createWiFiSender()
+    public static WiFiCommunicator createWiFiSender()
     {
         if(InstanceOfSender == null)
             InstanceOfSender = new WiFiCommunicator();

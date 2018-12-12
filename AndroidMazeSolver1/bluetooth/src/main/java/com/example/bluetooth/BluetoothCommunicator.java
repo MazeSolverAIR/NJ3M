@@ -23,7 +23,7 @@ public class BluetoothCommunicator implements IRobotMessenger {
 
     private static BluetoothCommunicator InstanceOfSender;
 
-    protected static BluetoothCommunicator createBluetoothSender(Context context, String deviceAddress)
+    public static BluetoothCommunicator createBluetoothSender(Context context, String deviceAddress)
     {
         if(InstanceOfSender == null)
             InstanceOfSender = new BluetoothCommunicator(context, deviceAddress);
