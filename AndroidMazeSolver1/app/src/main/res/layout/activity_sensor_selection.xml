@@ -1,9 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SensorSelectionActivity">
 
-</android.support.constraint.ConstraintLayout>
+    android:background="@drawable/ic_pozadinaradnizaslon"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imgPozadinaIspodRobota"
+        android:layout_width="804dp"
+        android:layout_height="1266dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        app:srcCompat="@drawable/pozadinaispodrobota"
+        android:contentDescription="@string/Munja" />
+
+    <ImageView
+        android:id="@+id/imgRobot"
+        android:layout_width="275dp"
+        android:layout_height="218dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="142dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/Robot"
+        android:maxWidth="250dp"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/robot" />
+
+    <Button
+        android:id="@+id/btnNastavi"
+        android:layout_width="137dp"
+        android:layout_height="31dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="17dp"
+        android:background="@drawable/button_nastavi_background"
+        android:contentDescription="@string/Munja"
+        android:text="@string/Nastavi"
+        android:textColor="@android:color/white" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkboxLijevo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="172dp"
+        android:buttonTint="#251923"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkboxDesno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="318dp"
+        android:layout_marginTop="176dp"
+        android:buttonTint="#251923"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkboxRavno"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="195dp"
+        android:layout_marginTop="115dp"
+        android:buttonTint="#251923"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+</RelativeLayout>
