@@ -2,4 +2,7 @@
     <string name="app_name">Maze Solver 1</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="Robot">Image view for robot picture</string>
+    <string name="Munja">Image view for black background</string>
+    <string name="Nastavi">Nastavi</string>
 </resources>
