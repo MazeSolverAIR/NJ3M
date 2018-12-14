@@ -5,4 +5,5 @@
     <string name="Robot">Image view for robot picture</string>
     <string name="Munja">Image view for black background</string>
     <string name="Nastavi">Nastavi</string>
+    <string name="OznaciteSenzore">Označite senzore</string>
 </resources>

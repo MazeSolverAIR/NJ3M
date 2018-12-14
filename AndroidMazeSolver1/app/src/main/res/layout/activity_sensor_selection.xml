@@ -14,8 +14,10 @@
         android:layout_height="1266dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        app:srcCompat="@drawable/pozadinaispodrobota"
-        android:contentDescription="@string/Munja" />
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:contentDescription="@string/Munja"
+        app:srcCompat="@drawable/pozadinaispodrobota" />
 
     <ImageView
         android:id="@+id/imgRobot"
@@ -31,7 +33,18 @@
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/robot" />
 
+    <ImageView
+        android:id="@+id/imgOznaciteSenzore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        android:contentDescription="@string/OznaciteSenzore"
+        app:srcCompat="@drawable/oznaci_senzore" />
+
     <Button
+
         android:id="@+id/btnNastavi"
         android:layout_width="137dp"
         android:layout_height="31dp"
@@ -76,4 +89,5 @@
         android:buttonTint="#251923"
         android:scaleX="1.5"
         android:scaleY="1.5" />
+
 </RelativeLayout>
