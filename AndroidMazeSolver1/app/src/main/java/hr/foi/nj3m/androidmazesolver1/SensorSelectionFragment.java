@@ -1,30 +1,42 @@
 package hr.foi.nj3m.androidmazesolver1;
 
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-public class SensorSelectionActivity extends AppCompatActivity {
+public class SensorSelectionFragment extends Fragment {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sensor_selection);
+    public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        return inflater.inflate(R.layout.activity_sensor_selection,container,false);
+    }
 
-        Button button = (Button) findViewById(R.id.btnNastavi);
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Button button = (Button) getView().findViewById(R.id.btnNastavi);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CheckBox lijevo=(CheckBox) findViewById(R.id.checkboxLijevo);
-                CheckBox desno=(CheckBox) findViewById(R.id.checkboxDesno);
-                CheckBox ravno=(CheckBox) findViewById(R.id.checkboxRavno);
+                CheckBox lijevo=(CheckBox) getView().findViewById(R.id.checkboxLijevo);
+                CheckBox desno=(CheckBox) getView().findViewById(R.id.checkboxDesno);
+                CheckBox ravno=(CheckBox) getView().findViewById(R.id.checkboxRavno);
                 boolean lijevoChecked=lijevo.isChecked();
                 boolean desnoChecked=desno.isChecked();
                 boolean ravnoChecked=ravno.isChecked();
                 if (!lijevoChecked && !desnoChecked && ! ravnoChecked){
-                    Toast.makeText(SensorSelectionActivity.this,"Nisu odabrani senzori!",Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Nešto")
+                            .setMessage("Poruka")
+                            .setNeutralButton("Ok",null)
+                            .show();
                 }
                 if (lijevoChecked){
                     //ToDo algoritam za lijevi senzor

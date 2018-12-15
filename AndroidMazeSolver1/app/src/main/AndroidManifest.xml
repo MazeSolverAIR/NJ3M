@@ -26,7 +26,7 @@
         <activity android:name=".ListOfDevices" />
         <activity android:name=".MainMenu" />
         <activity android:name=".ConnectedDialog" />
-        <activity android:name=".SensorSelectionActivity"></activity>
+        <activity android:name=".SensorSelectionFragment"></activity>
     </application>
 
 </manifest>
