@@ -10,11 +10,14 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".loadingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +29,6 @@
         <activity android:name=".ListOfDevices" />
         <activity android:name=".MainMenu" />
         <activity android:name=".ConnectedDialog" />
-        <activity android:name=".SensorSelectionFragment"></activity>
     </application>
 
 </manifest>

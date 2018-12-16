@@ -56,7 +56,7 @@
         android:text="@string/Nastavi"
         android:textColor="@android:color/white" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <CheckBox
         android:id="@+id/checkboxLijevo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
         android:scaleX="1.5"
         android:scaleY="1.5" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <CheckBox
         android:id="@+id/checkboxDesno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,10 +75,10 @@
         android:layout_marginStart="318dp"
         android:layout_marginTop="176dp"
         android:buttonTint="#251923"
-        android:scaleX="1.5"
-        android:scaleY="1.5" />
+        android:scaleX="1"
+        android:scaleY="1" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <CheckBox
         android:id="@+id/checkboxRavno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
