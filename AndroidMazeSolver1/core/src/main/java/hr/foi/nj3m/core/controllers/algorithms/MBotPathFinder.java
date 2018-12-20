@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hr.foi.nj3m.core.controllers.components.Crossroad;
+import hr.foi.nj3m.core.controllers.components.LineFollower;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
@@ -34,6 +35,8 @@ public class MBotPathFinder {
     public List<Crossroad> CrossroadsList = null;
 
     private static MBotPathFinder Instance = null;
+
+    private LineFollower lineFollower = null;
 
     public static MBotPathFinder createInstance(List<IUltraSonic> sensors)
     {
@@ -79,6 +82,8 @@ public class MBotPathFinder {
             else if (sensorSide == Front)
                 this.FrontSensor = sensor;
         }
+
+        lineFollower = new LineFollower();
     }
 
     public ArrayList<CommandsToMBot> FindPath()
@@ -93,17 +98,18 @@ public class MBotPathFinder {
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
         {
-            finalCommandList = findPathFrontSensor();
+            finalCommandList.addAll(centerMBotFrontSensors());
+            finalCommandList.addAll(findPathFrontSensor());
         }
 
         else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
         {
-            finalCommandList = findPathFrontSensor();
+            //finalCommandList = findPathFrontSensor();
         }
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
         {
-            finalCommandList = findPathFrontSensor();
+            //finalCommandList = findPathFrontSensor();
         }
 
         return finalCommandList;
@@ -191,17 +197,38 @@ public class MBotPathFinder {
     }
 
 
+    private boolean rotated = false;
+
     private ArrayList<CommandsToMBot> findPathFrontSensor()
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
-        if(!FrontSensor.seesObstacle())
-            commandsToMBotList.add(RunMotors);
-        else
+
+        if(lineFollower.isOnCrossroad() && !rotated)
         {
             commandsToMBotList.add(StopMotors);
             commandsToMBotList.add(RotateRight);
-            commandsToMBotList.add(LastCommand);
+            rotated = true;
         }
+        else if(!FrontSensor.seesObstacle())
+        {
+            commandsToMBotList.add(RunMotors);
+            rotated = false;
+        }
+        else
+        {
+            commandsToMBotList.add(RotateFull);
+        }
+
+        commandsToMBotList.add(LastCommand);
+
+        return commandsToMBotList;
+    }
+
+    private ArrayList<CommandsToMBot> centerMBotFrontSensors()
+    {
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
+
+
 
         return commandsToMBotList;
     }
