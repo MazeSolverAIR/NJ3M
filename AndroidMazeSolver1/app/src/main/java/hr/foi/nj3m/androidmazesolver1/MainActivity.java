@@ -64,14 +64,17 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container,fragment);
                 transaction.addToBackStack(null);
-                transaction.commit();
+                transaction.commitAllowingStateLoss();
             }
         });
     }
 
     public void openListOfDevices(){
-        Intent intent = new Intent(this,ListOfDevices.class);
-        startActivity(intent);
+        Fragment fragment= new ListOfDevices();
+        FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container,fragment);
+        transaction.addToBackStack(null);
+        transaction.commitAllowingStateLoss();
 
     }
 
