@@ -1,4 +1,4 @@
-﻿#include "MeMCore.h"
+#include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
 #include "List.h"
@@ -20,7 +20,10 @@ MeBuzzer buzzer = MeBuzzer();
 String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
+
 MeUltrasonicSensor ultraSonic(3);
+MeUltrasonicSensor ultraSonicLijevi(1);
+MeUltrasonicSensor ultraSonicDesni(4);
 
 
 uint16_t brzinaKretanja = 127;
@@ -57,6 +60,7 @@ void loop()
 		CitajBluetooth();
 		IzvrsiRadnjuBT();
 		//lineFollow();
+    readSensorValues();
 		b = true;
 		break;
 	case 1:
@@ -189,7 +193,7 @@ void lineFollow() {
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
-		//senzori su na centru, kre�i se ravno
+		//senzori su na centru, kreci se ravno
 		Kreni(brzinaKretanja);
 		break;
 	case S1_IN_S2_OUT:
@@ -208,4 +212,25 @@ void lineFollow() {
 		Kreni(-brzinaKretanja);
 		break;
 	}
+}
+
+/*
+Citanje vrijednosti na senzorima mBota
+Pinovi 1 i 4
+*/
+void readSensorValues()
+{
+    //SenzorPrednji
+    Serial.print("P3=");
+    Serial.print(ultraSonic.distanceCm());
+    Serial.print(";");
+    //SenzorLijevi
+    Serial.print("P1=");
+    Serial.print(ultraSonicLijevi.distanceCm());
+    Serial.print(";");
+    //SenzorDesni
+    Serial.print("P4=");
+    Serial.print(ultraSonicDesni.distanceCm());
+    Serial.print(";");
+    delay(10);
 }
