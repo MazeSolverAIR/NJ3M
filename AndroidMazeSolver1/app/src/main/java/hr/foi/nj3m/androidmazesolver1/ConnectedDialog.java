@@ -27,7 +27,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 
+import hr.foi.nj3m.androidmazesolver1.Threads.ClientThread;
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
+import hr.foi.nj3m.androidmazesolver1.Threads.ServerThread;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
@@ -46,6 +48,7 @@ public class ConnectedDialog extends AppCompatActivity {
     Button btnListen;
 
     SendReceive sendReceive;
+    ClientThread clientThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,12 @@ public class ConnectedDialog extends AppCompatActivity {
         btnListen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServerClass serverClass = new ServerClass();
-                serverClass.start();
+                ServerThread serverThread = new ServerThread(handler, getApplicationContext());
+                try {
+                    sendReceive = serverThread.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -132,9 +139,12 @@ public class ConnectedDialog extends AppCompatActivity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClientClass clientClass = new ClientClass(mBluetoothAdapter.getRemoteDevice(deviceAddress));
-                clientClass.start();
-                //ListOfDevices.iRobotMessenger.receive(handler, bluetoothSocket);
+                clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler, getApplicationContext());
+                try {
+                    sendReceive = clientThread.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -170,7 +180,7 @@ public class ConnectedDialog extends AppCompatActivity {
         }
     });
 
-    private class ServerClass extends Thread{
+    /*private class ServerClass extends Thread{
         private BluetoothServerSocket bluetoothServerSocket;
 
         public ServerClass(){
@@ -198,9 +208,9 @@ public class ConnectedDialog extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
 
-    private class ClientClass extends Thread{
+    /*private class ClientClass extends Thread{
         private BluetoothDevice bluetoothDevice;
         private BluetoothSocket bluetoothSocket;
 
@@ -222,7 +232,7 @@ public class ConnectedDialog extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     /*private class SendReceive extends Thread{
         private final BluetoothSocket bluetoothSocket;
