@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 
+import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
@@ -109,19 +110,19 @@ public class ConnectedDialog extends AppCompatActivity {
                 }*/
 
                 String string = "RotateLeft";
-                sendReceive.write("RotateLeft".getBytes());
+                sendReceive.write("RotateLeft");
                 try {
                     sleep(35);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                sendReceive.write("RunMotors".getBytes());
+                sendReceive.write("RunMotors");
                 try {
                     sleep(35);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                sendReceive.write("Over".getBytes());
+                sendReceive.write("Over");
 
                 Log.d("Poslana poruka: ", string);
                 Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
@@ -159,7 +160,7 @@ public class ConnectedDialog extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    sendReceive.write("RotateLeft".getBytes());
+                    //sendReceive.write("RotateLeft");
                 }
                 /*Log.d("Primljena poruka: ", message);
                 //if(message == "Krece")
@@ -191,7 +192,7 @@ public class ConnectedDialog extends AppCompatActivity {
                 }
 
                 if(socket != null){
-                    sendReceive = new SendReceive(socket);
+                    sendReceive = new SendReceive(socket, handler);
                     sendReceive.start();
                     break;
                 }
@@ -215,7 +216,7 @@ public class ConnectedDialog extends AppCompatActivity {
         public void run(){
             try {
                 bluetoothSocket.connect();
-                sendReceive = new SendReceive(bluetoothSocket);
+                sendReceive = new SendReceive(bluetoothSocket, handler);
                 sendReceive.start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -223,7 +224,7 @@ public class ConnectedDialog extends AppCompatActivity {
         }
     }
 
-    private class SendReceive extends Thread{
+    /*private class SendReceive extends Thread{
         private final BluetoothSocket bluetoothSocket;
         private final InputStream inputStream;
         private final OutputStream outputStream;
@@ -269,7 +270,7 @@ public class ConnectedDialog extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     /*
     //Provjeriti izvor

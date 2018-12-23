@@ -7,13 +7,18 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class BluetoothCommunicator implements IRobotMessenger {
 
     Context context;
-    BluetoothSocket bluetoothSocket = null;
+    private InputStream inputStream;
+    private OutputStream outputStream;
+    private BluetoothSocket bluetoothSocket;
+    private Handler handler;
 
     private static BluetoothCommunicator InstanceOfSender;
 
@@ -31,20 +36,47 @@ public class BluetoothCommunicator implements IRobotMessenger {
     }
 
     @Override
-    public boolean sendCommand(String command, BluetoothSocket bluetoothSocket) {
-        byte[] message = command.getBytes();
-        try{
-            bluetoothSocket.getOutputStream().write(message);
-            Log.d("TAG", "poslana poruka" + message.toString());
-        }catch (IOException e){
+    public void initializeSocket(BluetoothSocket socket, Handler handler) {
+        bluetoothSocket = socket;
+        this.handler = handler;
 
+        InputStream tmpIn = null;
+        OutputStream tmpOut = null;
+
+        try {
+            tmpIn = bluetoothSocket.getInputStream();
+            tmpOut = bluetoothSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return false;
+
+        inputStream = tmpIn;
+        outputStream = tmpOut;
+    }
+
+    @Override
+    public void sendCommand(String command) {
+        byte[] message = command.getBytes();
+        try {
+            outputStream.write(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: 12/6/2018 POTREBNO TESTIRATI!!! 
     @Override
-    public byte[] receive(final Handler handler, final BluetoothSocket bluetoothSocket) {
-        return null;
+    public void receive() {
+        byte[] buffer = new byte[1024];
+        int bytes;
+
+        while (true){
+            try {
+                bytes = inputStream.read(buffer);
+                handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
