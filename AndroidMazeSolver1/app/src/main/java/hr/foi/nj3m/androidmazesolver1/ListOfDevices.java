@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,9 +44,9 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
         return inflater.inflate(R.layout.fragment_list_of_devices, container, false);
     }
     @Override
-    public void onStop() {
-        super.onStop();
-        getActivity().unregisterReceiver(mBroadcastReceiver);
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
     }
 
     @Override

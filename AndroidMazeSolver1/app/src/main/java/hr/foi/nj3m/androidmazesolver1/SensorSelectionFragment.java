@@ -9,56 +9,61 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import hr.foi.nj3m.core.controllers.components.UltrasonicSensor;
+import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.interfaces.IUltraSonic;
+
 public class SensorSelectionFragment extends Fragment {
 
+    private IUltraSonic mLeft;
+    private IUltraSonic mRight;
+    private IUltraSonic mFront;
+    private List<IUltraSonic> mListOfSensors = new ArrayList<>();
+    private Button mButton;
+
     @Override
-    public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        return inflater.inflate(R.layout.fragment_sensor_selection,container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_sensor_selection, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        Button button = (Button) getView().findViewById(R.id.btnNastavi);
-        button.setOnClickListener(new View.OnClickListener() {
+        mButton = getView().findViewById(R.id.btnNastavi);
+        mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                CheckBox lijevo=(CheckBox) getView().findViewById(R.id.checkboxLijevo);
-                CheckBox desno=(CheckBox) getView().findViewById(R.id.checkboxDesno);
-                CheckBox ravno=(CheckBox) getView().findViewById(R.id.checkboxRavno);
-                boolean lijevoChecked=lijevo.isChecked();
-                boolean desnoChecked=desno.isChecked();
-                boolean ravnoChecked=ravno.isChecked();
-                if (!lijevoChecked && !desnoChecked && ! ravnoChecked){
+                CheckBox left = (CheckBox) getView().findViewById(R.id.checkboxLijevo);
+                CheckBox right = (CheckBox) getView().findViewById(R.id.checkboxDesno);
+                CheckBox front = (CheckBox) getView().findViewById(R.id.checkboxRavno);
+                boolean leftChecked = left.isChecked();
+                boolean rightChecked = right.isChecked();
+                boolean frontChecked = front.isChecked();
+                if (!leftChecked && !rightChecked && !frontChecked) {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Nešto")
-                            .setMessage("Poruka")
-                            .setNeutralButton("Ok",null)
+                            .setTitle("Označeni senzori!")
+                            .setMessage("Niste odabrali senzore!")
+                            .setNeutralButton("Ok", null)
                             .show();
                 }
-                if (lijevoChecked){
-                    //ToDo algoritam za lijevi senzor
+                if (leftChecked) {
+                    mLeft = new UltrasonicSensor(Sides.Left);
+                    mListOfSensors.add(mLeft);
                 }
-                if (desno.isChecked()){
-                    //ToDo algoritam za desni senzor
+                if (rightChecked) {
+                    mRight = new UltrasonicSensor(Sides.Right);
+                    mListOfSensors.add(mRight);
                 }
-                if (desnoChecked){
-                    //ToDo algoritam za prednji senzor
-                }
-                if (lijevoChecked && desnoChecked){
-                    //ToDo algoritam za lijevi i desni senzor
-                }
-                if (lijevoChecked && ravnoChecked){
-                    //ToDo algoritam za lijevi i prednji senzor
-                }
-                if (desnoChecked && ravnoChecked){
-                    //ToDo algoritam za desni i prednji senzor
-                }
-                if (lijevoChecked && desnoChecked && ravnoChecked){
-                    //ToDo algoritam za sve senzore
+                if (frontChecked) {
+                    mFront = new UltrasonicSensor(Sides.Front);
+                    mListOfSensors.add(mFront);
                 }
             }
         });
     }
-
 }
