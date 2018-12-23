@@ -63,7 +63,7 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
             mDevices.get(position).createBond();
         }
         deviceAddress = mDevices.get(position).getAddress();
-        return createBluetoothSender(context, deviceAddress);
+        return createBluetoothSender(context);
     }
 
     @Override

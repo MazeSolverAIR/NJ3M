@@ -105,7 +105,7 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
-        iConnections = ConnectionController.creteInstance("bluetooth", this, deviceAddress);
+        iConnections = ConnectionController.creteInstance("bluetooth", this);
 
         iRobotMessenger = iConnections.connect(mBTDevices, position);
 

@@ -29,11 +29,6 @@ public class WiFiCommunicator implements IRobotMessenger {
     }
 
     @Override
-    public String getAddress() {
-        return null;
-    }
-
-    @Override
     public byte[] receive(final Handler handler, BluetoothSocket bluetoothSocket) {
         return new byte[0];
     }

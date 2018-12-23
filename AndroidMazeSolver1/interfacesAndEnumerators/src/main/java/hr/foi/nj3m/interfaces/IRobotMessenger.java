@@ -10,7 +10,5 @@ public interface IRobotMessenger {
 
     boolean sendCommand(String naredba, BluetoothSocket bluetoothSocket);
 
-    String getAddress();
-
     byte[] receive(Handler handler, BluetoothSocket bluetoothSocket);
 }
