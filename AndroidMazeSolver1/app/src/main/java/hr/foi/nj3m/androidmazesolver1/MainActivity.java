@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //bluetooth.enableDisableBluetooth();
-                iWireless.enableDisable(mBroadcastReceiver);
+                if(mBluetoothAdapter.isEnabled()){
+                    openListOfDevices();
+                }
+                else
+                    iWireless.enableDisable(mBroadcastReceiver);
             }
         });
 

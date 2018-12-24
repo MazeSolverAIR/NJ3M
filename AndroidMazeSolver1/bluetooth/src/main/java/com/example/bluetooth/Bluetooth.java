@@ -80,11 +80,11 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
             IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             context.registerReceiver(mBroadcastReceiver, BTIntent);
         }
-        if(mBluetoothAdapter.isEnabled()){
+        /*if(mBluetoothAdapter.isEnabled()){
             mBluetoothAdapter.disable();
             IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
             context.registerReceiver(mBroadcastReceiver, BTIntent);
-        }
+        }*/
     }
 
     @Override

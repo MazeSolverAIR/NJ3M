@@ -13,6 +13,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -105,11 +106,23 @@ public class ListOfDevices extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
+
+        boolean exists = false;
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        for(BluetoothDevice bluetoothDevice: bluetoothAdapter.getBondedDevices()){
+            if(bluetoothDevice.getName().equals("Makeblock"))
+                exists = true;
+        }
         iConnections = ConnectionController.creteInstance("bluetooth", this);
-
-        iRobotMessenger = iConnections.connect(mBTDevices, position);
-
-        IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mBroadcastReceiver, bondedFilter);
+        if(exists){
+            Intent connectedDialog = new Intent(ListOfDevices.this, ConnectedDialog.class);
+            connectedDialog.putExtra(EXTRA_ADDRESS, deviceAddress);
+            startActivity(connectedDialog);
+        }
+        else {
+            iRobotMessenger = iConnections.connect(mBTDevices, position);
+            IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            registerReceiver(mBroadcastReceiver, bondedFilter);
+        }
     }
 }
