@@ -21,7 +21,6 @@ public class ConnectedDialog extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter = null;
     SendReceive sendReceive;
-    ClientThread clientThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,12 +120,21 @@ public class ConnectedDialog extends AppCompatActivity {
     }
 
     private void Connect(String deviceAddress){
-        clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
+        sendReceive = new SendReceive(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
+        try {
+            sendReceive.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        sendReceive.start();
+
+        // TODO: 24.12.2018. Ovo je instanciranje klase ClientThread koju vjerojatno više nećemo koristiti; provjeriti!
+        /*clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
         try {
             sendReceive = clientThread.call();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     Handler handler = new Handler(new Handler.Callback() {
