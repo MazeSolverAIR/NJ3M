@@ -1,5 +1,6 @@
 package hr.foi.nj3m.androidmazesolver1;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,12 +9,8 @@ import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-<<<<<<< HEAD
-import android.util.Log;
-=======
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
->>>>>>> Fragmenti
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -104,7 +101,6 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         deviceAddress = mBTDevices.get(position).getAddress();
-<<<<<<< HEAD
 
         boolean exists = false;
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -112,24 +108,24 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
             if(bluetoothDevice.getName().equals("Makeblock"))
                 exists = true;
         }
-        iConnections = ConnectionController.creteInstance("bluetooth", this);
+        iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
         if(exists){
-            Intent connectedDialog = new Intent(ListOfDevices.this, ConnectedDialog.class);
-            connectedDialog.putExtra(EXTRA_ADDRESS, deviceAddress);
-            startActivity(connectedDialog);
+            Fragment fragment= new ConnectedDialog();
+            FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container,fragment);
+            transaction.addToBackStack(null);
+            transaction.commitAllowingStateLoss();
         }
         else {
             iRobotMessenger = iConnections.connect(mBTDevices, position);
             IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-            registerReceiver(mBroadcastReceiver, bondedFilter);
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
         }
-=======
-        iConnections = ConnectionController.creteInstance("bluetooth", getActivity(), deviceAddress);
+        iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
 
         iRobotMessenger = iConnections.connect(mBTDevices, position);
 
         IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
->>>>>>> Fragmenti
     }
 }
