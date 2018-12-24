@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
+import static hr.foi.nj3m.androidmazesolver1.ListOfDevices.EXTRA_ADDRESS;
 import static java.lang.Thread.sleep;
 import java.util.UUID;
 
@@ -49,9 +50,10 @@ public class ConnectedDialog extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        Bundle bundle= this.getArguments();
+        final String deviceAddress = (String) bundle.getSerializable(EXTRA_ADDRESS);
 
-
-        final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
+        //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);

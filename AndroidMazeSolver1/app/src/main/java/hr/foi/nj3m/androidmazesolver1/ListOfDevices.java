@@ -88,11 +88,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if(device.getBondState() == BluetoothDevice.BOND_BONDED){
-                    Fragment fragment= new ConnectedDialog();
-                    FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container,fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commitAllowingStateLoss();
+                    openConnectedDialog(deviceAddress);
                 }
             }
         }
@@ -110,11 +106,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
         }
         iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
         if(exists){
-            Fragment fragment= new ConnectedDialog();
-            FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container,fragment);
-            transaction.addToBackStack(null);
-            transaction.commitAllowingStateLoss();
+            openConnectedDialog(deviceAddress);
         }
         else {
             iRobotMessenger = iConnections.connect(mBTDevices, position);
@@ -127,5 +119,16 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
 
         IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
+    }
+
+    private void openConnectedDialog(String deviceAddress){
+        Bundle bundle= new Bundle();
+        bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
+        Fragment fragment= new ConnectedDialog();
+        fragment.setArguments(bundle);
+        FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container,fragment);
+        transaction.addToBackStack(null);
+        transaction.commitAllowingStateLoss();
     }
 }
