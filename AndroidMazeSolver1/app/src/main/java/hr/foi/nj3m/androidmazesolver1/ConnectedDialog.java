@@ -1,35 +1,73 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 import android.bluetooth.BluetoothAdapter;
+<<<<<<< HEAD
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+=======
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+>>>>>>> Fragmenti
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import hr.foi.nj3m.androidmazesolver1.Threads.ClientThread;
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 
 import static java.lang.Thread.sleep;
 
 public class ConnectedDialog extends AppCompatActivity {
+=======
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
+
+import static java.lang.Thread.sleep;
+
+public class ConnectedDialog extends Fragment {
+    //Communication communication;
+    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    BluetoothAdapter mBluetoothAdapter = null;
+    BluetoothSocket bluetoothSocket = null;
+    private boolean isBluetoothConnected = false;
+>>>>>>> Fragmenti
 
     Button btnSendControl;
 
     BluetoothAdapter mBluetoothAdapter = null;
     SendReceive sendReceive;
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_connected_dialog);
+    public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        return inflater.inflate(R.layout.fragment_connected_dialog,container,false);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
 
-        final String deviceAddress = getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
+        final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
+
+<<<<<<< HEAD
         btnSendControl = (Button) findViewById(R.id.btnSendControl);
+=======
+        btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
+        btnConnect = (Button) getView().findViewById(R.id.btnStartConnection);
+        btnListen = (Button) getView().findViewById(R.id.btnListen);
+>>>>>>> Fragmenti
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -101,7 +139,7 @@ public class ConnectedDialog extends AppCompatActivity {
                 sendReceive.write("Over");
 
                 Log.d("Poslana poruka: ", string);
-                Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_LONG).show();
             }
         });
 
