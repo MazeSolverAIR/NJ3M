@@ -186,25 +186,6 @@ void exitLab() {
 void lineFollow() {
 	int sensorStateCenter = lineFollower.readSensors();
 
-	//provjeriti poljeRadnji
-
-	String radnja = poljeRadnji[index].sadrzaj;
-
-	if (radnja.equals("UbrzajLijeviMotor")) {
-		leftMotor.run(137);
-		rightMotor.run(brzinaKretanja);
-
-	}
-	else if (radnja.equals("UbrzajDesniMotor")) {
-		rightMotor.run(137);
-		leftMotor.run(brzinaKretanja);
-	}
-	else if (radnja.equals("StopMotors"))
-		ZaustaviMotore();
-	else if (radnja.equals("RunMotors"))
-		Kreni(brzinaKretanja);
-	
-
 	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
 
 	switch (sensorStateCenter)
@@ -226,4 +207,27 @@ void lineFollow() {
 		bluetooth.print("ObaVanLinije");
 		break;
 	}
+
+	//provjeriti poljeRadnji
+
+	int ind = index;
+	if (ind > 0)
+		ind--;
+	for (int i = 0; i < ind; i++) {
+		String radnja = poljeRadnji[i].sadrzaj;
+		if (radnja.equals("UbrzajLijeviMotor")) {
+			leftMotor.run(137);
+			rightMotor.run(brzinaKretanja);
+		}
+		else if (radnja.equals("UbrzajDesniMotor")) {
+			rightMotor.run(137);
+			leftMotor.run(brzinaKretanja);
+		}
+		else if (radnja.equals("StopMotors"))
+			ZaustaviMotore();
+		else if (radnja.equals("RunMotors"))
+			Kreni(brzinaKretanja);
+		poljeRadnji[i].sadrzaj = "";
+	}
+	index = 0;
 }
