@@ -43,7 +43,7 @@ public class ConnectionController {
         }
         else if(odabranNacinKomunikacije.equals("wifi"))
         {
-            InstanceOfConnection = createWiFiInstance();
+            InstanceOfConnection = createWiFiInstance(context);
             InstanceOfIRobot = createWiFiSender();
         }
     }

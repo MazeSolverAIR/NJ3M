@@ -1,13 +1,23 @@
 package hr.foi.nj3m.wifi;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
+
 import java.util.ArrayList;
 
 import hr.foi.nj3m.interfaces.IConnections;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
+import hr.foi.nj3m.interfaces.IWireless;
 
 import static hr.foi.nj3m.wifi.WiFiCommunicator.createWiFiSender;
 
-public class WiFi implements IConnections {
+public class WiFi implements IConnections, IWireless {
+
+    private WifiManager wifiManager;
+    private Context context;
 
     private static WiFi InstanceOfWiFi;
 
@@ -15,15 +25,17 @@ public class WiFi implements IConnections {
         return InstanceOfWiFi;
     }
 
-    public static WiFi createWiFiInstance() {
+    public static WiFi createWiFiInstance(Context context) {
         if (InstanceOfWiFi == null)
-            InstanceOfWiFi = new WiFi();
+            InstanceOfWiFi = new WiFi(context);
 
         return InstanceOfWiFi;
     }
 
-    private WiFi() {
+    private WiFi(Context context) {
         //konstruktor
+        this.context = context;
+        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
 
@@ -43,4 +55,17 @@ public class WiFi implements IConnections {
         return false;
     }
 
+    @Override
+    public void enableDisable(BroadcastReceiver mBroadcastReceiver) {
+        if(!wifiManager.isWifiEnabled()){
+            wifiManager.setWifiEnabled(true);
+            IntentFilter WiFiIntent = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            context.registerReceiver(mBroadcastReceiver, WiFiIntent);
+        }
+    }
+
+    @Override
+    public void discover(BroadcastReceiver mBroadcastReceiver) {
+
+    }
 }

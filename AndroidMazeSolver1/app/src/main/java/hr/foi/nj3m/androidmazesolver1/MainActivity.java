@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     public static BluetoothAdapter mBluetoothAdapter;
     IWireless iWireless;
 
+    WifiManager wifiManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,17 +43,30 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         final hr.foi.nj3m.androidmazesolver1.Bluetooth bluetooth = new hr.foi.nj3m.androidmazesolver1.Bluetooth(this, mBluetoothAdapter, mBroadcastReceiver);
 
-        final ImageButton tipkaBluetooth = (ImageButton) findViewById(R.id.btnBluetooth);
+        wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        iWireless = WirelessController.createInstance(this);
+        final ImageButton tipkaBluetooth = (ImageButton) findViewById(R.id.btnBluetooth);
+        final ImageButton tipkaWifi = (ImageButton) findViewById(R.id.btnWifi);
 
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                iWireless = WirelessController.createInstance(getApplicationContext(), "bluetooth");
                 //bluetooth.enableDisableBluetooth();
                 if(mBluetoothAdapter.isEnabled()){
                     openListOfDevices();
                 }
+                else
+                    iWireless.enableDisable(mBroadcastReceiver);
+            }
+        });
+
+        tipkaWifi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iWireless = WirelessController.createInstance(getApplicationContext(), "wifi");
+                if(wifiManager.isWifiEnabled())
+                    openListOfDevices();
                 else
                     iWireless.enableDisable(mBroadcastReceiver);
             }
@@ -99,6 +115,18 @@ public class MainActivity extends AppCompatActivity {
                         openListOfDevices();
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
+                        break;
+                }
+            }
+            if(action.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)){
+                final int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
+                switch (state){
+                    case WifiManager.WIFI_STATE_DISABLED:
+                        Toast.makeText(getApplicationContext(), "WiFi isključen", Toast.LENGTH_LONG).show();
+                        break;
+                    case WifiManager.WIFI_STATE_ENABLED:
+                        Toast.makeText(getApplicationContext(), "WiFi uključen", Toast.LENGTH_LONG).show();
+                        openListOfDevices();
                         break;
                 }
             }

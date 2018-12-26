@@ -60,7 +60,9 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothDevices = bluetoothAdapter.getBondedDevices();
 
-        iWireless = WirelessController.createInstance(getActivity());
+        iWireless = WirelessController.getInstanceOfIWireless();
+
+        //iWireless = WirelessController.createInstance(getActivity());
 
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         mBTDevices = new ArrayList<>();
