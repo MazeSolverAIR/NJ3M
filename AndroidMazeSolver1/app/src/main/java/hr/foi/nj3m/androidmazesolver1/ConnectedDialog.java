@@ -32,34 +32,34 @@ import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import static java.lang.Thread.sleep;
 
 public class ConnectedDialog extends Fragment {
-    //Communication communication;
-    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     BluetoothAdapter mBluetoothAdapter = null;
-    BluetoothSocket bluetoothSocket = null;
-    private boolean isBluetoothConnected = false;
-
     Button btnSendControl;
-
     SendReceive sendReceive;
-
+    String deviceAddress;
 
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         return inflater.inflate(R.layout.fragment_connected_dialog,container,false);
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        Bundle bundle= this.getArguments();
-        final String deviceAddress = (String) bundle.getSerializable(EXTRA_ADDRESS);
+        final Bundle bundle= this.getArguments();
 
         //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
 
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
-        btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        Connect(deviceAddress);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                deviceAddress = (String) bundle.getSerializable(EXTRA_ADDRESS);
+                Connect(deviceAddress);
+            }
+        }).start();
+        //Connect(deviceAddress);
 
         // NE KORISTIMO VEĆ OVU TIPKU
         /*btnListen.setOnClickListener(new View.OnClickListener() {
