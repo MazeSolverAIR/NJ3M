@@ -98,7 +98,7 @@ public class MBotPathFinder {
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
         {
-            finalCommandList.addAll(centerMBotFrontSensors());
+            finalCommandList.addAll(centerMBotFrontSensor());
             finalCommandList.addAll(findPathFrontSensor());
         }
 
@@ -224,11 +224,14 @@ public class MBotPathFinder {
         return commandsToMBotList;
     }
 
-    private ArrayList<CommandsToMBot> centerMBotFrontSensors()
+    private ArrayList<CommandsToMBot> centerMBotFrontSensor()
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
-
+        if(lineFollower.isOnLeftSide())
+            commandsToMBotList.add(SpeedUpLeft);
+        else if(lineFollower.isOnRightSide())
+            commandsToMBotList.add(SpeedUpRight);
 
         return commandsToMBotList;
     }

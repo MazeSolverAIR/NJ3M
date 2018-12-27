@@ -27,19 +27,19 @@ public class ConnectionController {
         return InstanceOfConnection;
     }
 
-    public static IConnections creteInstance(String odabranNacinKomunikacije, Context context, String deviceAddress)
+    public static IConnections creteInstance(String odabranNacinKomunikacije, Context context)
     {
-        new ConnectionController(odabranNacinKomunikacije, context, deviceAddress);
+        new ConnectionController(odabranNacinKomunikacije, context);
 
         return InstanceOfConnection;
     }
 
-    private ConnectionController(String odabranNacinKomunikacije, Context context, String deviceAddress)
+    private ConnectionController(String odabranNacinKomunikacije, Context context)
     {
         if(odabranNacinKomunikacije.equals("bluetooth"))
         {
             InstanceOfConnection = createBluetoothInstance(context);
-            InstanceOfIRobot = createBluetoothSender(context, deviceAddress);
+            InstanceOfIRobot = createBluetoothSender(context);
         }
         else if(odabranNacinKomunikacije.equals("wifi"))
         {

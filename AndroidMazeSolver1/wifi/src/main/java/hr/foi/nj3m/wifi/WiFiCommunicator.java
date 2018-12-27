@@ -24,17 +24,17 @@ public class WiFiCommunicator implements IRobotMessenger {
     }
 
     @Override
-    public boolean sendCommand(String naredba, BluetoothSocket bluetoothSocket) {
-        return false;
+    public void initializeSocket(BluetoothSocket socket, Handler handler) {
+
     }
 
     @Override
-    public String getAddress() {
-        return null;
+    public void sendCommand(String naredba) {
+
     }
 
     @Override
-    public byte[] receive(final Handler handler, BluetoothSocket bluetoothSocket) {
-        return new byte[0];
+    public void receive() {
+
     }
 }
