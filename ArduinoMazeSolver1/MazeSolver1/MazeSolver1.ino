@@ -21,7 +21,7 @@ String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
-
+//MeUltrasonicSensor ultraSonicLeft(4);
 
 uint16_t brzinaKretanja = 127;
 
@@ -56,6 +56,7 @@ void loop()
 		}
 		CitajBluetooth();
 		IzvrsiRadnjuBT();
+
 		//lineFollow();
 		b = true;
 		break;
@@ -67,6 +68,15 @@ void loop()
 
 			b = false;
 		}
+	
+		/*Serial.println(ultraSonicLeft.distanceCm());
+		if (ultraSonicLeft.distanceCm() < 10)
+			Kreni(brzinaKretanja);
+
+		else
+			ZaustaviMotore();
+			*/
+	//	delay(5);
 
 		a = true;
 		break;
