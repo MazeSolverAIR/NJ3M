@@ -112,6 +112,7 @@ public class MBotPathFinder {
             //finalCommandList = findPathFrontSensor();
         }
 
+        finalCommandList.add(LastCommand);
         return finalCommandList;
     }
 
@@ -119,19 +120,16 @@ public class MBotPathFinder {
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
-        //zbroj ovih dužina sa širinom mBota bi trebala biti širina staze labirinta
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
-
-        if(!FrontSensor.seesObstacle())
-            commandsToMBotList.add(RunMotors);
-        else
-            commandsToMBotList.add(StopMotors);
 
         if(Crossroad.checkIfCrossroad(sensorDistanceSum))
             commandsToMBotList.addAll(manageCrossroad(sensorDistanceSum));
 
+        else if(!FrontSensor.seesObstacle())
+            commandsToMBotList.add(RunMotors);
+        else
+            commandsToMBotList.add(StopMotors);
 
-        commandsToMBotList.add(LastCommand);
         return commandsToMBotList;
     }
 
@@ -144,11 +142,11 @@ public class MBotPathFinder {
         if(!Crossroad.checkIfCrossroad(sensorDistanceSum))
         {
             if(LeftSensor.getNumericValue() > RightSensor.getNumericValue())
-                returnCommand = SpeedUpLeft;
+                returnCommand = SpeedUpRight;
 
 
             else if(RightSensor.getNumericValue() > LeftSensor.getNumericValue())
-                returnCommand = SpeedUpRight;
+                returnCommand = SpeedUpLeft;
         }
 
         return returnCommand;
@@ -157,43 +155,56 @@ public class MBotPathFinder {
     private ArrayList<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
-        Crossroad crossroad = null;
-        Sides stranaZaSkretanje = null;
+        Sides sideToTurn = null;
 
         commandsToMBotList.add(StopMotors);
 
-        //Provjeri stranu raskrizja
         if(Crossroad.checkCrossroadSide(this.RightSensor))
         {
             commandsToMBotList.add(RotateRight);
-            stranaZaSkretanje = Right;
+            sideToTurn = Right;
         }
-
         else if(Crossroad.checkCrossroadSide(this.FrontSensor))
         {
             commandsToMBotList.add(RunMotors);
-            stranaZaSkretanje = Front;
+            sideToTurn = Front;
         }
-
         else if(Crossroad.checkCrossroadSide(this.LeftSensor))
         {
             commandsToMBotList.add(RotateLeft);
-            stranaZaSkretanje = Left;
+            sideToTurn = Left;
         }
-
         else if(Crossroad.CheckIfDeadEnd(this, sensorDistanceSum))
         {
             commandsToMBotList.add(RotateFull);
-            stranaZaSkretanje = FullRotate;
+            sideToTurn = FullRotate;
         }
 
-        //ako je lista prazna ili ako zadnji element liste nije slijepa ulica
-        crossroad = new Crossroad(this, stranaZaSkretanje);
-        crossroad.setCrossroadSize();
-        crossroad.newVisit();
-        this.CrossroadsList.add(crossroad);
+        manageCrossroadsList(sideToTurn);
 
         return commandsToMBotList;
+    }
+
+    private void manageCrossroadsList(Sides sideToTurn)
+    {
+        Crossroad lastCRFromList = null;
+        Crossroad newCrossroad = null;
+
+        if(!this.CrossroadsList.isEmpty())
+            lastCRFromList = this.CrossroadsList.get(this.CrossroadsList.size() - 1);
+
+        if(this.CrossroadsList.isEmpty() || (lastCRFromList.numberOfVisits != lastCRFromList.maxNumberOfVisits))
+        {
+            newCrossroad = new Crossroad(this, sideToTurn);
+            newCrossroad.setCrossroadSize();
+            newCrossroad.newVisit();
+            this.CrossroadsList.add(newCrossroad);
+        }
+        else
+        {
+            this.CrossroadsList.remove(lastCRFromList);
+            this.CrossroadsList.get(this.CrossroadsList.size() - 1).newVisit();
+        }
     }
 
 
@@ -218,8 +229,6 @@ public class MBotPathFinder {
         {
             commandsToMBotList.add(RotateFull);
         }
-
-        commandsToMBotList.add(LastCommand);
 
         return commandsToMBotList;
     }
