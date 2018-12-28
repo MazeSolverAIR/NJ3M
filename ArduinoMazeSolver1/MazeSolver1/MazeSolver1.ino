@@ -192,19 +192,19 @@ void lineFollow() {
 	{
 	case S1_IN_S2_IN:
 		//senzori su na centru, kre�i se ravno
-		bluetooth.print("NaLiniji");
+		bluetooth.print("OnLine");
 		break;
 	case S1_IN_S2_OUT:
 		//senzor 2 je van linije (desni senzor)
-		bluetooth.print("DesniVanLinije");
+		bluetooth.print("RightOut");
 		break;
 	case S1_OUT_S2_IN:
 		//senzor 1 je van linije (lijevi senzor)
-		bluetooth.print("LijeviVanLinije");
+		bluetooth.print("LeftOut");
 		break;
 	case S1_OUT_S2_OUT:
 		//oba senzora su van linije
-		bluetooth.print("ObaVanLinije");
+		bluetooth.print("BothOut");
 		break;
 	}
 
@@ -215,13 +215,13 @@ void lineFollow() {
 		ind--;
 	for (int i = 0; i < ind; i++) {
 		String radnja = poljeRadnji[i].sadrzaj;
-		if (radnja.equals("UbrzajLijeviMotor")) {
-			leftMotor.run(137);
+		if (radnja.equals("SpeedUpLeft")) {
+			leftMotor.run(-137);
 			rightMotor.run(brzinaKretanja);
 		}
-		else if (radnja.equals("UbrzajDesniMotor")) {
+		else if (radnja.equals("SpeedUpRight")) {
 			rightMotor.run(137);
-			leftMotor.run(brzinaKretanja);
+			leftMotor.run(-brzinaKretanja);
 		}
 		else if (radnja.equals("StopMotors"))
 			ZaustaviMotore();
