@@ -27,7 +27,7 @@ import hr.foi.nj3m.interfaces.IRobotMessenger;
 import hr.foi.nj3m.interfaces.IWireless;
 
 
-public class ListOfDevices extends Fragment implements AdapterView.OnItemClickListener {
+public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     //Bluetooth bluetooth;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
@@ -88,7 +88,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
                 mBTDevices.add(device);
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
-                lvNewDevices.setOnItemClickListener(ListOfDevices.this);
+                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -129,7 +129,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
     private void openConnectedDialog(String deviceAddress){
         Bundle bundle= new Bundle();
         bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
-        Fragment fragment= new ConnectedDialog();
+        Fragment fragment= new ConnectedDialogFragment();
         fragment.setArguments(bundle);
         FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,fragment);

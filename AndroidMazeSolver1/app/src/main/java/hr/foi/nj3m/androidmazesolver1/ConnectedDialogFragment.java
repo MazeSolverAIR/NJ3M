@@ -3,12 +3,6 @@ package hr.foi.nj3m.androidmazesolver1;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothServerSocket;
-import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,21 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.UUID;
 
-import static hr.foi.nj3m.androidmazesolver1.ListOfDevices.EXTRA_ADDRESS;
+import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 import static java.lang.Thread.sleep;
-import java.util.UUID;
 
-import hr.foi.nj3m.androidmazesolver1.Threads.ClientThread;
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 
 import static java.lang.Thread.sleep;
 
-public class ConnectedDialog extends Fragment {
+public class ConnectedDialogFragment extends Fragment {
     BluetoothAdapter mBluetoothAdapter = null;
     Button btnSendControl;
     SendReceive sendReceive;
@@ -47,7 +35,7 @@ public class ConnectedDialog extends Fragment {
         super.onStart();
         final Bundle bundle= this.getArguments();
 
-        //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevices.EXTRA_ADDRESS);
+        //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevicesFragment.EXTRA_ADDRESS);
 
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -82,26 +70,26 @@ public class ConnectedDialog extends Fragment {
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
 
-                ListOfDevices.iRobotMessenger.sendCommand("RotateLeft", bluetoothSocket);
+                ListOfDevicesFragment.iRobotMessenger.sendCommand("RotateLeft", bluetoothSocket);
 
                 try {
                     sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                ListOfDevices.iRobotMessenger.sendCommand("RunMotors", bluetoothSocket);
+                ListOfDevicesFragment.iRobotMessenger.sendCommand("RunMotors", bluetoothSocket);
 
                 try {
                     sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                ListOfDevices.iRobotMessenger.sendCommand("Over", bluetoothSocket);
+                ListOfDevicesFragment.iRobotMessenger.sendCommand("Over", bluetoothSocket);
 
                 for (CommandsToMBot naredba:listaNaredbi)
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
-                    ListOfDevices.iRobotMessenger.sendCommand(stringNaredba, bluetoothSocket);
+                    ListOfDevicesFragment.iRobotMessenger.sendCommand(stringNaredba, bluetoothSocket);
                     Log.d("Saljem", stringNaredba);
                     try {
                         sleep(50);
