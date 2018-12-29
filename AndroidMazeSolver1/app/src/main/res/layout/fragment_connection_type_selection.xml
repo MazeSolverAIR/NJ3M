@@ -8,33 +8,6 @@
     android:background="@drawable/ic_pronadimbot"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnEnableDisableBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
-        android:text="Bluetooth"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnDiscover"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="Discover"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEnableDisableBT" />
-
     <ImageView
         android:layout_width="570px"
         android:layout_height="1313px"
@@ -68,7 +41,6 @@
         android:layout_marginTop="160dp"
         android:background="@drawable/ic_bluetoothikona"></ImageButton>
 
-
     <ImageButton
         android:id="@+id/btnWifi"
         android:layout_width="340px"
@@ -77,12 +49,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="303dp"
         android:background="@drawable/ic_wifiikona"></ImageButton>
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="400dp"
-        android:text="Button" />
 
 </RelativeLayout>

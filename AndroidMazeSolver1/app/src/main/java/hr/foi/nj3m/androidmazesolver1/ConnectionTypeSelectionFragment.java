@@ -27,8 +27,6 @@ import hr.foi.nj3m.interfaces.IWireless;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
-    public Button mButton;
-
     private static final String TAG = "MainActivity";
     public static BluetoothAdapter mBluetoothAdapter;
     IWireless iWireless;
@@ -64,17 +62,6 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         mFileTemp.getParentFile().mkdirs();
         galleryAddPic();
 
-        mButton=getView().findViewById(R.id.button2);
-        mButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Fragment fragment= new SensorSelectionFragment();
-                FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container,fragment);
-                transaction.addToBackStack(null);
-                transaction.commitAllowingStateLoss();
-            }
-        });
     }
 
     public void openListOfDevices(){
