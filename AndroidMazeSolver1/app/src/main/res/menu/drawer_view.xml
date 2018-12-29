@@ -11,6 +11,11 @@
             android:id="@+id/nav_add_photo"
             android:icon="@drawable/ic_add_photo"
             android:title="Save path" />
+        <item
+            android:id="@+id/nav_sensor_selection"
+            android:title="Sensor selection"
+            android:icon="@drawable/ic_info"
+            />
     </group>
     <item android:title="Other">
         <menu>
