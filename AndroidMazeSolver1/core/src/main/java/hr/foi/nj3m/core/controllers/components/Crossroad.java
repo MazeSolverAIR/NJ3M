@@ -21,19 +21,6 @@ public class Crossroad {
         this.Finder = finder;
     }
 
-    public static boolean checkIfCrossroad(double sensorDistanceSum)
-    {
-        double distanceToCheck = sensorDistanceSum + R.integer.mBot_width;
-
-        return (distanceToCheck <= (R.integer.labyrinth_width + 2*R.integer.ultrasonic_sensor_width)) &&
-                (distanceToCheck >= (R.integer.labyrinth_width - 2*R.integer.ultrasonic_sensor_width));
-    }
-
-    public static boolean checkCrossroadSide(IUltraSonic sensor)
-    {
-        return sensor.getNumericValue() > (R.integer.labyrinth_width-R.integer.mBot_width);
-    }
-
     public void setCrossroadSize()
     {
         if(!Finder.FrontSensor.seesObstacle())
@@ -50,13 +37,5 @@ public class Crossroad {
     public void newVisit()
     {
         numberOfVisits++;
-    }
-
-    public static boolean CheckIfDeadEnd(MBotPathFinder finder, double sensorDistanceSum)
-    {
-        if(!checkIfCrossroad(sensorDistanceSum) && finder.FrontSensor.seesObstacle())
-            return true;
-
-        return false;
     }
 }

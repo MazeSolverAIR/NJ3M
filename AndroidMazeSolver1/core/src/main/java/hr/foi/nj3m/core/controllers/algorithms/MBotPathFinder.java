@@ -4,6 +4,7 @@ package hr.foi.nj3m.core.controllers.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.core.controllers.components.LineFollower;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
@@ -20,7 +21,6 @@ import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.StopMotors;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Front;
-import static hr.foi.nj3m.interfaces.Enumerations.Sides.FullRotate;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Left;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
@@ -104,7 +104,7 @@ public class MBotPathFinder {
 
         else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
         {
-            //finalCommandList = findPathFrontSensor();
+            finalCommandList.addAll(findPathFrontAndRight());
         }
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
@@ -122,8 +122,8 @@ public class MBotPathFinder {
 
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
-        if(Crossroad.checkIfCrossroad(sensorDistanceSum))
-            commandsToMBotList.addAll(manageCrossroad(sensorDistanceSum));
+        if(CrossroadManager.checkIfCrossroad(sensorDistanceSum))
+            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(sensorDistanceSum, this));
 
         else if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);
@@ -139,7 +139,7 @@ public class MBotPathFinder {
 
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
-        if(!Crossroad.checkIfCrossroad(sensorDistanceSum))
+        if(!CrossroadManager.checkIfCrossroad(sensorDistanceSum))
         {
             if(LeftSensor.getNumericValue() > RightSensor.getNumericValue())
                 returnCommand = SpeedUpRight;
@@ -150,61 +150,6 @@ public class MBotPathFinder {
         }
 
         return returnCommand;
-    }
-
-    private ArrayList<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
-    {
-        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
-        Sides sideToTurn = null;
-
-        commandsToMBotList.add(StopMotors);
-
-        if(Crossroad.checkCrossroadSide(this.RightSensor))
-        {
-            commandsToMBotList.add(RotateRight);
-            sideToTurn = Right;
-        }
-        else if(Crossroad.checkCrossroadSide(this.FrontSensor))
-        {
-            commandsToMBotList.add(RunMotors);
-            sideToTurn = Front;
-        }
-        else if(Crossroad.checkCrossroadSide(this.LeftSensor))
-        {
-            commandsToMBotList.add(RotateLeft);
-            sideToTurn = Left;
-        }
-        else if(Crossroad.CheckIfDeadEnd(this, sensorDistanceSum))
-        {
-            commandsToMBotList.add(RotateFull);
-            sideToTurn = FullRotate;
-        }
-
-        manageCrossroadsList(sideToTurn);
-
-        return commandsToMBotList;
-    }
-
-    private void manageCrossroadsList(Sides sideToTurn)
-    {
-        Crossroad lastCRFromList = null;
-        Crossroad newCrossroad = null;
-
-        if(!this.CrossroadsList.isEmpty())
-            lastCRFromList = this.CrossroadsList.get(this.CrossroadsList.size() - 1);
-
-        if(this.CrossroadsList.isEmpty() || (lastCRFromList.numberOfVisits != lastCRFromList.maxNumberOfVisits))
-        {
-            newCrossroad = new Crossroad(this, sideToTurn);
-            newCrossroad.setCrossroadSize();
-            newCrossroad.newVisit();
-            this.CrossroadsList.add(newCrossroad);
-        }
-        else
-        {
-            this.CrossroadsList.remove(lastCRFromList);
-            this.CrossroadsList.get(this.CrossroadsList.size() - 1).newVisit();
-        }
     }
 
 
@@ -241,6 +186,13 @@ public class MBotPathFinder {
             commandsToMBotList.add(SpeedUpLeft);
         else if(lineFollower.isOnRightSide())
             commandsToMBotList.add(SpeedUpRight);
+
+        return commandsToMBotList;
+    }
+
+    private ArrayList<CommandsToMBot> findPathFrontAndRight()
+    {
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
         return commandsToMBotList;
     }
