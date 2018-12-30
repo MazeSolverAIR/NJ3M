@@ -32,8 +32,9 @@ public class LineFollower implements ILineFollower {
         return null;
     }
 
+    //neka se ova metoda kod ove klase poziva kao setCurrentValue("")
     @Override
-    public void setCurrentValue() {
+    public void setCurrentValue(String value) {
         left = MBotInfoCutter.LineFollowerLeft;
         right = MBotInfoCutter.LineFollowerRight;
         /*if(currentVal=="OnLine"){
