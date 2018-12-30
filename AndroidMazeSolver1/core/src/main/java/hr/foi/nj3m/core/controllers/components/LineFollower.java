@@ -31,6 +31,23 @@ public class LineFollower implements ILineFollower {
 
     @Override
     public void setCurrentValue(String currentVal) {
-
+        boolean left,right;
+        if(currentVal=="OnLine"){
+            left=true;
+            right=true;
+        }
+        else if(currentVal=="RightOut"){
+            left=true;
+            right=false;
+        }
+        else if(currentVal=="LeftOut"){
+            left=false;
+            right=true;
+        }
+        else if(currentVal=="BotbOut"){
+            left=false;
+            right=false;
+        }
+        //true predstavlja da je senzor na liniji, false da je van linije
     }
 }
