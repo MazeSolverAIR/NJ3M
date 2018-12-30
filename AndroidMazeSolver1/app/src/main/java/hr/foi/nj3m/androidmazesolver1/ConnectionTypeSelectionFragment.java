@@ -58,9 +58,6 @@ public class ConnectionTypeSelectionFragment extends Fragment {
             }
         });
 
-        File mFileTemp = new File(getActivity().getExternalFilesDir(DIRECTORY_DCIM)+File.separator+"MazeSolverPictures","Maze.png");
-        mFileTemp.getParentFile().mkdirs();
-        galleryAddPic();
 
     }
 

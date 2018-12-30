@@ -1,11 +1,15 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.File;
 
 import hr.foi.nj3m.interfaces.IWireless;
 
@@ -64,6 +70,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 transaction.commitAllowingStateLoss();
             }
         });
+
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, permission)
+                != PackageManager.PERMISSION_GRANTED
+
+                ) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]
+                    {permission},123);
+        }
+
+
     }
 
     @Override

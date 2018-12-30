@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -16,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -43,6 +46,8 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> bluetoothDevices;
 
+
+
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_of_devices, container, false);
@@ -51,6 +56,14 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        String myfolder=Environment.getExternalStorageDirectory()+"/"+"MazeSolver_Gallery";
+        File f=new File(myfolder);
+        if(!f.exists())
+            if(!f.mkdir()){
+            }
+            else{}
+        else{}
+
     }
 
     @Override
