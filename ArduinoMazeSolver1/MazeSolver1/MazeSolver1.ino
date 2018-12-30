@@ -196,26 +196,48 @@ void exitLab() {
 void lineFollow() {
 	int sensorStateCenter = lineFollower.readSensors();
 
+	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
+
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
 		//senzori su na centru, kre�i se ravno
-		Kreni(brzinaKretanja);
+		bluetooth.print("OnLine");
 		break;
 	case S1_IN_S2_OUT:
-		//senzor 2 je van linije
-		leftMotor.run(-90);
-		rightMotor.run(180);
+		//senzor 2 je van linije (desni senzor)
+		bluetooth.print("RightOut");
 		break;
 	case S1_OUT_S2_IN:
-		//senzor 1 je van linije
-		leftMotor.run(180);
-		rightMotor.run(-90);
+		//senzor 1 je van linije (lijevi senzor)
+		bluetooth.print("LeftOut");
 		break;
 	case S1_OUT_S2_OUT:
 		//oba senzora su van linije
-
-		Kreni(-brzinaKretanja);
+		bluetooth.print("BothOut");
 		break;
 	}
+
+	//provjeriti poljeRadnji
+
+	int ind = index;
+	if (ind > 0)
+		ind--;
+	for (int i = 0; i < ind; i++) {
+		String radnja = poljeRadnji[i].sadrzaj;
+		if (radnja.equals("SpeedUpLeft")) {
+			leftMotor.run(-137);
+			rightMotor.run(brzinaKretanja);
+		}
+		else if (radnja.equals("SpeedUpRight")) {
+			rightMotor.run(137);
+			leftMotor.run(-brzinaKretanja);
+		}
+		else if (radnja.equals("StopMotors"))
+			ZaustaviMotore();
+		else if (radnja.equals("RunMotors"))
+			Kreni(brzinaKretanja);
+		poljeRadnji[i].sadrzaj = "";
+	}
+	index = 0;
 }
