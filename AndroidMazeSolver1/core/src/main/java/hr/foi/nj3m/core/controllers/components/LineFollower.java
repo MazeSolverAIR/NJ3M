@@ -1,8 +1,11 @@
 package hr.foi.nj3m.core.controllers.components;
 
+import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
 import hr.foi.nj3m.interfaces.ILineFollower;
 
 public class LineFollower implements ILineFollower {
+
+    public boolean left, right;
 
     public LineFollower()
     {
@@ -30,9 +33,10 @@ public class LineFollower implements ILineFollower {
     }
 
     @Override
-    public void setCurrentValue(String currentVal) {
-        boolean left,right;
-        if(currentVal=="OnLine"){
+    public void setCurrentValue() {
+        left = MBotInfoCutter.LineFollowerLeft;
+        right = MBotInfoCutter.LineFollowerRight;
+        /*if(currentVal=="OnLine"){
             left=true;
             right=true;
         }
@@ -47,7 +51,7 @@ public class LineFollower implements ILineFollower {
         else if(currentVal=="BotbOut"){
             left=false;
             right=false;
-        }
+        }*/
         //true predstavlja da je senzor na liniji, false da je van linije
     }
 }

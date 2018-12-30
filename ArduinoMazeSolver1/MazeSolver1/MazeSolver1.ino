@@ -138,6 +138,15 @@ void IzvrsiRadnjuBT()
 			else if (radnja.equals("StopMotors"))
 				ZaustaviMotore();
 
+			else if (radnja.equals("SpeedUpLeft")) {
+				leftMotor.run(-137);
+				rightMotor.run(brzinaKretanja);
+			}
+			else if (radnja.equals("SpeedUpRight")) {
+				rightMotor.run(137);
+				leftMotor.run(-brzinaKretanja);
+			}
+
 			poljeRadnji[i].sadrzaj = "";
 		}
 
@@ -150,7 +159,10 @@ void IzvrsiRadnjuBT()
 
 void PosaljiBTPoruku()
 {
-	//String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
+	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
+	 FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
+	 LFL - LineFollowerLeft  LFR - LineFolovwerRight
+	 Šalje se informacija po informacija, te na kraju "Over"*/
 	bluetooth.print("Hello");
 }
 
@@ -217,27 +229,4 @@ void lineFollow() {
 		bluetooth.print("BothOut");
 		break;
 	}
-
-	//provjeriti poljeRadnji
-
-	int ind = index;
-	if (ind > 0)
-		ind--;
-	for (int i = 0; i < ind; i++) {
-		String radnja = poljeRadnji[i].sadrzaj;
-		if (radnja.equals("SpeedUpLeft")) {
-			leftMotor.run(-137);
-			rightMotor.run(brzinaKretanja);
-		}
-		else if (radnja.equals("SpeedUpRight")) {
-			rightMotor.run(137);
-			leftMotor.run(-brzinaKretanja);
-		}
-		else if (radnja.equals("StopMotors"))
-			ZaustaviMotore();
-		else if (radnja.equals("RunMotors"))
-			Kreni(brzinaKretanja);
-		poljeRadnji[i].sadrzaj = "";
-	}
-	index = 0;
 }
