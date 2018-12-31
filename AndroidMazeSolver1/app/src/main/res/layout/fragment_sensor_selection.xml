@@ -75,8 +75,8 @@
         android:layout_marginStart="318dp"
         android:layout_marginTop="176dp"
         android:buttonTint="#251923"
-        android:scaleX="1"
-        android:scaleY="1" />
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
 
     <CheckBox
         android:id="@+id/checkboxRavno"

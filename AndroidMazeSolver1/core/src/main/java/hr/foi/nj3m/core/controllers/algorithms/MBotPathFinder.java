@@ -4,6 +4,7 @@ package hr.foi.nj3m.core.controllers.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.core.controllers.components.LineFollower;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
@@ -20,7 +21,6 @@ import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.SpeedUpRight;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.StopMotors;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Front;
-import static hr.foi.nj3m.interfaces.Enumerations.Sides.FullRotate;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Left;
 import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
@@ -98,13 +98,13 @@ public class MBotPathFinder {
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
         {
-            finalCommandList.addAll(centerMBotFrontSensors());
+            finalCommandList.addAll(centerMBotFrontSensor());
             finalCommandList.addAll(findPathFrontSensor());
         }
 
         else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
         {
-            //finalCommandList = findPathFrontSensor();
+            finalCommandList.addAll(findPathFrontAndRight());
         }
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
@@ -112,6 +112,7 @@ public class MBotPathFinder {
             //finalCommandList = findPathFrontSensor();
         }
 
+        finalCommandList.add(LastCommand);
         return finalCommandList;
     }
 
@@ -119,19 +120,16 @@ public class MBotPathFinder {
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
-        //zbroj ovih dužina sa širinom mBota bi trebala biti širina staze labirinta
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
-        if(!FrontSensor.seesObstacle())
+        if(CrossroadManager.checkIfCrossroad(sensorDistanceSum))
+            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(sensorDistanceSum, this));
+
+        else if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);
         else
             commandsToMBotList.add(StopMotors);
 
-        if(Crossroad.checkIfCrossroad(sensorDistanceSum))
-            commandsToMBotList.addAll(manageCrossroad(sensorDistanceSum));
-
-
-        commandsToMBotList.add(LastCommand);
         return commandsToMBotList;
     }
 
@@ -141,59 +139,17 @@ public class MBotPathFinder {
 
         double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
 
-        if(!Crossroad.checkIfCrossroad(sensorDistanceSum))
+        if(!CrossroadManager.checkIfCrossroad(sensorDistanceSum))
         {
             if(LeftSensor.getNumericValue() > RightSensor.getNumericValue())
-                returnCommand = SpeedUpLeft;
+                returnCommand = SpeedUpRight;
 
 
             else if(RightSensor.getNumericValue() > LeftSensor.getNumericValue())
-                returnCommand = SpeedUpRight;
+                returnCommand = SpeedUpLeft;
         }
 
         return returnCommand;
-    }
-
-    private ArrayList<CommandsToMBot> manageCrossroad(double sensorDistanceSum)
-    {
-        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
-        Crossroad crossroad = null;
-        Sides stranaZaSkretanje = null;
-
-        commandsToMBotList.add(StopMotors);
-
-        //Provjeri stranu raskrizja
-        if(Crossroad.checkCrossroadSide(this.RightSensor))
-        {
-            commandsToMBotList.add(RotateRight);
-            stranaZaSkretanje = Right;
-        }
-
-        else if(Crossroad.checkCrossroadSide(this.FrontSensor))
-        {
-            commandsToMBotList.add(RunMotors);
-            stranaZaSkretanje = Front;
-        }
-
-        else if(Crossroad.checkCrossroadSide(this.LeftSensor))
-        {
-            commandsToMBotList.add(RotateLeft);
-            stranaZaSkretanje = Left;
-        }
-
-        else if(Crossroad.CheckIfDeadEnd(this, sensorDistanceSum))
-        {
-            commandsToMBotList.add(RotateFull);
-            stranaZaSkretanje = FullRotate;
-        }
-
-        //ako je lista prazna ili ako zadnji element liste nije slijepa ulica
-        crossroad = new Crossroad(this, stranaZaSkretanje);
-        crossroad.setCrossroadSize();
-        crossroad.newVisit();
-        this.CrossroadsList.add(crossroad);
-
-        return commandsToMBotList;
     }
 
 
@@ -219,16 +175,24 @@ public class MBotPathFinder {
             commandsToMBotList.add(RotateFull);
         }
 
-        commandsToMBotList.add(LastCommand);
+        return commandsToMBotList;
+    }
+
+    private ArrayList<CommandsToMBot> centerMBotFrontSensor()
+    {
+        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
+
+        if(lineFollower.isOnLeftSide())
+            commandsToMBotList.add(SpeedUpLeft);
+        else if(lineFollower.isOnRightSide())
+            commandsToMBotList.add(SpeedUpRight);
 
         return commandsToMBotList;
     }
 
-    private ArrayList<CommandsToMBot> centerMBotFrontSensors()
+    private ArrayList<CommandsToMBot> findPathFrontAndRight()
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
-
-
 
         return commandsToMBotList;
     }

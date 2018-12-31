@@ -4,5 +4,5 @@ public interface ISensors {
 
     String getFullValue();
 
-    void setCurrentValue(String currentVal);
+    void setCurrentValue(String value);
 }

@@ -1,5 +1,6 @@
 package hr.foi.nj3m.core.controllers.components;
 
+import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
 
@@ -52,7 +53,7 @@ public class UltrasonicSensor implements IUltraSonic {
 
 
     @Override
-    public void setCurrentValue(String currentVal) {
-        this.CurrentValue = currentVal;
+        public void setCurrentValue(String value) {
+        this.CurrentValue = value;
     }
 }

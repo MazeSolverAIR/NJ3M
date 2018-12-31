@@ -21,7 +21,7 @@ String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
-
+//MeUltrasonicSensor ultraSonicLeft(4);
 
 uint16_t brzinaKretanja = 127;
 
@@ -56,6 +56,7 @@ void loop()
 		}
 		CitajBluetooth();
 		IzvrsiRadnjuBT();
+
 		//lineFollow();
 		b = true;
 		break;
@@ -67,6 +68,15 @@ void loop()
 
 			b = false;
 		}
+	
+		/*Serial.println(ultraSonicLeft.distanceCm());
+		if (ultraSonicLeft.distanceCm() < 10)
+			Kreni(brzinaKretanja);
+
+		else
+			ZaustaviMotore();
+			*/
+	//	delay(5);
 
 		a = true;
 		break;
@@ -128,6 +138,15 @@ void IzvrsiRadnjuBT()
 			else if (radnja.equals("StopMotors"))
 				ZaustaviMotore();
 
+			else if (radnja.equals("SpeedUpLeft")) {
+				leftMotor.run(-137);
+				rightMotor.run(brzinaKretanja);
+			}
+			else if (radnja.equals("SpeedUpRight")) {
+				rightMotor.run(137);
+				leftMotor.run(-brzinaKretanja);
+			}
+
 			poljeRadnji[i].sadrzaj = "";
 		}
 
@@ -140,7 +159,10 @@ void IzvrsiRadnjuBT()
 
 void PosaljiBTPoruku()
 {
-	//String prednjiSenzor = DohvatiRadnjuIzEnuma(PrednjiUZSenzor);
+	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
+	 FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
+	 LFL - LineFollowerLeft  LFR - LineFolovwerRight
+	 Šalje se informacija po informacija, te na kraju "Over"*/
 	bluetooth.print("Hello");
 }
 
@@ -186,26 +208,25 @@ void exitLab() {
 void lineFollow() {
 	int sensorStateCenter = lineFollower.readSensors();
 
+	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
+
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
 		//senzori su na centru, kre�i se ravno
-		Kreni(brzinaKretanja);
+		bluetooth.print("OnLine");
 		break;
 	case S1_IN_S2_OUT:
-		//senzor 2 je van linije
-		leftMotor.run(-90);
-		rightMotor.run(180);
+		//senzor 2 je van linije (desni senzor)
+		bluetooth.print("RightOut");
 		break;
 	case S1_OUT_S2_IN:
-		//senzor 1 je van linije
-		leftMotor.run(180);
-		rightMotor.run(-90);
+		//senzor 1 je van linije (lijevi senzor)
+		bluetooth.print("LeftOut");
 		break;
 	case S1_OUT_S2_OUT:
 		//oba senzora su van linije
-
-		Kreni(-brzinaKretanja);
+		bluetooth.print("BothOut");
 		break;
 	}
 }

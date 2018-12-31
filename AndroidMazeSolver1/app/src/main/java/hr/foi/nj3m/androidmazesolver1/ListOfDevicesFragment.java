@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -16,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -27,7 +30,7 @@ import hr.foi.nj3m.interfaces.IRobotMessenger;
 import hr.foi.nj3m.interfaces.IWireless;
 
 
-public class ListOfDevices extends Fragment implements AdapterView.OnItemClickListener {
+public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     //Bluetooth bluetooth;
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
@@ -43,6 +46,8 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> bluetoothDevices;
 
+
+
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_of_devices, container, false);
@@ -51,6 +56,14 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+        String myfolder=Environment.getExternalStorageDirectory()+"/"+"MazeSolver_Gallery";
+        File f=new File(myfolder);
+        if(!f.exists())
+            if(!f.mkdir()){
+            }
+            else{}
+        else{}
+
     }
 
     @Override
@@ -90,7 +103,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
                 mBTDevices.add(device);
                 mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                 lvNewDevices.setAdapter(mDeviceListAdapter);
-                lvNewDevices.setOnItemClickListener(ListOfDevices.this);
+                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -131,7 +144,7 @@ public class ListOfDevices extends Fragment implements AdapterView.OnItemClickLi
     private void openConnectedDialog(String deviceAddress){
         Bundle bundle= new Bundle();
         bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
-        Fragment fragment= new ConnectedDialog();
+        Fragment fragment= new ConnectedDialogFragment();
         fragment.setArguments(bundle);
         FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,fragment);
