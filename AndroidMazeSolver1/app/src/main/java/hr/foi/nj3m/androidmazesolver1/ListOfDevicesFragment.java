@@ -6,8 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Environment;
 import android.os.Looper;
@@ -26,6 +28,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -131,36 +134,45 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 }
             }
             if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
-                final List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+                iConnections = ConnectionController.creteInstance("wifi", getActivity());
+                final ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
                 WifiP2pManager wifiP2pManager = (WifiP2pManager) getContext().getSystemService(Context.WIFI_P2P_SERVICE);
                 WifiP2pManager.Channel wifiP2pChannel = wifiP2pManager.initialize(getContext(), Looper.getMainLooper(), null);
-                wifiP2pManager.requestPeers(wifiP2pChannel, new WifiP2pManager.PeerListListener() {
-                    @Override
-                    public void onPeersAvailable(WifiP2pDeviceList peerList) {
-                        if(!peerList.getDeviceList().equals(peers)){
-                            peers.clear();
-                            peers.addAll(peerList.getDeviceList());
+                if (wifiP2pManager != null)
+                    wifiP2pManager.requestPeers(wifiP2pChannel, new WifiP2pManager.PeerListListener() {
+                        @Override
+                        public void onPeersAvailable(WifiP2pDeviceList peerList) {
+                            if(!peerList.getDeviceList().equals(peers)){
+                                peers.clear();
+                                peers.addAll(peerList.getDeviceList());
 
-                            deviceNameArray = new String[peerList.getDeviceList().size()];
-                            deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
-                            int index = 0;
+                                deviceNameArray = new String[peerList.getDeviceList().size()];
+                                deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
+                                int index = 0;
 
-                            for(WifiP2pDevice device : peerList.getDeviceList()){
-                                deviceNameArray[index] = device.deviceName;
-                                deviceArray[index] = device;
-                                index++;
+                                for(WifiP2pDevice device : peerList.getDeviceList()){
+                                    deviceNameArray[index] = device.deviceName;
+                                    deviceArray[index] = device;
+                                    index++;
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, deviceNameArray);
+                                lvNewDevices.setAdapter(adapter);
+                                iConnections.addDevices(peers);
                             }
 
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, deviceNameArray);
-                            lvNewDevices.setAdapter(adapter);
+                            if(peers.size() == 0){
+                                Toast.makeText(getContext(), "Uređaji nisu pronađeni", Toast.LENGTH_LONG).show();
+                                return;
+                            }
                         }
-
-                        if(peers.size() == 0){
-                            Toast.makeText(getContext(), "Uređaji nisu pronađeni", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                    }
-                });
+                    });
+                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+            }
+            if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)){
+               /* NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+                if (networkInfo.isConnected())
+                    openConnectedDialog(deviceAddress);*/
             }
         }
     };

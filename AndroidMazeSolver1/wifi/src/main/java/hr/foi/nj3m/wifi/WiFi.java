@@ -1,10 +1,17 @@
 package hr.foi.nj3m.wifi;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,6 +29,8 @@ public class WiFi implements IConnections, IWireless {
     private WifiP2pManager wifiP2pManager;
     private WifiP2pManager.Channel wifiP2pChannel;
     private IntentFilter intentFilter;
+    private ArrayList<WifiP2pDevice> peers;
+    private WifiP2pConfig wifiP2pConfig;
 
     private static WiFi InstanceOfWiFi;
 
@@ -64,17 +73,17 @@ public class WiFi implements IConnections, IWireless {
 
     @Override
     public void addDevices(ArrayList devices) {
-
+        this.peers = devices;
     }
 
     @Override
     public String getDeviceAddress(int position) {
-        return null;
+        return peers.get(position).deviceAddress;
     }
 
     @Override
     public String getDeviceName(int position) {
-        return null;
+        return peers.get(position).deviceName;
     }
 
     @Override
@@ -83,7 +92,20 @@ public class WiFi implements IConnections, IWireless {
     }
 
     @Override
-    public IRobotMessenger connect(int position) {
+    public IRobotMessenger connect(final int position) {
+        wifiP2pConfig = new WifiP2pConfig();
+        wifiP2pConfig.deviceAddress = getDeviceAddress(position);
+        wifiP2pManager.connect(wifiP2pChannel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, "Spojen sa " + getDeviceName(position), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                Toast.makeText(context, "Greška prilikom spajanja", Toast.LENGTH_LONG).show();
+            }
+        });
         return createWiFiSender();
     }
 
@@ -98,6 +120,7 @@ public class WiFi implements IConnections, IWireless {
 
     @Override
     public void discover(final BroadcastReceiver mBroadcastReceiver) {
+        checkWifiPermissions();
         wifiP2pManager.discoverPeers(wifiP2pChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
@@ -110,5 +133,15 @@ public class WiFi implements IConnections, IWireless {
                 Toast.makeText(context, "Greška prilikom traženja uređaja", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void checkWifiPermissions(){
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            int permissionCheck = ContextCompat.checkSelfPermission(context, "Manifest.permission.ACCESS_FINE_LOCATION");
+            permissionCheck += ContextCompat.checkSelfPermission(context,"Manifest.permission.ACCESS_COARSE_LOCATION");
+            if (permissionCheck != 0){
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
+            }
+        }
     }
 }

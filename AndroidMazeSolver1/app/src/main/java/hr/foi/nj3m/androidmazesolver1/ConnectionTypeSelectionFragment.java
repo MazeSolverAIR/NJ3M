@@ -65,7 +65,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iWireless = WirelessController.createInstance(getActivity().getApplicationContext(), "wifi");
+                iWireless = WirelessController.createInstance(getActivity(), "wifi");
                 if(wifiManager.isWifiEnabled())
                     openListOfDevices();
                 else
