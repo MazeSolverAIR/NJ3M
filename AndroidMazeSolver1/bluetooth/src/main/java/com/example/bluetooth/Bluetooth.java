@@ -34,6 +34,7 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     Context context;
     String deviceAddress;
     BluetoothSocket bluetoothSocket = null;
+    ArrayList<BluetoothDevice> bluetoothDevices;
 
     private static Bluetooth instanceOfBluetooth;
 
@@ -60,13 +61,39 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     }
 
     @Override
-    public IRobotMessenger connect(ArrayList devices, int position) {
-        mBluetoothAdapter.cancelDiscovery();
-        ArrayList<BluetoothDevice> mDevices = devices;
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
-            mDevices.get(position).createBond();
+    public void addDevices(ArrayList devices) {
+        this.bluetoothDevices = devices;
+    }
+
+    @Override
+    public String getDeviceAddress(int position) {
+        return bluetoothDevices.get(position).getAddress();
+    }
+
+    @Override
+    public String getDeviceName(int position) {
+        return bluetoothDevices.get(position).getName();
+    }
+
+    @Override
+    public boolean deviceExists(String deviceName) {
+        boolean exists = false;
+        for (BluetoothDevice device : mBluetoothAdapter.getBondedDevices()){
+            if (device.getName().equals(deviceName))
+                exists = true;
         }
-        deviceAddress = mDevices.get(position).getAddress();
+        return exists;
+    }
+
+    @Override
+    public IRobotMessenger connect(int position) {
+        mBluetoothAdapter.cancelDiscovery();
+        //ArrayList<BluetoothDevice> mDevices = devices;
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+            bluetoothDevices.get(position).createBond();
+            //mDevices.get(position).createBond();
+        }
+        //deviceAddress = mDevices.get(position).getAddress();
         return createBluetoothSender(context);
     }
 

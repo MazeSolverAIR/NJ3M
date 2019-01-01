@@ -51,12 +51,6 @@ public class WiFi implements IConnections, IWireless {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
     }
 
-
-    @Override
-    public IRobotMessenger connect(ArrayList mDevices, int position) {
-        return createWiFiSender();
-    }
-
     @Override
     public boolean disconnect() {
         InstanceOfWiFi = null;
@@ -66,6 +60,31 @@ public class WiFi implements IConnections, IWireless {
     @Override
     public boolean isAvailable() {
         return false;
+    }
+
+    @Override
+    public void addDevices(ArrayList devices) {
+
+    }
+
+    @Override
+    public String getDeviceAddress(int position) {
+        return null;
+    }
+
+    @Override
+    public String getDeviceName(int position) {
+        return null;
+    }
+
+    @Override
+    public boolean deviceExists(String deviceName) {
+        return false;
+    }
+
+    @Override
+    public IRobotMessenger connect(int position) {
+        return createWiFiSender();
     }
 
     @Override
