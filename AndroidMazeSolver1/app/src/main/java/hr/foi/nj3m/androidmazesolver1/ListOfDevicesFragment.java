@@ -42,9 +42,6 @@ import hr.foi.nj3m.interfaces.IWireless;
 
 public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    //Bluetooth bluetooth;
-    //public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
-    //public DeviceListAdapter mDeviceListAdapter;
     ListView lvNewDevices;
     Button btnDiscover;
     private String deviceAddress;
@@ -57,7 +54,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     public static IRobotMessenger iRobotMessenger;
     IWireless iWireless;
     BluetoothAdapter bluetoothAdapter;
-    //Set<BluetoothDevice> bluetoothDevices;
 
     String[] deviceNameArray;
     WifiP2pDevice[] deviceArray;
@@ -85,25 +81,14 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         super.onStart();
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        //bluetoothDevices = bluetoothAdapter.getBondedDevices();
-
         iWireless = WirelessController.getInstanceOfIWireless();
-
-        //iWireless = WirelessController.createInstance(getActivity());
-
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
-        //mBTDevices = new ArrayList<>();
-
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
-
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, stringArrayList);
-
-        //bluetooth = new Bluetooth(this, MainActivity.mBluetoothAdapter, mBroadcastReceiver);
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //bluetooth.discover();
                 iWireless.discover(mBroadcastReceiver);
             }
         });
@@ -123,8 +108,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 lvNewDevices.setAdapter(adapter);
                 bluetoothDevices.add(device);
                 iConnections.addDevices(bluetoothDevices);
-                /*mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                lvNewDevices.setAdapter(mDeviceListAdapter);*/
                 lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
@@ -179,36 +162,18 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //deviceAddress = mBTDevices.get(position).getAddress();
+
         deviceAddress = iConnections.getDeviceAddress(position);
-
-        /*boolean exists = false;
-        for(BluetoothDevice bluetoothDevice: bluetoothDevices){
-            if(bluetoothDevice.getName().equals("Makeblock"))
-                exists = true;
-        }*/
-
-        //iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
 
         if(iConnections.deviceExists(iConnections.getDeviceName(position)))
             openConnectedDialog(deviceAddress);
-        /*
-        if(exists){
-            openConnectedDialog(deviceAddress);
-        }*/
+
         else {
             iRobotMessenger = iConnections.connect(position);
-            //iRobotMessenger = iConnections.connect(mBTDevices, position);
             IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
             //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
             getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
         }
-        //iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
-
-        //iRobotMessenger = iConnections.connect(mBTDevices, position);
-
-        /*IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);*/
     }
 
     private void openConnectedDialog(String deviceAddress){

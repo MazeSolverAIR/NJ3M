@@ -32,8 +32,6 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
 
     BluetoothAdapter mBluetoothAdapter;
     Context context;
-    String deviceAddress;
-    BluetoothSocket bluetoothSocket = null;
     ArrayList<BluetoothDevice> bluetoothDevices;
 
     private static Bluetooth instanceOfBluetooth;
@@ -52,7 +50,6 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     private Bluetooth(Context context){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
-        this.deviceAddress = deviceAddress;
     }
 
     @Override
@@ -88,12 +85,9 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     @Override
     public IRobotMessenger connect(int position) {
         mBluetoothAdapter.cancelDiscovery();
-        //ArrayList<BluetoothDevice> mDevices = devices;
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             bluetoothDevices.get(position).createBond();
-            //mDevices.get(position).createBond();
         }
-        //deviceAddress = mDevices.get(position).getAddress();
         return createBluetoothSender(context);
     }
 
