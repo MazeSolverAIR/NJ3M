@@ -6,21 +6,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Environment;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
@@ -46,7 +53,8 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     BluetoothAdapter bluetoothAdapter;
     Set<BluetoothDevice> bluetoothDevices;
 
-
+    String[] deviceNameArray;
+    WifiP2pDevice[] deviceArray;
 
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,6 +118,38 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 if(device.getBondState() == BluetoothDevice.BOND_BONDED){
                     openConnectedDialog(deviceAddress);
                 }
+            }
+            if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
+                final List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+                WifiP2pManager wifiP2pManager = (WifiP2pManager) getContext().getSystemService(Context.WIFI_P2P_SERVICE);
+                WifiP2pManager.Channel wifiP2pChannel = wifiP2pManager.initialize(getContext(), Looper.getMainLooper(), null);
+                wifiP2pManager.requestPeers(wifiP2pChannel, new WifiP2pManager.PeerListListener() {
+                    @Override
+                    public void onPeersAvailable(WifiP2pDeviceList peerList) {
+                        if(!peerList.getDeviceList().equals(peers)){
+                            peers.clear();
+                            peers.addAll(peerList.getDeviceList());
+
+                            deviceNameArray = new String[peerList.getDeviceList().size()];
+                            deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
+                            int index = 0;
+
+                            for(WifiP2pDevice device : peerList.getDeviceList()){
+                                deviceNameArray[index] = device.deviceName;
+                                deviceArray[index] = device;
+                                index++;
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, deviceNameArray);
+                            lvNewDevices.setAdapter(adapter);
+                        }
+
+                        if(peers.size() == 0){
+                            Toast.makeText(getContext(), "Uređaji nisu pronađeni", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                });
             }
         }
     };

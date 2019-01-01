@@ -2,9 +2,10 @@ package hr.foi.nj3m.wifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.net.wifi.p2p.WifiP2pManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,9 @@ public class WiFi implements IConnections, IWireless {
 
     private WifiManager wifiManager;
     private Context context;
+    private WifiP2pManager wifiP2pManager;
+    private WifiP2pManager.Channel wifiP2pChannel;
+    private IntentFilter intentFilter;
 
     private static WiFi InstanceOfWiFi;
 
@@ -35,7 +39,16 @@ public class WiFi implements IConnections, IWireless {
     private WiFi(Context context) {
         //konstruktor
         this.context = context;
+
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        wifiP2pManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
+        wifiP2pChannel = wifiP2pManager.initialize(context, context.getMainLooper(), null);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
     }
 
 
@@ -65,7 +78,18 @@ public class WiFi implements IConnections, IWireless {
     }
 
     @Override
-    public void discover(BroadcastReceiver mBroadcastReceiver) {
+    public void discover(final BroadcastReceiver mBroadcastReceiver) {
+        wifiP2pManager.discoverPeers(wifiP2pChannel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(context, "Tražim uređaje...", Toast.LENGTH_LONG).show();
+                context.registerReceiver(mBroadcastReceiver, intentFilter);
+            }
 
+            @Override
+            public void onFailure(int reason) {
+                Toast.makeText(context, "Greška prilikom traženja uređaja", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

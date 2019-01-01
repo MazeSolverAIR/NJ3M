@@ -52,7 +52,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iWireless = WirelessController.createInstance(getActivity().getApplicationContext(), "bluetooth");
+                iWireless = WirelessController.createInstance(getActivity(), "bluetooth");
                 //bluetooth.enableDisableBluetooth();
                 if(mBluetoothAdapter.isEnabled()){
                     openListOfDevices();
