@@ -27,7 +27,7 @@ public class ClientThread extends Thread implements Callable {
             e.printStackTrace();
         }
         iRobotMessenger = ConnectionController.getInstanceOfIRobot();
-        iRobotMessenger.initializeSocket(bluetoothSocket, handler);
+        //iRobotMessenger.initializeSocket(bluetoothSocket, handler);
     }
 
     public void run(){

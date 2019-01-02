@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
@@ -32,6 +33,8 @@ public class ConnectionTypeSelectionFragment extends Fragment {
     public static BluetoothAdapter mBluetoothAdapter;
     IWireless iWireless;
     WifiManager wifiManager;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor prefEditor;
 
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -49,10 +52,15 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         final ImageButton tipkaBluetooth = (ImageButton) getView().findViewById(R.id.btnBluetooth);
         final ImageButton tipkaWifi = (ImageButton) getView().findViewById(R.id.btnWifi);
 
+        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
+        prefEditor = sharedPreferences.edit();
+
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iWireless = WirelessController.createInstance(getActivity(), "bluetooth");
+                prefEditor.putString("TypeOfConnection", "bluetooth");
+                prefEditor.commit();
+                iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
                 //bluetooth.enableDisableBluetooth();
                 if(mBluetoothAdapter.isEnabled()){
                     openListOfDevices();
@@ -65,7 +73,9 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iWireless = WirelessController.createInstance(getActivity(), "wifi");
+                prefEditor.putString("TypeOfConnection", "wifi");
+                prefEditor.commit();
+                iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
                 if(wifiManager.isWifiEnabled())
                     openListOfDevices();
                 else

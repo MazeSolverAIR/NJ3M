@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
@@ -58,6 +59,8 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     String[] deviceNameArray;
     WifiP2pDevice[] deviceArray;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_of_devices, container, false);
@@ -85,6 +88,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, stringArrayList);
+        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +104,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if(action.equals(BluetoothDevice.ACTION_FOUND)){
-                iConnections = ConnectionController.creteInstance("bluetooth", getActivity());
+                iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 stringArrayList.add(device.getName());
@@ -117,7 +121,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 }
             }
             if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
-                iConnections = ConnectionController.creteInstance("wifi", getActivity());
+                iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 final ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
                 WifiP2pManager wifiP2pManager = (WifiP2pManager) getContext().getSystemService(Context.WIFI_P2P_SERVICE);
                 WifiP2pManager.Channel wifiP2pChannel = wifiP2pManager.initialize(getContext(), Looper.getMainLooper(), null);

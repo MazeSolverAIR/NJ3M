@@ -1,6 +1,8 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -25,6 +27,8 @@ public class ConnectedDialogFragment extends Fragment {
     SendReceive sendReceive;
     String deviceAddress;
 
+    SharedPreferences sharedPreferences;
+
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         return inflater.inflate(R.layout.fragment_connected_dialog,container,false);
@@ -36,6 +40,8 @@ public class ConnectedDialogFragment extends Fragment {
         final Bundle bundle= this.getArguments();
 
         //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevicesFragment.EXTRA_ADDRESS);
+
+        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
 
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -134,13 +140,27 @@ public class ConnectedDialogFragment extends Fragment {
     }
 
     private void Connect(String deviceAddress){
-        sendReceive = new SendReceive(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
-        try {
-            sendReceive.call();
-        } catch (Exception e) {
-            e.printStackTrace();
+        switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+            case "bluetooth":
+                sendReceive = new SendReceive(deviceAddress, handler);
+                try {
+                    sendReceive.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                sendReceive.start();
+                break;
+            case "wifi":
+                // TODO: 2.1.2019. Ako proradi WiFi modul na robotu, potrebno je ovo testirati. 
+                sendReceive = new SendReceive("adresa", handler);
+                try {
+                    sendReceive.call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                sendReceive.start();
+                break;
         }
-        sendReceive.start();
 
         // TODO: 24.12.2018. Ovo je instanciranje klase ClientThread koju vjerojatno više nećemo koristiti; provjeriti!
         /*clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);

@@ -1,12 +1,5 @@
 package hr.foi.nj3m.androidmazesolver1.Threads;
-
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
-import android.telecom.Call;
-
-import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
@@ -14,21 +7,15 @@ import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class SendReceive extends Thread implements Callable {
 
-    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    private BluetoothSocket bluetoothSocket;
     private Handler handler;
+    private String address;
 
     IRobotMessenger iRobotMessenger;
 
-    public SendReceive(BluetoothDevice device, Handler handler){
+    public SendReceive(String address, Handler handler){
         this.handler = handler;
-        try {
-            bluetoothSocket = device.createRfcommSocketToServiceRecord(mUUID);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.address = address;
         iRobotMessenger = ConnectionController.getInstanceOfIRobot();
-        iRobotMessenger.initializeSocket(bluetoothSocket, handler);
     }
 
     public void run(){
@@ -40,8 +27,8 @@ public class SendReceive extends Thread implements Callable {
     }
 
     @Override
-    public SendReceive call() throws Exception {
-        bluetoothSocket.connect();
+    public SendReceive call() {
+        iRobotMessenger.initializeSocket(address, handler);
         return this;
     }
 }

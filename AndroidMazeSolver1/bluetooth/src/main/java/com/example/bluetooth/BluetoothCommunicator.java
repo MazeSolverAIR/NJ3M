@@ -1,24 +1,26 @@
 package com.example.bluetooth;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class BluetoothCommunicator implements IRobotMessenger {
 
+    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Context context;
     private InputStream inputStream;
     private OutputStream outputStream;
     private BluetoothSocket bluetoothSocket;
     private Handler handler;
+    private BluetoothAdapter mBluetoothAdapter;
 
     private static BluetoothCommunicator InstanceOfSender;
 
@@ -33,11 +35,17 @@ public class BluetoothCommunicator implements IRobotMessenger {
     private BluetoothCommunicator(Context context)
     {
         this.context = context;
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
     @Override
-    public void initializeSocket(BluetoothSocket socket, Handler handler) {
-        bluetoothSocket = socket;
+    public void initializeSocket(String address, Handler handler) {
+        try {
+            bluetoothSocket = mBluetoothAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(mUUID);
+            bluetoothSocket.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.handler = handler;
 
         InputStream tmpIn = null;
