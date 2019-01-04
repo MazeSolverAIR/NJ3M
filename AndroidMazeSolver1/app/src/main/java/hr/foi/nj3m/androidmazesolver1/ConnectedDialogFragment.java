@@ -1,6 +1,5 @@
 package hr.foi.nj3m.androidmazesolver1;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -22,11 +21,10 @@ import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import static java.lang.Thread.sleep;
 
 public class ConnectedDialogFragment extends Fragment {
-    BluetoothAdapter mBluetoothAdapter = null;
+
     Button btnSendControl;
     SendReceive sendReceive;
     String deviceAddress;
-
     SharedPreferences sharedPreferences;
 
     @Override
@@ -39,12 +37,8 @@ public class ConnectedDialogFragment extends Fragment {
         super.onStart();
         final Bundle bundle= this.getArguments();
 
-        //final String deviceAddress = getActivity().getIntent().getStringExtra(ListOfDevicesFragment.EXTRA_ADDRESS);
-
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
-
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         new Thread(new Runnable() {
             @Override
@@ -53,20 +47,6 @@ public class ConnectedDialogFragment extends Fragment {
                 Connect(deviceAddress);
             }
         }).start();
-        //Connect(deviceAddress);
-
-        // NE KORISTIMO VEĆ OVU TIPKU
-        /*btnListen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ServerThread serverThread = new ServerThread(handler, getApplicationContext());
-                try {
-                    sendReceive = serverThread.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
 
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,55 +100,24 @@ public class ConnectedDialogFragment extends Fragment {
                 }
                 sendReceive.write("Over");
 
-                Log.d("Poslana poruka: ", string);
-                Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_LONG).show();
+                //Log.d("Poslana poruka: ", string);
+                //Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_LONG).show();
             }
         });
-
-        // NI OVU TIPKU VEĆ NE KORISTIMO
-        /*btnConnect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
-                try {
-                    sendReceive = clientThread.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
     }
 
     private void Connect(String deviceAddress){
         switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
             case "bluetooth":
                 sendReceive = new SendReceive(deviceAddress, handler);
-                /*try {
-                    sendReceive.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
                 sendReceive.start();
                 break;
             case "wifi":
                 // TODO: 2.1.2019. Ako proradi WiFi modul na robotu, potrebno je ovo testirati. 
                 sendReceive = new SendReceive("adresa", handler);
-                /*try {
-                    sendReceive.call();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
                 sendReceive.start();
                 break;
         }
-
-        // TODO: 24.12.2018. Ovo je instanciranje klase ClientThread koju vjerojatno više nećemo koristiti; provjeriti!
-        /*clientThread = new ClientThread(mBluetoothAdapter.getRemoteDevice(deviceAddress), handler);
-        try {
-            sendReceive = clientThread.call();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
     Handler handler = new Handler(new Handler.Callback() {
@@ -187,7 +136,6 @@ public class ConnectedDialogFragment extends Fragment {
                 if(workingMessage.contains("KreceWrite")) {
                     Log.d("Tocna poruka", workingMessage);
                     try {
-
                         sleep(300);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
