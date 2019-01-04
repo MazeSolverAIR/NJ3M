@@ -10,6 +10,8 @@ public interface IConnections {
 
     boolean isAvailable();
     void addDevices(ArrayList devices);
+    void clearList();
+    ArrayList<String> getDeviceArray();
     String getDeviceAddress(int position);
     String getDeviceName(int position);
     boolean deviceExists(String deviceName);

@@ -13,10 +13,10 @@ import android.net.wifi.WifiManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 
 import android.widget.ImageButton;
@@ -29,8 +29,7 @@ import hr.foi.nj3m.interfaces.IWireless;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
-    private static final String TAG = "MainActivity";
-    public static BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter mBluetoothAdapter;
     IWireless iWireless;
     WifiManager wifiManager;
     SharedPreferences sharedPreferences;
@@ -40,13 +39,12 @@ public class ConnectionTypeSelectionFragment extends Fragment {
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         return inflater.inflate(R.layout.fragment_connection_type_selection,container,false);
     }
+
     @Override
     public void onStart() {
         super.onStart();
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        final hr.foi.nj3m.androidmazesolver1.Bluetooth bluetooth = new hr.foi.nj3m.androidmazesolver1.Bluetooth(getActivity(), mBluetoothAdapter, mBroadcastReceiver);
-
         wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
         final ImageButton tipkaBluetooth = (ImageButton) getView().findViewById(R.id.btnBluetooth);
@@ -61,10 +59,8 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                 prefEditor.putString("TypeOfConnection", "bluetooth");
                 prefEditor.commit();
                 iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
-                //bluetooth.enableDisableBluetooth();
-                if(mBluetoothAdapter.isEnabled()){
+                if(mBluetoothAdapter.isEnabled())
                     openListOfDevices();
-                }
                 else
                     iWireless.enableDisable(mBroadcastReceiver);
             }
@@ -82,10 +78,15 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                     iWireless.enableDisable(mBroadcastReceiver);
             }
         });
-
     }
 
-    public void openListOfDevices(){
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    private void openListOfDevices(){
         Fragment fragment= new ListOfDevicesFragment();
         FragmentTransaction transaction=getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,fragment);

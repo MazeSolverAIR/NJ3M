@@ -54,7 +54,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     IConnections iConnections;
     public static IRobotMessenger iRobotMessenger;
     IWireless iWireless;
-    BluetoothAdapter bluetoothAdapter;
 
     String[] deviceNameArray;
     WifiP2pDevice[] deviceArray;
@@ -83,16 +82,17 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     public void onStart() {
         super.onStart();
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         iWireless = WirelessController.getInstanceOfIWireless();
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, stringArrayList);
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
+        iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iConnections.getDeviceArray());
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                iConnections.clearList();
                 iWireless.discover(mBroadcastReceiver);
             }
         });
@@ -104,14 +104,11 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             if(action.equals(BluetoothDevice.ACTION_FOUND)){
-                iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                stringArrayList.add(device.getName());
-                adapter.notifyDataSetChanged();
-                lvNewDevices.setAdapter(adapter);
                 bluetoothDevices.add(device);
                 iConnections.addDevices(bluetoothDevices);
+                lvNewDevices.setAdapter(adapter);
                 lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
@@ -121,37 +118,18 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 }
             }
             if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
-                iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                final ArrayList<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+                final ArrayList<WifiP2pDevice> wifiP2pDevices = new ArrayList<WifiP2pDevice>();
                 WifiP2pManager wifiP2pManager = (WifiP2pManager) getContext().getSystemService(Context.WIFI_P2P_SERVICE);
                 WifiP2pManager.Channel wifiP2pChannel = wifiP2pManager.initialize(getContext(), Looper.getMainLooper(), null);
                 if (wifiP2pManager != null)
                     wifiP2pManager.requestPeers(wifiP2pChannel, new WifiP2pManager.PeerListListener() {
                         @Override
                         public void onPeersAvailable(WifiP2pDeviceList peerList) {
-                            if(!peerList.getDeviceList().equals(peers)){
-                                peers.clear();
-                                peers.addAll(peerList.getDeviceList());
-
-                                deviceNameArray = new String[peerList.getDeviceList().size()];
-                                deviceArray = new WifiP2pDevice[peerList.getDeviceList().size()];
-                                int index = 0;
-
-                                for(WifiP2pDevice device : peerList.getDeviceList()){
-                                    deviceNameArray[index] = device.deviceName;
-                                    deviceArray[index] = device;
-                                    index++;
-                                }
-
-                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, deviceNameArray);
-                                lvNewDevices.setAdapter(adapter);
-                                iConnections.addDevices(peers);
+                            for(WifiP2pDevice device : peerList.getDeviceList()){
+                                wifiP2pDevices.add(device);
                             }
-
-                            if(peers.size() == 0){
-                                Toast.makeText(getContext(), "Uređaji nisu pronađeni", Toast.LENGTH_LONG).show();
-                                return;
-                            }
+                            iConnections.addDevices(wifiP2pDevices);
+                            lvNewDevices.setAdapter(adapter);
                         }
                     });
                 lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);

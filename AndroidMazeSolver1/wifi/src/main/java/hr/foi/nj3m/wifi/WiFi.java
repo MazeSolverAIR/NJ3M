@@ -29,8 +29,9 @@ public class WiFi implements IConnections, IWireless {
     private WifiP2pManager wifiP2pManager;
     private WifiP2pManager.Channel wifiP2pChannel;
     private IntentFilter intentFilter;
-    private ArrayList<WifiP2pDevice> peers;
+    private ArrayList<WifiP2pDevice> wifiP2pDevices;
     private WifiP2pConfig wifiP2pConfig;
+    private ArrayList<String> deviceNameArray;
 
     private static WiFi InstanceOfWiFi;
 
@@ -58,6 +59,9 @@ public class WiFi implements IConnections, IWireless {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        wifiP2pDevices = new ArrayList<>();
+        deviceNameArray = new ArrayList<>();
     }
 
     @Override
@@ -73,17 +77,34 @@ public class WiFi implements IConnections, IWireless {
 
     @Override
     public void addDevices(ArrayList devices) {
-        this.peers = devices;
+        this.wifiP2pDevices = devices;
+        refreshNameArray();
+    }
+
+    private void refreshNameArray() {
+        deviceNameArray.clear();
+        for (WifiP2pDevice device : wifiP2pDevices)
+            deviceNameArray.add(device.deviceName);
+    }
+
+    @Override
+    public void clearList() {
+        wifiP2pDevices.clear();
+    }
+
+    @Override
+    public ArrayList<String> getDeviceArray() {
+        return deviceNameArray;
     }
 
     @Override
     public String getDeviceAddress(int position) {
-        return peers.get(position).deviceAddress;
+        return wifiP2pDevices.get(position).deviceAddress;
     }
 
     @Override
     public String getDeviceName(int position) {
-        return peers.get(position).deviceName;
+        return wifiP2pDevices.get(position).deviceName;
     }
 
     @Override

@@ -33,6 +33,7 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     BluetoothAdapter mBluetoothAdapter;
     Context context;
     ArrayList<BluetoothDevice> bluetoothDevices;
+    ArrayList<String> deviceNameArray;
 
     private static Bluetooth instanceOfBluetooth;
 
@@ -50,6 +51,8 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     private Bluetooth(Context context){
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         this.context = context;
+        bluetoothDevices = new ArrayList<>();
+        deviceNameArray = new ArrayList<>();
     }
 
     @Override
@@ -59,7 +62,24 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
 
     @Override
     public void addDevices(ArrayList devices) {
-        this.bluetoothDevices = devices;
+        this.bluetoothDevices.addAll(devices);
+        refreshNameArray();
+    }
+
+    @Override
+    public void clearList() {
+        bluetoothDevices.clear();
+    }
+
+    @Override
+    public ArrayList<String> getDeviceArray() {
+        return deviceNameArray;
+    }
+
+    private void refreshNameArray() {
+        deviceNameArray.clear();
+        for (BluetoothDevice device : bluetoothDevices)
+            deviceNameArray.add(device.getName());
     }
 
     @Override
