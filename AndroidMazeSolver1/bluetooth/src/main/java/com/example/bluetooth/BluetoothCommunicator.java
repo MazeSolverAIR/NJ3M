@@ -82,7 +82,7 @@ public class BluetoothCommunicator implements IRobotMessenger {
         byte[] buffer = new byte[1024];
         int bytes;
 
-        while (true){
+        while (bluetoothSocket != null){
             try {
                 bytes = inputStream.read(buffer);
                 handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();

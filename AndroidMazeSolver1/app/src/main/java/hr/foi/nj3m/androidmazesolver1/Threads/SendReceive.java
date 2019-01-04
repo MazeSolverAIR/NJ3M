@@ -16,6 +16,7 @@ public class SendReceive extends Thread implements Callable {
         this.handler = handler;
         this.address = address;
         iRobotMessenger = ConnectionController.getInstanceOfIRobot();
+        iRobotMessenger.initializeSocket(address, handler);
     }
 
     public void run(){
@@ -28,7 +29,7 @@ public class SendReceive extends Thread implements Callable {
 
     @Override
     public SendReceive call() {
-        iRobotMessenger.initializeSocket(address, handler);
+        //iRobotMessenger.initializeSocket(address, handler);
         return this;
     }
 }

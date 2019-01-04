@@ -143,21 +143,21 @@ public class ConnectedDialogFragment extends Fragment {
         switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
             case "bluetooth":
                 sendReceive = new SendReceive(deviceAddress, handler);
-                try {
+                /*try {
                     sendReceive.call();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
                 sendReceive.start();
                 break;
             case "wifi":
                 // TODO: 2.1.2019. Ako proradi WiFi modul na robotu, potrebno je ovo testirati. 
                 sendReceive = new SendReceive("adresa", handler);
-                try {
+                /*try {
                     sendReceive.call();
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
+                }*/
                 sendReceive.start();
                 break;
         }
