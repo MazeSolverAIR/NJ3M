@@ -96,8 +96,10 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     public boolean deviceExists(String deviceName) {
         boolean exists = false;
         for (BluetoothDevice device : mBluetoothAdapter.getBondedDevices()){
-            if (device.getName().equals(deviceName))
+            if (device.getName().equals(deviceName)) {
                 exists = true;
+                mBluetoothAdapter.cancelDiscovery();
+            }
         }
         return exists;
     }

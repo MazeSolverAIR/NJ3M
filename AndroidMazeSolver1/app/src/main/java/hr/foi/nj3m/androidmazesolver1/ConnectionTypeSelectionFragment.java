@@ -29,9 +29,7 @@ import hr.foi.nj3m.interfaces.IWireless;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
-    BluetoothAdapter mBluetoothAdapter;
     IWireless iWireless;
-    WifiManager wifiManager;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor prefEditor;
 
@@ -44,9 +42,6 @@ public class ConnectionTypeSelectionFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
         final ImageButton tipkaBluetooth = (ImageButton) getView().findViewById(R.id.btnBluetooth);
         final ImageButton tipkaWifi = (ImageButton) getView().findViewById(R.id.btnWifi);
 
@@ -56,6 +51,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 prefEditor.putString("TypeOfConnection", "bluetooth");
                 prefEditor.commit();
                 iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
@@ -69,6 +65,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 prefEditor.putString("TypeOfConnection", "wifi");
                 prefEditor.commit();
                 iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
@@ -99,8 +96,8 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)){
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
+            if(action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)){
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 switch (state){
                     case BluetoothAdapter.STATE_OFF:
                         Toast.makeText(context, "Bluetooth isključen", Toast.LENGTH_LONG).show();

@@ -8,7 +8,7 @@ import android.os.Handler;
 //ovaj modul treba koristiti i wiFi modul i bluetooth modul
 public interface IRobotMessenger {
 
-    void initializeSocket(String socketAddress,Handler handler);
+    void initializeSocket(String address,Handler handler);
 
     void sendCommand(String command);
 
