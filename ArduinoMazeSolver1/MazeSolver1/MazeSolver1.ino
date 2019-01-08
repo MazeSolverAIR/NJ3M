@@ -38,7 +38,7 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(25);
+	bluetooth.setTimeout(15);
 
 	//Kreiranje liste
 }
@@ -107,10 +107,15 @@ void IzvrsiPritisakTipke()
 
 void CitajBluetooth()
 {
-	poljeRadnji[index].sadrzaj = bluetooth.readString();
+	while (true)
+	{
+		poljeRadnji[index].sadrzaj = bluetooth.readString();
 
-	if (poljeRadnji[index].sadrzaj.length() > 0)
-		index++;
+		if (poljeRadnji[index].sadrzaj.length() > 0)
+			index++;
+		if (bluetooth.readString().equals("Over"))
+			break;
+	}
 }
 
 void IzvrsiRadnjuBT()

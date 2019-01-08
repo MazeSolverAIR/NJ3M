@@ -91,7 +91,7 @@ public class MBotPathFinder {
     {
         ArrayList<CommandsToMBot> finalCommandList = new ArrayList<>();
 
-        if(FrontSensor != null && RightSensor != null && LeftSensor != null)
+        if(FrontSensor != null && RightSensor != null && LeftSensor != null) //sva tri senzora su odabrana
         {
             double rightWallDistance = this.RightSensor.getNumericValue();
             double leftWallDistance = this.LeftSensor.getNumericValue();
@@ -100,13 +100,7 @@ public class MBotPathFinder {
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
-        else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
-        {
-            finalCommandList.addAll(centerMBotFrontSensor());
-            finalCommandList.addAll(findPathFrontSensor());
-        }
-
-        else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
+        else if(FrontSensor != null && RightSensor != null && LeftSensor == null) //prednji i desni seenzori su odabrani
         {
             double rightWallDistance = this.RightSensor.getNumericValue();
             double leftWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - rightWallDistance;
@@ -115,13 +109,19 @@ public class MBotPathFinder {
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
-        else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
+        else if(FrontSensor != null && RightSensor == null && LeftSensor != null) //prednji i lijevi senzori su odabrani
         {
             double leftWallDistance = this.LeftSensor.getNumericValue();
             double rightWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - leftWallDistance;
 
             finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
+        }
+
+        else if(FrontSensor != null && RightSensor == null && LeftSensor == null) //samo prednji senzor je odabran
+        {
+            finalCommandList.addAll(centerMBotFrontSensor());
+            finalCommandList.addAll(findPathFrontSensor());
         }
 
         finalCommandList.add(LastCommand);
