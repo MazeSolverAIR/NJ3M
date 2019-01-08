@@ -13,10 +13,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.List;
+
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
+import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 import static java.lang.Thread.sleep;
 
@@ -51,57 +56,21 @@ public class ConnectedDialogFragment extends Fragment {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
                 MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
 
-                ListOfDevicesFragment.iRobotMessenger.sendCommand("RotateLeft", bluetoothSocket);
-
-                try {
-                    sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                ListOfDevicesFragment.iRobotMessenger.sendCommand("RunMotors", bluetoothSocket);
-
-                try {
-                    sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                ListOfDevicesFragment.iRobotMessenger.sendCommand("Over", bluetoothSocket);
-
                 for (CommandsToMBot naredba:listaNaredbi)
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
-                    ListOfDevicesFragment.iRobotMessenger.sendCommand(stringNaredba, bluetoothSocket);
-                    Log.d("Saljem", stringNaredba);
+                    sendReceive.write(stringNaredba);
                     try {
-                        sleep(50);
+                        sleep(20);
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }*/
-
-                String string = "RotateLeft";
-                sendReceive.write("RotateLeft");
-                try {
-                    sleep(35);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
-                sendReceive.write("RunMotors");
-                try {
-                    sleep(35);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sendReceive.write("Over");
-
-                //Log.d("Poslana poruka: ", string);
-                //Toast.makeText(getActivity().getApplicationContext(), string, Toast.LENGTH_LONG).show();
             }
         });
     }

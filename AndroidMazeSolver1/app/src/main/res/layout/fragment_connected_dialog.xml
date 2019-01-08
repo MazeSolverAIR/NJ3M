@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="39dp"
-        android:layout_marginTop="500dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="364dp"
         android:text="Listen" />
 
     <Button
@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="541dp"
-        android:layout_marginEnd="280dp"
+        android:layout_marginTop="427dp"
+        android:layout_marginEnd="261dp"
         android:text="Poveži" />
 
     <Button
@@ -35,18 +35,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="274dp"
-        android:layout_marginTop="480dp"
+        android:layout_marginStart="276dp"
+        android:layout_marginTop="370dp"
         android:text="Šalji" />
 
     <ImageView
         android:id="@+id/imgPracenjeRobota"
-        android:layout_width="804px"
-        android:layout_height="1266px"
+        android:layout_width="146dp"
+        android:layout_height="407dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="53dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="106dp"
         app:srcCompat="@drawable/ic_pracenjerobota" />
 
     <Switch

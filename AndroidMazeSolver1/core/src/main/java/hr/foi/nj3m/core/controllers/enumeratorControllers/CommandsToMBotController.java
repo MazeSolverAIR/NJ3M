@@ -7,23 +7,23 @@ public class CommandsToMBotController {
     public static String getStringFromComandEnum(CommandsToMBot command) {
         switch (command) {
             case RunMotors:
-                return "RRunMotors";
+                return "RunMotors";
             case StopMotors:
-                return "SStopMotors";
+                return "StopMotors";
             case RotateFull:
-                return "RRotateFull";
+                return "RotateFull";
             case RotateLeft:
-                return "RRotateLeft";
+                return "RotateLeft";
             case RotateRight:
-                return "RRotateRight";
+                return "RotateRight";
             case SpeedUpLeft:
-                return "SSpeedUpLeft";
+                return "SpeedUpLeft";
             case SpeedUpRight:
-                return "SSpeedUpRight";
+                return "SpeedUpRight";
             case LastCommand:
-                return "OOver";
+                return "Over";
         }
 
-        return "RStopMotors";
+        return "StopMotors";
     }
 }

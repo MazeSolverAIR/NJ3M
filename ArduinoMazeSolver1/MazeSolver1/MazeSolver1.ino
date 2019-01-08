@@ -38,7 +38,7 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(15);
+	bluetooth.setTimeout(10);
 
 	//Kreiranje liste
 }
@@ -51,7 +51,7 @@ void loop()
 	{
 	case 0:
 		if (a) {
-			buzzer.tone(700, 500);
+			//buzzer.tone(700, 500);
 			a = false;
 		}
 		CitajBluetooth();
@@ -107,15 +107,10 @@ void IzvrsiPritisakTipke()
 
 void CitajBluetooth()
 {
-	while (true)
-	{
 		poljeRadnji[index].sadrzaj = bluetooth.readString();
 
-		if (poljeRadnji[index].sadrzaj.length() > 0)
+		if (poljeRadnji[index].sadrzaj.length() > 1)
 			index++;
-		if (bluetooth.readString().equals("Over"))
-			break;
-	}
 }
 
 void IzvrsiRadnjuBT()
@@ -134,7 +129,7 @@ void IzvrsiRadnjuBT()
 			if (radnja.equals("RotateLeft"))
 				Skreni('l', 90, brzinaKretanja);
 
-			else if (radnja.equals("RoteteRight"))
+			else if (radnja.equals("RotateRight"))
 				Skreni('d', 90, brzinaKretanja);
 
 			else if (radnja.equals("RunMotors"))
@@ -151,9 +146,8 @@ void IzvrsiRadnjuBT()
 				rightMotor.run(137);
 				leftMotor.run(-brzinaKretanja);
 			}
-
-			poljeRadnji[i].sadrzaj = "";
 		}
+		poljeRadnji[50] = {};
 
 		index = 0;
 	}
