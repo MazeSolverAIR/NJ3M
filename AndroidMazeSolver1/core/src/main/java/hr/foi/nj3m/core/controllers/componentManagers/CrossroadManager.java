@@ -29,9 +29,9 @@ public class CrossroadManager {
                 (distanceToCheck >= (R.integer.labyrinth_width - 2*R.integer.ultrasonic_sensor_width));
     }
 
-    private static boolean checkCrossroadSide(IUltraSonic sensor)
+    private static boolean checkCrossroadSide(double sensorDistanceFromWall)
     {
-        return sensor.getNumericValue() > (R.integer.labyrinth_width-R.integer.mBot_width);
+        return sensorDistanceFromWall > (R.integer.labyrinth_width-R.integer.mBot_width);
     }
 
     private static boolean CheckIfDeadEnd(MBotPathFinder finder, double sensorDistanceSum)
@@ -42,29 +42,30 @@ public class CrossroadManager {
         return false;
     }
 
-    public static ArrayList<CommandsToMBot> manageCrossroad(double sensorDistanceSum, MBotPathFinder pFinder)
+    public static ArrayList<CommandsToMBot> manageCrossroad(double rightWallDistance, double leftWallDistance, MBotPathFinder pFinder)
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
         Sides sideToTurn = null;
+        double sideSensorsDistanceSum = rightWallDistance + leftWallDistance;
 
         commandsToMBotList.add(StopMotors);
 
-        if(CrossroadManager.checkCrossroadSide(pFinder.RightSensor))
+        if(CrossroadManager.checkCrossroadSide(rightWallDistance))
         {
             commandsToMBotList.add(RotateRight);
             sideToTurn = Right;
         }
-        else if(CrossroadManager.checkCrossroadSide(pFinder.FrontSensor))
+        else if(CrossroadManager.checkCrossroadSide(pFinder.FrontSensor.getNumericValue()))
         {
             commandsToMBotList.add(RunMotors);
             sideToTurn = Front;
         }
-        else if(CrossroadManager.checkCrossroadSide(pFinder.LeftSensor))
+        else if(CrossroadManager.checkCrossroadSide(leftWallDistance))
         {
             commandsToMBotList.add(RotateLeft);
             sideToTurn = Left;
         }
-        else if(CrossroadManager.CheckIfDeadEnd(pFinder, sensorDistanceSum))
+        else if(CrossroadManager.CheckIfDeadEnd(pFinder, sideSensorsDistanceSum))
         {
             commandsToMBotList.add(RotateFull);
             sideToTurn = FullRotate;
@@ -75,17 +76,17 @@ public class CrossroadManager {
     }
 
 
+    //TODO: Možda ne bi radilo najbolje za 2 senzora, dok za 3 bi. Treba testirati
     private static void manageCrossroadsList(Sides sideToTurn, MBotPathFinder pFinder)
     {
         Crossroad lastCRFromList = null;
-        Crossroad newCrossroad = null;
 
         if(!pFinder.CrossroadsList.isEmpty())
             lastCRFromList = pFinder.CrossroadsList.get(pFinder.CrossroadsList.size() - 1);
 
         if(pFinder.CrossroadsList.isEmpty() || (lastCRFromList.numberOfVisits != lastCRFromList.maxNumberOfVisits))
         {
-            newCrossroad = new Crossroad(pFinder, sideToTurn);
+            Crossroad newCrossroad = new Crossroad(pFinder, sideToTurn);
             newCrossroad.setCrossroadSize();
             newCrossroad.newVisit();
             pFinder.CrossroadsList.add(newCrossroad);

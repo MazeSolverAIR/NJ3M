@@ -32,6 +32,7 @@ public class LineFollower implements ILineFollower {
         return null;
     }
 
+
     //neka se ova metoda kod ove klase poziva kao setCurrentValue("")
     @Override
     public void setCurrentValue(String value) {

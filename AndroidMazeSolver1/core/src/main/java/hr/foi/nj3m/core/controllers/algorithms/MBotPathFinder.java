@@ -4,6 +4,7 @@ package hr.foi.nj3m.core.controllers.algorithms;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.foi.nj3m.core.R;
 import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.core.controllers.components.LineFollower;
@@ -92,8 +93,11 @@ public class MBotPathFinder {
 
         if(FrontSensor != null && RightSensor != null && LeftSensor != null)
         {
-            finalCommandList.add(centerMBotThreeSensors());
-            finalCommandList.addAll(findPathThreeSensors());
+            double rightWallDistance = this.RightSensor.getNumericValue();
+            double leftWallDistance = this.LeftSensor.getNumericValue();
+
+            finalCommandList.add(centerMBotTwoOrMoreSensors(this.RightSensor.getNumericValue(), this.LeftSensor.getNumericValue()));
+            finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor == null)
@@ -104,26 +108,34 @@ public class MBotPathFinder {
 
         else if(FrontSensor != null && RightSensor != null && LeftSensor == null)
         {
-            finalCommandList.addAll(findPathFrontAndRight());
+            double rightWallDistance = this.RightSensor.getNumericValue();
+            double leftWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - rightWallDistance;
+
+            finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
+            finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
         else if(FrontSensor != null && RightSensor == null && LeftSensor != null)
         {
-            //finalCommandList = findPathFrontSensor();
+            double leftWallDistance = this.LeftSensor.getNumericValue();
+            double rightWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - leftWallDistance;
+
+            finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
+            finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
         finalCommandList.add(LastCommand);
         return finalCommandList;
     }
 
-    private ArrayList<CommandsToMBot> findPathThreeSensors()
+    private ArrayList<CommandsToMBot> findPathTwoOrMoreSensors(double rightWallDistance, double leftWallDistance)
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
-        double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
+        double sensorDistanceSum = rightWallDistance + leftWallDistance;
 
         if(CrossroadManager.checkIfCrossroad(sensorDistanceSum))
-            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(sensorDistanceSum, this));
+            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(rightWallDistance, leftWallDistance, this));
 
         else if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);
@@ -133,19 +145,19 @@ public class MBotPathFinder {
         return commandsToMBotList;
     }
 
-    private CommandsToMBot centerMBotThreeSensors()
+    private CommandsToMBot centerMBotTwoOrMoreSensors(double rightWallDistance, double leftWallDistance)
     {
         CommandsToMBot returnCommand = Null;
 
-        double sensorDistanceSum = LeftSensor.getNumericValue() + RightSensor.getNumericValue();
+        double sensorDistanceSum = rightWallDistance + leftWallDistance;
 
         if(!CrossroadManager.checkIfCrossroad(sensorDistanceSum))
         {
-            if(LeftSensor.getNumericValue() > RightSensor.getNumericValue())
+            if(leftWallDistance > rightWallDistance)
                 returnCommand = SpeedUpRight;
 
 
-            else if(RightSensor.getNumericValue() > LeftSensor.getNumericValue())
+            else if(rightWallDistance > leftWallDistance)
                 returnCommand = SpeedUpLeft;
         }
 
@@ -186,13 +198,6 @@ public class MBotPathFinder {
             commandsToMBotList.add(SpeedUpLeft);
         else if(lineFollower.isOnRightSide())
             commandsToMBotList.add(SpeedUpRight);
-
-        return commandsToMBotList;
-    }
-
-    private ArrayList<CommandsToMBot> findPathFrontAndRight()
-    {
-        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
 
         return commandsToMBotList;
     }
