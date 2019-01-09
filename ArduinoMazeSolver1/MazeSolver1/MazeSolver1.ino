@@ -13,9 +13,8 @@ struct objektPrimljenePoruke {
 	String sadrzaj;
 };
 
-const int velicinaPolja = 5;
-
-struct objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
+const int velicinaPolja = 10;
+objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -39,7 +38,7 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(2);
+	bluetooth.setTimeout(5);
 
 	//Kreiranje liste
 }
@@ -115,7 +114,10 @@ String CitajBluetooth()
 		index++;
 		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1, btPoruka.length());
 
-		poljeRadnji[index].sadrzaj = gotovaPoruka;
+		objektPrimljenePoruke objPoruke;
+		objPoruke.sadrzaj = gotovaPoruka;
+
+		*(poljeRadnji + index) = objPoruke;
 
 		return gotovaPoruka;
 	}
@@ -130,7 +132,10 @@ void IzvrsiRadnjuBT()
 
 	for (int i = 0; i < chckIndex; i++)
 	{
-		String radnja = poljeRadnji[i].sadrzaj;
+		objektPrimljenePoruke trenutniObjekt = *(poljeRadnji + i);
+		String radnja = trenutniObjekt.sadrzaj;
+		
+		*(poljeRadnji + i) = {};
 
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
@@ -155,7 +160,6 @@ void IzvrsiRadnjuBT()
 			leftMotor.run(-brzinaKretanja);
 		}
 	}
-	poljeRadnji[velicinaPolja] = {};
 }
 
 
