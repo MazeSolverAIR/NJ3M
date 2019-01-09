@@ -1,20 +1,21 @@
 ﻿#include "MeMCore.h"
 #include <SoftwareSerial.h>
 #include "Arduino.h"
-#include "List.h"
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 bool a = true;
 bool b = true;
 
-int index = 0;
+int index = -1;
 
 struct objektPrimljenePoruke {
 	String sadrzaj;
 };
 
-struct objektPrimljenePoruke poljeRadnji[50] = {};
+const int velicinaPolja = 5;
+
+struct objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -38,7 +39,7 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(10);
+	bluetooth.setTimeout(2);
 
 	//Kreiranje liste
 }
@@ -51,11 +52,11 @@ void loop()
 	{
 	case 0:
 		if (a) {
-			//buzzer.tone(700, 500);
+			buzzer.tone(700, 500);
 			a = false;
 		}
-		CitajBluetooth();
-		IzvrsiRadnjuBT();
+		if(CitajBluetooth().equals("Over"))
+			IzvrsiRadnjuBT();
 
 		//lineFollow();
 		b = true;
@@ -105,59 +106,56 @@ void IzvrsiPritisakTipke()
 }
 
 
-void CitajBluetooth()
+String CitajBluetooth()
 {
 	String btPoruka = bluetooth.readString();
 
 	if (btPoruka.startsWith("MS:"))
 	{
-		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':')+1, btPoruka.length());
+		index++;
+		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1, btPoruka.length());
 
 		poljeRadnji[index].sadrzaj = gotovaPoruka;
-		index++;
+
+		return gotovaPoruka;
 	}
+
+	return "";
 }
 
 void IzvrsiRadnjuBT()
 {
 	int chckIndex = index;
+	index = -1;
 
-	if (chckIndex > 0)
-		chckIndex--;
-
-	if (poljeRadnji[chckIndex].sadrzaj.equals("Over"))
+	for (int i = 0; i < chckIndex; i++)
 	{
-		for (int i = 0; i < chckIndex; i++)
+		String radnja = poljeRadnji[i].sadrzaj;
+
+		if (radnja.equals("RotateLeft"))
+			Skreni('l', 90, brzinaKretanja);
+
+		else if (radnja.equals("RotateRight"))
+			Skreni('d', 90, brzinaKretanja);
+
+		else if (radnja.equals("RunMotors"))
+			Kreni(brzinaKretanja);
+
+		else if (radnja.equals("StopMotors"))
+			ZaustaviMotore();
+
+		else if (radnja.equals("SpeedUpLeft")) 
 		{
-			String radnja = poljeRadnji[i].sadrzaj;
-
-			if (radnja.equals("RotateLeft"))
-				Skreni('l', 90, brzinaKretanja);
-
-			else if (radnja.equals("RotateRight"))
-				Skreni('d', 90, brzinaKretanja);
-
-			else if (radnja.equals("RunMotors"))
-				Kreni(brzinaKretanja);
-
-			else if (radnja.equals("StopMotors"))
-				ZaustaviMotore();
-
-			else if (radnja.equals("SpeedUpLeft")) {
-				leftMotor.run(-137);
-				rightMotor.run(brzinaKretanja);
-			}
-			else if (radnja.equals("SpeedUpRight")) {
-				rightMotor.run(137);
-				leftMotor.run(-brzinaKretanja);
-			}
+			leftMotor.run(-137);
+			rightMotor.run(brzinaKretanja);
 		}
-		poljeRadnji[50] = {};
-
-		index = 0;
+		else if (radnja.equals("SpeedUpRight")) 
+		{
+			rightMotor.run(137);
+			leftMotor.run(-brzinaKretanja);
+		}
 	}
-		
-
+	poljeRadnji[velicinaPolja] = {};
 }
 
 

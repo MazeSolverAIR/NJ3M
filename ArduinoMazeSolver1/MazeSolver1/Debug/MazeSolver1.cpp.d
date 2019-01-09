@@ -59,5 +59,4 @@ C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Debug\MazeSolver1.cp
  D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src/MeColorSensor.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\Wire\src/Wire.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src/SoftwareSerial.h \
- C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Debug\List.h \
  c:\program\ files\ (x86)\microsoft\ visual\ studio\2017\enterprise\common7\ide\extensions\ktpce3c3.a4z\Micro\ Platforms\default\debuggers\VM_DBG/VM_DBG.h

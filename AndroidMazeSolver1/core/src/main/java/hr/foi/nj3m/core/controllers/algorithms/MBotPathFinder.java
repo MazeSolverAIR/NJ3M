@@ -62,7 +62,7 @@ public class MBotPathFinder {
 
         commandsList.add(RotateLeft);
         commandsList.add(RotateRight);
-        commandsList.add(StopMotors);
+        commandsList.add(RunMotors);
         commandsList.add(LastCommand);
 
         return commandsList;
