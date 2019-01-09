@@ -9,12 +9,12 @@ bool b = true;
 
 int index = -1;
 
-struct objektPrimljenePoruke {
+typedef struct objektPrimljenePoruke {
 	String sadrzaj;
 };
 
 const int velicinaPolja = 10;
-objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
+objektPrimljenePoruke poljeRadnji[velicinaPolja] = {""};
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -38,9 +38,9 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(5);
 
-	//Kreiranje liste
+	bluetooth.setTimeout(1);
+
 }
 
 void loop()
@@ -55,7 +55,11 @@ void loop()
 			a = false;
 		}
 		if(CitajBluetooth().equals("Over"))
+		{
 			IzvrsiRadnjuBT();
+			inicijalizirajPolje();
+		}
+			
 
 		//lineFollow();
 		b = true;
@@ -114,10 +118,7 @@ String CitajBluetooth()
 		index++;
 		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1, btPoruka.length());
 
-		objektPrimljenePoruke objPoruke;
-		objPoruke.sadrzaj = gotovaPoruka;
-
-		*(poljeRadnji + index) = objPoruke;
+		poljeRadnji[index].sadrzaj = gotovaPoruka;
 
 		return gotovaPoruka;
 	}
@@ -127,15 +128,10 @@ String CitajBluetooth()
 
 void IzvrsiRadnjuBT()
 {
-	int chckIndex = index;
-	index = -1;
-
-	for (int i = 0; i < chckIndex; i++)
+	int chckIndex = index-1;
+	for (int i = 0; i <= chckIndex; i++)
 	{
-		objektPrimljenePoruke trenutniObjekt = *(poljeRadnji + i);
-		String radnja = trenutniObjekt.sadrzaj;
-		
-		*(poljeRadnji + i) = {};
+		String radnja = poljeRadnji[i].sadrzaj;
 
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
@@ -160,6 +156,16 @@ void IzvrsiRadnjuBT()
 			leftMotor.run(-brzinaKretanja);
 		}
 	}
+}
+
+void inicijalizirajPolje()
+{
+	for (int i = 0; i <= index; i++)
+	{
+		poljeRadnji[i] = {};
+	}
+
+	index = -1;
 }
 
 

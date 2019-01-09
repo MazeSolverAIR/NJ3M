@@ -64,9 +64,8 @@ public class ConnectedDialogFragment extends Fragment {
                 {
                     String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
                     sendReceive.write(stringNaredba);
-
                     try {
-                        sleep(12);
+                        sleep(25);
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
