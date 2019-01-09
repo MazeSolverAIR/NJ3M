@@ -14,7 +14,7 @@ struct objektPrimljenePoruke {
 	String sadrzaj;
 };
 
-struct objektPrimljenePoruke poljeRadnji[50];
+struct objektPrimljenePoruke poljeRadnji[50] = {};
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -107,10 +107,15 @@ void IzvrsiPritisakTipke()
 
 void CitajBluetooth()
 {
-		poljeRadnji[index].sadrzaj = bluetooth.readString();
+	String btPoruka = bluetooth.readString();
 
-		if (poljeRadnji[index].sadrzaj.length() > 1)
-			index++;
+	if (btPoruka.startsWith("MS:"))
+	{
+		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':')+1, btPoruka.length());
+
+		poljeRadnji[index].sadrzaj = gotovaPoruka;
+		index++;
+	}
 }
 
 void IzvrsiRadnjuBT()
