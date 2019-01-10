@@ -21,7 +21,7 @@ String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 MeUltrasonicSensor ultraSonic(3);
-//MeUltrasonicSensor ultraSonicLeft(4);
+MeUltrasonicSensor ultraSonicLeft(4);
 
 uint16_t brzinaKretanja = 127;
 
@@ -37,11 +37,11 @@ void setup()
 
 	button.setpin(A7);
 
-	bluetooth.begin(115200);
-	bluetooth.setTimeout(2);
+	/*bluetooth.begin(115200);
+	bluetooth.setTimeout(2);*/
 
-	/*Serial.begin(115200);
-	Serial.setTimeout(2);*/
+	Serial.begin(115200);
+	Serial.setTimeout(2);
 }
 
 void loop()
@@ -55,11 +55,11 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		if(CitajBluetooth().equals("Over"))
+		/*if(CitajBluetooth().equals("Over"))
 		{
 			IzvrsiRadnjuBT();
 			inicijalizirajPolje();
-		}
+		}*/
 			
 
 		//lineFollow();
@@ -74,14 +74,9 @@ void loop()
 			b = false;
 		}
 	
-		/*Serial.println(ultraSonicLeft.distanceCm());
-		if (ultraSonicLeft.distanceCm() < 10)
-			Kreni(brzinaKretanja);
-
-		else
-			ZaustaviMotore();
-			*/
-	//	delay(5);
+		Serial.println((ultraSonicLeft.aRead1() / 1.833)*2.54); //pretvaranje u cm
+		
+		delay(5);
 
 		a = true;
 		break;
