@@ -38,9 +38,10 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
+	bluetooth.setTimeout(2);
 
-	bluetooth.setTimeout(1);
-
+	/*Serial.begin(115200);
+	Serial.setTimeout(2);*/
 }
 
 void loop()
@@ -111,6 +112,7 @@ void IzvrsiPritisakTipke()
 
 String CitajBluetooth()
 {
+	//String btPoruka = Serial.readString();
 	String btPoruka = bluetooth.readString();
 
 	if (btPoruka.startsWith("MS:"))
@@ -119,6 +121,11 @@ String CitajBluetooth()
 		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1, btPoruka.length());
 
 		poljeRadnji[index].sadrzaj = gotovaPoruka;
+
+		/*Serial.print("Poruka: ");
+		Serial.println(gotovaPoruka);
+		Serial.print(" / ");
+		Serial.println(poljeRadnji[index].sadrzaj);*/
 
 		return gotovaPoruka;
 	}
@@ -129,10 +136,16 @@ String CitajBluetooth()
 void IzvrsiRadnjuBT()
 {
 	int chckIndex = index-1;
+
+	//Serial.println("Provjera radnji: ");
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
 
+		/*Serial.print("Elelement pod rednim brojem: ");
+		Serial.print(i);
+		Serial.print(" je :");
+		Serial.println(radnja);*/
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
 
@@ -155,14 +168,19 @@ void IzvrsiRadnjuBT()
 			rightMotor.run(137);
 			leftMotor.run(-brzinaKretanja);
 		}
+
+		delay(5);
 	}
 }
 
 void inicijalizirajPolje()
 {
-	for (int i = 0; i <= index; i++)
+	//Serial.println("Brisanje radnji: ");
+	for (int i = 0; i < velicinaPolja; i++)
 	{
+		//Serial.println(poljeRadnji[i].sadrzaj);
 		poljeRadnji[i] = {};
+		//Serial.println(poljeRadnji[i].sadrzaj);
 	}
 
 	index = -1;

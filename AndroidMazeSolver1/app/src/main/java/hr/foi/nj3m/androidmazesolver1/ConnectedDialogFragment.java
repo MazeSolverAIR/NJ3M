@@ -60,17 +60,7 @@ public class ConnectedDialogFragment extends Fragment {
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
 
-                for (CommandsToMBot naredba:listaNaredbi)
-                {
-                    String stringNaredba = CommandsToMBotController.getStringFromComandEnum(naredba);
-                    sendReceive.write(stringNaredba);
-                    try {
-                        sleep(25);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                sendReceive.write(listaNaredbi);
             }
         });
     }
