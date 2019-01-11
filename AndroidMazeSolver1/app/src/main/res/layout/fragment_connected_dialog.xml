@@ -11,51 +11,60 @@
 
     <Button
         android:id="@+id/btnListen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="29dp"
-        android:layout_marginTop="364dp"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/imgPracenjeRobota"
+        android:layout_alignBaseline="@+id/btnStartConnection"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="30dp"
         android:text="Listen" />
 
     <Button
         android:id="@+id/btnStartConnection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="427dp"
-        android:layout_marginEnd="261dp"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/imgPracenjeRobota"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="-75dp"
+        android:layout_marginBottom="30dp"
         android:text="Poveži" />
 
     <Button
         android:id="@+id/btnSendControl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/imgPracenjeRobota"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="276dp"
-        android:layout_marginTop="370dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="-75dp"
+        android:layout_marginBottom="30dp"
         android:text="Šalji" />
 
     <ImageView
         android:id="@+id/imgPracenjeRobota"
-        android:layout_width="146dp"
-        android:layout_height="407dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="106dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="163dp"
         app:srcCompat="@drawable/ic_pracenjerobota" />
 
     <Switch
         android:id="@+id/swStartStop"
-        android:layout_width="300px"
-        android:layout_height="50px"
-        android:layout_alignStart="@+id/btnListen"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="112dp"
-        android:layout_marginBottom="103dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@+id/imgPracenjeRobota"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-140dp"
+        android:layout_marginBottom="118dp"
         android:text="ON / OFF" />
 </RelativeLayout>
