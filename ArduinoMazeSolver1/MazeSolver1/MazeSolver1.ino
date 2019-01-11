@@ -22,8 +22,9 @@ MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 
 MeUltrasonicSensor ultraSonic(3);
-MeUltrasonicSensor ultraSonicLeft(1);
 MeUltrasonicSensor ultraSonicRight(4);
+
+MeLineFollower lineFollower(1);
 
 uint16_t brzinaKretanja = 127;
 
@@ -31,8 +32,6 @@ uint16_t brzinaKretanja = 127;
 Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
-
-MeLineFollower lineFollower(2);
 
 void setup()
 {
@@ -76,22 +75,29 @@ void loop()
 			b = false;
 		}
 
-		/*Serial.print("Left: ");
-		Serial.println((ultraSonicLeft.aRead1()));
-		delay(25);
+		
 		Serial.print("Right: ");
-		Serial.println((ultraSonicRight.aRead1() / 1.75) * 2.54);
+		Serial.println((ultraSonicRight.aRead1() / 1.7) * 2.54);
 		delay(25);
-		Serial.print("Front: ");
+		/*Serial.print("Front: ");
 		Serial.println((ultraSonic.distanceCm()));
-		delay(25);*/
+		delay(25);
 
-		Kreni(brzinaKretanja);
-		if (ultraSonic.distanceCm() < 13)
+		Serial.println(analogRead(1));*/
+
+		//Kreni(brzinaKretanja);
+		/*if (ultraSonic.distanceCm() < 25)
+		{
+			Skreni('l', 90, brzinaKretanja);
+			Skreni('l', 90, brzinaKretanja);
+		}	
+		else if (((ultraSonicRight.aRead1() / 1.75)*2.54) < 23)
 			Skreni('l', 90, brzinaKretanja);
 
-		if (((ultraSonicRight.aRead1() / 1.75)*2.54) < 23)
-			Skreni('l', 90, brzinaKretanja);
+		else if ((ultraSonicLeft.aRead1() *1.5) < 23)
+			Skreni('d', 90, brzinaKretanja);
+
+		Kreni(brzinaKretanja);*/
 			
 
 		a = true;
