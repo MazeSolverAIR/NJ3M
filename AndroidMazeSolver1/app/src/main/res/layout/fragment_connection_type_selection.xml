@@ -2,52 +2,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:background="@drawable/ic_pronadimbot"
     tools:context=".MainActivity">
 
     <ImageView
-        android:layout_width="570px"
-        android:layout_height="1313px"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
+        android:id="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_width="200dp"
+        android:layout_height="450dp"
+        android:layout_centerInParent="true"
         android:background="@drawable/ic_pozadinatipki" />
 
     <ImageView
-        android:layout_width="366px"
-        android:layout_height="62px"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="86dp"
+        android:id="@+id/odabirVezeOkvir"
+        android:layout_width="122dp"
+        android:layout_height="31dp"
+        android:layout_alignStart="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignTop="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignEnd="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/ic_pozadina_odaberi_vezu" />
 
     <ImageView
-        android:layout_width="232px"
-        android:layout_height="28px"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
+        android:id="@+id/odabirVezeTekst"
+        android:layout_width="83dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/odabirVezeOkvir"
+        android:layout_alignTop="@+id/odabirVezeOkvir"
+        android:layout_alignEnd="@+id/odabirVezeOkvir"
+        android:layout_alignBottom="@+id/odabirVezeOkvir"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="11dp"
         android:background="@drawable/ic_odaberi_vezu_tekst" />
 
     <ImageButton
         android:id="@+id/btnBluetooth"
-        android:layout_width="340px"
-        android:layout_height="340px"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="160dp"
+        android:layout_width="107dp"
+        android:layout_height="107dp"
+        android:layout_alignStart="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignTop="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignEnd="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="95dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="69dp"
         android:background="@drawable/ic_bluetoothikona"></ImageButton>
 
     <ImageButton
         android:id="@+id/btnWifi"
-        android:layout_width="340px"
-        android:layout_height="340px"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="303dp"
+        android:layout_width="107dp"
+        android:layout_height="107dp"
+        android:layout_alignStart="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignEnd="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignBottom="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_marginStart="47dp"
+        android:layout_marginEnd="47dp"
+        android:layout_marginBottom="76dp"
         android:background="@drawable/ic_wifiikona"></ImageButton>
 
 </RelativeLayout>
