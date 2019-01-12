@@ -25,8 +25,7 @@ public class CrossroadManager {
     {
         double distanceToCheck = sensorDistanceSum + R.integer.mBot_width;
 
-        return (distanceToCheck <= (R.integer.labyrinth_width + 2*R.integer.ultrasonic_sensor_width)) &&
-                (distanceToCheck >= (R.integer.labyrinth_width - 2*R.integer.ultrasonic_sensor_width));
+        return (distanceToCheck > (R.integer.labyrinth_width + 2*R.integer.ultrasonic_sensor_width));
     }
 
     private static boolean checkCrossroadSide(double sensorDistanceFromWall)

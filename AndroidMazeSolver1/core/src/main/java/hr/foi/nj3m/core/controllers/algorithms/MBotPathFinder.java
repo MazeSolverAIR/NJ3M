@@ -109,7 +109,8 @@ public class MBotPathFinder {
         else if(FrontSensor != null && RightSensor != null && LeftSensor == null) //prednji i desni seenzori su odabrani
         {
             double rightWallDistance = this.RightSensor.getNumericValue();
-            double leftWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - rightWallDistance;
+            double leftWallDistance = setOtherSideWallDistance(rightWallDistance);
+
 
             finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
@@ -118,7 +119,7 @@ public class MBotPathFinder {
         else if(FrontSensor != null && RightSensor == null && LeftSensor != null) //prednji i lijevi senzori su odabrani
         {
             double leftWallDistance = this.LeftSensor.getNumericValue();
-            double rightWallDistance = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width - leftWallDistance;
+            double rightWallDistance = setOtherSideWallDistance(leftWallDistance);
 
             finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
@@ -132,6 +133,18 @@ public class MBotPathFinder {
 
         finalCommandList.add(LastCommand);
         return finalCommandList;
+    }
+
+    private double setOtherSideWallDistance(double realDistance)
+    {
+        double returnVal = 0;
+        returnVal = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width;
+
+        if(realDistance <= 38)
+            return (returnVal - realDistance);
+
+        else
+            return returnVal;
     }
 
     private ArrayList<CommandsToMBot> findPathTwoOrMoreSensors(double rightWallDistance, double leftWallDistance)

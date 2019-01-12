@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="labyrinth_width">20</integer>
-    <integer name="mBot_width">10</integer>
+    <integer name="labyrinth_width">55</integer>
+    <integer name="mBot_width">13</integer>
     <integer name="ultrasonic_sensor_width">2</integer>
 </resources>
