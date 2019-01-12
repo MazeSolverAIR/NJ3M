@@ -21,12 +21,13 @@ String myString;
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
 
-MeUltrasonicSensor ultraSonic(3);
+MeUltrasonicSensor ultraSonic(1);
 MeUltrasonicSensor ultraSonicRight(4);
+MeUltrasonicSensor ultraSonicLeft(3);
 
 MeLineFollower lineFollower(1);
 
-uint16_t brzinaKretanja = 127;
+uint16_t brzinaKretanja = 200;
 
 
 Me4Button button = Me4Button();
@@ -41,7 +42,7 @@ void setup()
 	/*bluetooth.begin(115200);
 	bluetooth.setTimeout(2);*/
 
-	Serial.begin(9600);
+	Serial.begin(115200);
 	Serial.setTimeout(2);
 }
 
@@ -62,6 +63,9 @@ void loop()
 			inicijalizirajPolje();
 		}*/
 
+		Serial.println(GetSideSensorDistance(ultraSonicRight.aRead1()));
+		//Serial.println(GetFrontSensorDistance());
+		delay(4);
 
 		//lineFollow();
 		b = true;
@@ -73,32 +77,24 @@ void loop()
 			Serial.write("KreceWrite;");
 
 			b = false;
+		}	
+
+		Kreni(brzinaKretanja);
+		if (GetFrontSensorDistance() < 10)
+		{
+			Kreni(-brzinaKretanja);
+			delay(1000);
+			Skreni('d', 90, brzinaKretanja);
 		}
-
-		
-		Serial.print("Right: ");
-		Serial.println((ultraSonicRight.aRead1() / 1.7) * 2.54);
-		delay(25);
-		/*Serial.print("Front: ");
-		Serial.println((ultraSonic.distanceCm()));
-		delay(25);
-
-		Serial.println(analogRead(1));*/
-
-		//Kreni(brzinaKretanja);
-		/*if (ultraSonic.distanceCm() < 25)
+		else if (GetSideSensorDistance(ultraSonicRight.aRead1()) < 20)
 		{
 			Skreni('l', 90, brzinaKretanja);
-			Skreni('l', 90, brzinaKretanja);
-		}	
-		else if (((ultraSonicRight.aRead1() / 1.75)*2.54) < 23)
-			Skreni('l', 90, brzinaKretanja);
-
-		else if ((ultraSonicLeft.aRead1() *1.5) < 23)
+		}
+		else if (GetSideSensorDistance(ultraSonicLeft.aRead1()) < 20)
+		{
 			Skreni('d', 90, brzinaKretanja);
-
-		Kreni(brzinaKretanja);*/
-			
+		}
+		delay(2);
 
 		a = true;
 		break;
@@ -109,6 +105,17 @@ void loop()
 	}
 }
 
+float GetFrontSensorDistance()
+{
+	long travelTime = ultraSonic.measure();
+
+	return (travelTime / 2) / 29.1;
+}
+
+float GetSideSensorDistance(uint16_t analogData)
+{
+	return (analogData / 1.75) * 2.54;
+}
 
 void IzvrsiPritisakTipke()
 {
