@@ -45,7 +45,7 @@ public class UltrasonicSensor implements IUltraSonic {
 
     @Override
     public boolean seesObstacle() {
-        if(getNumericValue() < 5)
+        if(getNumericValue() < 10)
             return true;
 
         else return false;
