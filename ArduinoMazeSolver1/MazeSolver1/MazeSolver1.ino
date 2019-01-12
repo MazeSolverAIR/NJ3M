@@ -11,7 +11,7 @@ int index = -1;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
-	int brojPoruka;
+	uint8_t brojPoruka;
 };
 
 const int velicinaPolja = 10;
@@ -26,9 +26,9 @@ MeUltrasonicSensor ultraSonic(1);
 MeUltrasonicSensor ultraSonicRight(4);
 MeUltrasonicSensor ultraSonicLeft(3);
 
-MeLineFollower lineFollower(1);
+MeLineFollower lineFollower(2);
 
-uint16_t brzinaKretanja = 200;
+uint16_t brzinaKretanja = 127;
 
 
 Me4Button button = Me4Button();
@@ -42,10 +42,6 @@ void setup()
 
 	bluetooth.begin(115200);
 	bluetooth.setTimeout(2);
-
-	/*Serial.begin(9600);
-	Serial.setTimeout(2);*/
-
 }
 
 void loop()
@@ -59,26 +55,16 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		if(CitajBluetooth().equals("Over"))
+		if(CitajBluetooth().equals("Over") && ProvjeriBrojPrimljenihPoruka())
 		{
-			if (!ProvjeriBrojPrimljenihPoruka)
-				PosaljiZahtjevZaPonovnimSlanjem();
-
-			else 
-				IzvrsiRadnjuBT();
-
-
+			IzvrsiRadnjuBT();
 			inicijalizirajPolje();
 		}
-		else if (CitajBluetooth().equals("NeispravnaPoruka"))
+		else if (CitajBluetooth().equals("NeispravnaPoruka") || !ProvjeriBrojPrimljenihPoruka())
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
+			inicijalizirajPolje();
 		}
-
-		Serial.println(GetSideSensorDistance(ultraSonicRight.aRead1()));
-		//Serial.println(GetFrontSensorDistance());
-		delay(4);
-
 		//lineFollow();
 		b = true;
 		break;
@@ -153,13 +139,13 @@ String CitajBluetooth()
 	//String btPoruka = Serial.readString();
 	String btPoruka = bluetooth.readString();
 
-	if (btPoruka.startsWith("MS:") /*&& asciiSumaDobivenePoruke==asciiSumaIzracunato && istePoruke*/)
+	if (btPoruka.startsWith("MS:"))
 	{
 		index++;
 
 		String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1);
 		String porukaBezBrojaPoruka = cijelaPoruka.substring(0, cijelaPoruka.indexOf('#'));
-		int ocekivaniBrojPoruka = cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
+		uint8_t ocekivaniBrojPoruka = cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
 
 		String dobivenaPoruka = cijelaPoruka.substring(0, cijelaPoruka.lastIndexOf(';'));
 		int asciiSumaIzracunato = IzracunajASciiSumu(dobivenaPoruka);
@@ -170,11 +156,6 @@ String CitajBluetooth()
 
 		if(asciiSumaIzracunato != asciiSumaDobivenePoruke)
 			return "NeispravnaPoruka";
-
-		/*Serial.print("Poruka: ");
-		Serial.println(gotovaPoruka);
-		Serial.print(" / ");
-		Serial.println(poljeRadnji[index].sadrzaj);*/
 
 		return dobivenaPoruka;
 	}
@@ -216,15 +197,10 @@ void IzvrsiRadnjuBT()
 {
 	int chckIndex = index-1;
 
-	//Serial.println("Provjera radnji: ");
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
 
-		/*Serial.print("Elelement pod rednim brojem: ");
-		Serial.print(i);
-		Serial.print(" je :");
-		Serial.println(radnja);*/
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
 
@@ -254,12 +230,9 @@ void IzvrsiRadnjuBT()
 
 void inicijalizirajPolje()
 {
-	//Serial.println("Brisanje radnji: ");
 	for (int i = 0; i < velicinaPolja; i++)
 	{
-		//Serial.println(poljeRadnji[i].sadrzaj);
 		poljeRadnji[i] = {};
-		//Serial.println(poljeRadnji[i].sadrzaj);
 	}
 
 	index = -1;
