@@ -37,16 +37,16 @@
 
     <Button
         android:id="@+id/btnNastavi"
-        android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:background="@drawable/button_nastavi_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imgPozadinaIspodRobota"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="510dp"
         android:layout_marginBottom="17dp"
+        android:textColor="@color/colorWhite"
         android:contentDescription="@string/Munja"
-        android:text="@string/Nastavi"
-        android:background="@color/colorRed"
-        android:textColor="@android:color/white" />
+        android:text="@string/Nastavi" />
 
     <CheckBox
         android:id="@+id/checkboxLijevo"

@@ -7,4 +7,6 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlue">#397fef</color>
     <color name="colorRed">#b71616</color>
+    <color name="colorDarkRed">#7a1e1e</color>
+
 </resources>
