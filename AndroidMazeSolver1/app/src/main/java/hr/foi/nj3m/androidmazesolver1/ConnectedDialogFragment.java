@@ -59,7 +59,6 @@ public class ConnectedDialogFragment extends Fragment {
                 MBotPathFinder finder = MBotPathFinder.createInstance();
 
                 List<CommandsToMBot> listaNaredbi = finder.TestMethod();
-
                 sendReceive.write(listaNaredbi);
             }
         });

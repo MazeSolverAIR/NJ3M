@@ -14,8 +14,8 @@ typedef struct objektPrimljenePoruke {
 	int brojPoruka;
 };
 
-const int velicinaPolja = 50;
-objektPrimljenePoruke poljeRadnji[velicinaPolja];
+const int velicinaPolja = 15;
+objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -180,9 +180,9 @@ String DohvatiTekstPoruke(String cijelaPoruka)
 bool CheckAsciiSuma(String cijelaPoruka)
 {
 	int asciiSumaIzracunato = IzracunajASciiSumu(DohvatiTekstPoruke(cijelaPoruka));
-	int asciiSumaDobivenePoruke = DohvatiAsciiSumuIzPoruke(cijelaPoruka);
+	int asciiSumaDobivenaIzPoruke = DohvatiAsciiSumuIzPoruke(cijelaPoruka);
 
-	return asciiSumaIzracunato == asciiSumaDobivenePoruke;
+	return asciiSumaIzracunato == asciiSumaDobivenaIzPoruke;
 }
 
 int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
@@ -205,6 +205,8 @@ void PosaljiZahtjevZaPonovnimSlanjem()
 bool ProvjeriBrojPrimljenihPoruka() {
 	for (int i = 0; i <= index; i++)
 	{
+		if (poljeRadnji[i].brojPoruka != index+1)
+			return false;
 		for (int j = 1; j <= index; j++)
 		{
 			if (poljeRadnji[i].brojPoruka != poljeRadnji[j].brojPoruka)
@@ -264,7 +266,8 @@ void InicijalizirajPolje()
 {
 	for (int i = 0; i < velicinaPolja; i++)
 	{
-		poljeRadnji[i] = {};
+		poljeRadnji[i].sadrzaj = {""};
+		poljeRadnji[i].brojPoruka = {0};
 	}
 
 	index = -1;
