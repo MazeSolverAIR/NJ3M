@@ -39,11 +39,11 @@ void setup()
 
 	button.setpin(A7);
 
-	/*bluetooth.begin(115200);
-	bluetooth.setTimeout(2);*/
+	bluetooth.begin(115200);
+	bluetooth.setTimeout(2);
 
-	Serial.begin(9600);
-	Serial.setTimeout(2);
+	/*Serial.begin(9600);
+	Serial.setTimeout(2);*/
 }
 
 void loop()
@@ -57,11 +57,21 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		/*if(CitajBluetooth().equals("Over"))
+		if(CitajBluetooth().equals("Over"))
 		{
-			IzvrsiRadnjuBT();
+			if (!ProvjeriBrojPrimljenihPoruka)
+				PosaljiZahtjevZaPonovnimSlanjem();
+
+			else 
+				IzvrsiRadnjuBT();
+
+
 			inicijalizirajPolje();
-		}*/
+		}
+		else if (CitajBluetooth().equals("NeispravnaPoruka"))
+		{
+			PosaljiZahtjevZaPonovnimSlanjem();
+		}
 
 
 		//lineFollow();
@@ -132,24 +142,24 @@ String CitajBluetooth()
 {
 	//String btPoruka = Serial.readString();
 	String btPoruka = bluetooth.readString();
-	String porukaBezMS = btPoruka.substring(btPoruka.lastIndexOf(':') + 1);
-	String porukaBezBrojaPoruka= porukaBezMS.substring(0, porukaBezMS.indexOf('#'));
-	int brojPorukaDobiveno = porukaBezMS.substring(porukaBezMS.lastIndexOf('#') + 1).toInt();
-	String dobivenaPoruka = porukaBezMS.substring(0,porukaBezMS.lastIndexOf(';'));
-	int asciiSumaIzracunato = IzracunajASciiSumu(dobivenaPoruka);
-	int asciiSumaDobivenePoruke = porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
 
-	bool istePoruke=ProvjeriPoruke();
-
-
-	
-	istePoruke = true;
-	if (btPoruka.startsWith("MS:") && asciiSumaDobivenePoruke==asciiSumaIzracunato && istePoruke)
+	if (btPoruka.startsWith("MS:") /*&& asciiSumaDobivenePoruke==asciiSumaIzracunato && istePoruke*/)
 	{
 		index++;
 
+		String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1);
+		String porukaBezBrojaPoruka = cijelaPoruka.substring(0, cijelaPoruka.indexOf('#'));
+		int ocekivaniBrojPoruka = cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
+
+		String dobivenaPoruka = cijelaPoruka.substring(0, cijelaPoruka.lastIndexOf(';'));
+		int asciiSumaIzracunato = IzracunajASciiSumu(dobivenaPoruka);
+		int asciiSumaDobivenePoruke = porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
+
 		poljeRadnji[index].sadrzaj = dobivenaPoruka;
-		poljeRadnji[index].brojPoruka = brojPorukaDobiveno;
+		poljeRadnji[index].brojPoruka = ocekivaniBrojPoruka;
+
+		if(asciiSumaIzracunato != asciiSumaDobivenePoruke)
+			return "NeispravnaPoruka";
 
 		/*Serial.print("Poruka: ");
 		Serial.println(gotovaPoruka);
@@ -159,13 +169,18 @@ String CitajBluetooth()
 		return dobivenaPoruka;
 	}
 
-	return "Poruke nisu dobre";
+	return btPoruka;
 }
 
-bool ProvjeriPoruke() {
-	for (int i = 0; i < 10; i++)
+void PosaljiZahtjevZaPonovnimSlanjem()
+{
+	//TODO: Napraviti metodu koja šalje zahtjev za ponovnim slanjem istih poruka jer se je dogodila greška
+}
+
+bool ProvjeriBrojPrimljenihPoruka() {
+	for (int i = 0; i <= index; i++)
 	{
-		for (int j = 1; j < 10; j++)
+		for (int j = 1; j <= index; j++)
 		{
 			if (poljeRadnji[i].brojPoruka != poljeRadnji[j].brojPoruka)
 			{
