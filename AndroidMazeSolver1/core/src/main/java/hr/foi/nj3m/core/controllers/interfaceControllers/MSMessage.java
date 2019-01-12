@@ -1,4 +1,4 @@
-package hr.foi.nj3m.androidmazesolver1.Threads;
+package hr.foi.nj3m.core.controllers.interfaceControllers;
 
 import java.util.List;
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessage;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IMessageACK;
 import hr.foi.nj3m.interfaces.IRobotMessenger;

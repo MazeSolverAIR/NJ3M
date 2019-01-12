@@ -11,10 +11,11 @@ int index = -1;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
+	int brojPoruka;
 };
 
 const int velicinaPolja = 10;
-objektPrimljenePoruke poljeRadnji[velicinaPolja] = {""};
+objektPrimljenePoruke poljeRadnji[velicinaPolja];
 
 MeBuzzer buzzer = MeBuzzer();
 String myString;
@@ -131,23 +132,59 @@ String CitajBluetooth()
 {
 	//String btPoruka = Serial.readString();
 	String btPoruka = bluetooth.readString();
+	String porukaBezMS = btPoruka.substring(btPoruka.lastIndexOf(':') + 1);
+	String porukaBezBrojaPoruka= porukaBezMS.substring(0, porukaBezMS.indexOf('#'));
+	int brojPorukaDobiveno = porukaBezMS.substring(porukaBezMS.lastIndexOf('#') + 1).toInt();
+	String dobivenaPoruka = porukaBezMS.substring(0,porukaBezMS.lastIndexOf(';'));
+	int asciiSumaIzracunato = IzracunajASciiSumu(dobivenaPoruka);
+	int asciiSumaDobivenePoruke = porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
 
-	if (btPoruka.startsWith("MS:"))
+	bool istePoruke=ProvjeriPoruke();
+
+
+	
+	istePoruke = true;
+	if (btPoruka.startsWith("MS:") && asciiSumaDobivenePoruke==asciiSumaIzracunato && istePoruke)
 	{
 		index++;
-		String gotovaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1, btPoruka.length());
 
-		poljeRadnji[index].sadrzaj = gotovaPoruka;
+		poljeRadnji[index].sadrzaj = dobivenaPoruka;
+		poljeRadnji[index].brojPoruka = brojPorukaDobiveno;
 
 		/*Serial.print("Poruka: ");
 		Serial.println(gotovaPoruka);
 		Serial.print(" / ");
 		Serial.println(poljeRadnji[index].sadrzaj);*/
 
-		return gotovaPoruka;
+		return dobivenaPoruka;
 	}
 
-	return "";
+	return "Poruke nisu dobre";
+}
+
+bool ProvjeriPoruke() {
+	for (int i = 0; i < 10; i++)
+	{
+		for (int j = 1; j < 10; j++)
+		{
+			if (poljeRadnji[i].brojPoruka != poljeRadnji[j].brojPoruka)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+int IzracunajASciiSumu(String rijec) {
+	int output=0;
+
+	for (int i = 0; i < rijec.length(); i++)
+	{
+		output += (int)rijec.charAt(i);
+	}
+	
+	return output;
 }
 
 void IzvrsiRadnjuBT()
