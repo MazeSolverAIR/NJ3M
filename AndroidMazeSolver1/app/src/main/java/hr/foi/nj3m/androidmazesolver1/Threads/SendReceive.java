@@ -35,7 +35,7 @@ public class SendReceive extends Thread {
                     messegeACK.GetMessage(CommandsToMBotController.getStringFromComandEnum(naredba),numberOfMessages);
                     iRobotMessenger.sendCommand(messegeACK.ReturnFinalMessage());
                     try {
-                        sleep(8);
+                        sleep(15);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

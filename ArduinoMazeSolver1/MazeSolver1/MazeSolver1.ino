@@ -11,10 +11,10 @@ int index = -1;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
-	uint8_t brojPoruka;
+	int brojPoruka;
 };
 
-const int velicinaPolja = 10;
+const int velicinaPolja = 50;
 objektPrimljenePoruke poljeRadnji[velicinaPolja];
 
 MeBuzzer buzzer = MeBuzzer();
@@ -41,13 +41,13 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(2);
+	bluetooth.setTimeout(1);
 }
 
 void loop()
 {
 	IzvrsiPritisakTipke();
-
+	String procitanaBTPoruka = "";
 	switch (modRadnje)
 	{
 	case 0:
@@ -55,16 +55,24 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-		if(CitajBluetooth().equals("Over") && ProvjeriBrojPrimljenihPoruka())
+
+		procitanaBTPoruka = CitajBluetooth();
+
+		if (procitanaBTPoruka.equals("Over"))
 		{
-			IzvrsiRadnjuBT();
-			inicijalizirajPolje();
+			if(ProvjeriBrojPrimljenihPoruka())
+				IzvrsiRadnjuBT();
+			else
+				PosaljiZahtjevZaPonovnimSlanjem();
+
+			InicijalizirajPolje();
 		}
-		else if (CitajBluetooth().equals("NeispravnaPoruka") || !ProvjeriBrojPrimljenihPoruka())
+		else if (procitanaBTPoruka.equals("NeispravnaPoruka"))
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
-			inicijalizirajPolje();
+			InicijalizirajPolje();
 		}
+
 		//lineFollow();
 		b = true;
 		break;
@@ -72,11 +80,11 @@ void loop()
 
 		if (b) {
 			buzzer.tone(700, 500);
-			Serial.write("KreceWrite;");
+			//Serial.write("KreceWrite;");
 
 			b = false;
-		}	
-
+		}
+		
 		Kreni(brzinaKretanja);
 		if (GetFrontSensorDistance() == 0)
 		{ }
@@ -136,31 +144,57 @@ void IzvrsiPritisakTipke()
 
 String CitajBluetooth()
 {
-	//String btPoruka = Serial.readString();
 	String btPoruka = bluetooth.readString();
 
 	if (btPoruka.startsWith("MS:"))
 	{
 		index++;
 
-		String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1);
-		String porukaBezBrojaPoruka = cijelaPoruka.substring(0, cijelaPoruka.indexOf('#'));
-		uint8_t ocekivaniBrojPoruka = cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
+		String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1); //Poruka nakon MS:
 
-		String dobivenaPoruka = cijelaPoruka.substring(0, cijelaPoruka.lastIndexOf(';'));
-		int asciiSumaIzracunato = IzracunajASciiSumu(dobivenaPoruka);
-		int asciiSumaDobivenePoruke = porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
+		ZapisiPorukuUPolje(cijelaPoruka);
 
-		poljeRadnji[index].sadrzaj = dobivenaPoruka;
-		poljeRadnji[index].brojPoruka = ocekivaniBrojPoruka;
-
-		if(asciiSumaIzracunato != asciiSumaDobivenePoruke)
+		if (!CheckAsciiSuma(cijelaPoruka))
 			return "NeispravnaPoruka";
 
-		return dobivenaPoruka;
+		return DohvatiTekstPoruke(cijelaPoruka);
 	}
 
 	return btPoruka;
+}
+
+void ZapisiPorukuUPolje(String cijelaPoruka)
+{
+	int ocekivaniBrojPoruka = DohvatiOcekivaniBrojPoruka(cijelaPoruka);
+	String dobivenaPoruka = DohvatiTekstPoruke(cijelaPoruka);
+
+	poljeRadnji[index].sadrzaj = dobivenaPoruka;
+	poljeRadnji[index].brojPoruka = ocekivaniBrojPoruka;
+}
+
+String DohvatiTekstPoruke(String cijelaPoruka)
+{
+	return cijelaPoruka.substring(0, cijelaPoruka.lastIndexOf(';'));
+}
+
+bool CheckAsciiSuma(String cijelaPoruka)
+{
+	int asciiSumaIzracunato = IzracunajASciiSumu(DohvatiTekstPoruke(cijelaPoruka));
+	int asciiSumaDobivenePoruke = DohvatiAsciiSumuIzPoruke(cijelaPoruka);
+
+	return asciiSumaIzracunato == asciiSumaDobivenePoruke;
+}
+
+int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
+{
+	String porukaBezBrojaPoruka = cijelaPoruka.substring(0, cijelaPoruka.indexOf('#'));
+
+	return porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
+}
+
+uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
+{
+	return cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
 }
 
 void PosaljiZahtjevZaPonovnimSlanjem()
@@ -183,19 +217,19 @@ bool ProvjeriBrojPrimljenihPoruka() {
 }
 
 int IzracunajASciiSumu(String rijec) {
-	int output=0;
+	int output = 0;
 
 	for (int i = 0; i < rijec.length(); i++)
 	{
 		output += (int)rijec.charAt(i);
 	}
-	
+
 	return output;
 }
 
 void IzvrsiRadnjuBT()
 {
-	int chckIndex = index-1;
+	int chckIndex = index - 1;
 
 	for (int i = 0; i <= chckIndex; i++)
 	{
@@ -213,22 +247,20 @@ void IzvrsiRadnjuBT()
 		else if (radnja.equals("StopMotors"))
 			ZaustaviMotore();
 
-		else if (radnja.equals("SpeedUpLeft")) 
+		else if (radnja.equals("SpeedUpLeft"))
 		{
 			leftMotor.run(-137);
 			rightMotor.run(brzinaKretanja);
 		}
-		else if (radnja.equals("SpeedUpRight")) 
+		else if (radnja.equals("SpeedUpRight"))
 		{
 			rightMotor.run(137);
 			leftMotor.run(-brzinaKretanja);
 		}
-
-		delay(5);
 	}
 }
 
-void inicijalizirajPolje()
+void InicijalizirajPolje()
 {
 	for (int i = 0; i < velicinaPolja; i++)
 	{

@@ -58,5 +58,4 @@ C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Release\MazeSolver1.
  D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src/MePS2.h \
  D:\ArduinoIDE\Arduino\libraries\Makeblock-Libraries-master\src/MeColorSensor.h \
  D:\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\Wire\src/Wire.h \
- D:\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src/SoftwareSerial.h \
- C:\Users\Matija\AppData\Local\Temp\VMBuilds\MazeSolver1\uno\Release\List.h
+ D:\ArduinoIDE\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src/SoftwareSerial.h
