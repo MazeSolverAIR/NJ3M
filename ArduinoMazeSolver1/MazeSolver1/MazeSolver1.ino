@@ -80,7 +80,9 @@ void loop()
 		}	
 
 		Kreni(brzinaKretanja);
-		if (GetFrontSensorDistance() < 10)
+		if (GetFrontSensorDistance() == 0)
+		{ }
+		else if (GetFrontSensorDistance() < 10)
 		{
 			Kreni(-brzinaKretanja);
 			delay(1000);
