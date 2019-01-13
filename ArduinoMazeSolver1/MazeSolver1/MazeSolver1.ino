@@ -16,7 +16,7 @@ typedef struct objektPrimljenePoruke {
 
 const int velicinaPolja = 15;
 objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
-
+String metodeZaSlanje[10] = {};
 MeBuzzer buzzer = MeBuzzer();
 String myString;
 MeDCMotor leftMotor(M1);
@@ -190,6 +190,24 @@ int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
 	String porukaBezBrojaPoruka = cijelaPoruka.substring(0, cijelaPoruka.indexOf('#'));
 
 	return porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
+}
+
+String SpojiPoruku() {
+	for each (String poruka in metodeZaSlanje)
+	{
+		int asciiSuma = IzracunajASciiSumu(poruka);
+		int ocekivaniBrojPoruka = metodeZaSlanje->length();
+	    poruka = "MS:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
+	}
+}
+
+void SaljiPoruke() {
+	SpojiPoruku();
+	for each (String poruka in metodeZaSlanje)
+	{
+		bluetooth.print(poruka);
+		delay(20);
+	}
 }
 
 uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
