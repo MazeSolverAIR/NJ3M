@@ -29,9 +29,9 @@ public class MBotPathFinder {
 
     private List<IUltraSonic> Sensors = null;
 
-    public IUltraSonic LeftSensor = null;
-    public IUltraSonic RightSensor = null;
-    public IUltraSonic FrontSensor = null;
+    public static IUltraSonic LeftSensor = null;
+    public static IUltraSonic RightSensor = null;
+    public static IUltraSonic FrontSensor = null;
 
     public List<Crossroad> CrossroadsList = null;
 

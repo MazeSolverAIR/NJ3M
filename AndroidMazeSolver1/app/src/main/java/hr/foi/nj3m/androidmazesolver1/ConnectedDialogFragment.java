@@ -13,15 +13,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
+import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessInfo;
 import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
+import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
+import hr.foi.nj3m.interfaces.IMessageACK;
 
 import static java.lang.Thread.sleep;
 
@@ -78,27 +82,27 @@ public class ConnectedDialogFragment extends Fragment {
         }
     }
 
+
+    List<MSMessageFromACK> listOfRecvMessages = new ArrayList<>();
+
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             if(msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
-                String workingMessage = "";
-                try {
-                    workingMessage = message.substring(0, message.lastIndexOf(';'));
-                }catch (Exception e){
 
-                }
-                Log.d("Primio sam", message);
-                if(workingMessage.contains("KreceWrite")) {
-                    Log.d("Tocna poruka", workingMessage);
-                    try {
-                        sleep(300);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if(message.startsWith("MS:"))
+                {
+                    MSMessageFromACK messageAck = new MSMessageFromACK();
+                    messageAck.setMessage(message);
+                    listOfRecvMessages.add(messageAck);
+
+                    if(messageAck.returnFinalMessage().contains("Over"))
+                    {
+                        ProcessInfo(listOfRecvMessages);
+                        listOfRecvMessages.clear();
                     }
-                    //sendReceive.write("RotateLeft");
                 }
             }
             return true;

@@ -5,6 +5,7 @@ public enum InfoFromMBot {
     LeftUltrasonic,
     RightUltrasonic,
     LineReader,
+    SendAgain,
     LastMessage,
     Null
 }
