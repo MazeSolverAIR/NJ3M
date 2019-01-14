@@ -22,7 +22,7 @@ public class MBotInfoProcesser
             return -2;
         }
 
-        return CheckRecvListInfo();
+        return CheckRecvListInfo(); //ponovno saljem info ili zapisujem podatke u senzore ako su dobri
     }
 
     private static int CheckRecvListInfo()

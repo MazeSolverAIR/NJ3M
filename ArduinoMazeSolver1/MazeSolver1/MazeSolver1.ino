@@ -15,9 +15,9 @@ typedef struct objektPrimljenePoruke {
 	int brojPoruka;
 };
 
-const int velicinaPolja = 15;
+const int velicinaPolja = 10;
 objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
-String metodeZaSlanje[10] = {};
+String metodeZaSlanje[velicinaPolja] = {};
 MeBuzzer buzzer = MeBuzzer();
 String myString;
 MeDCMotor leftMotor(M1);
@@ -43,6 +43,7 @@ void setup()
 
 	bluetooth.begin(115200);
 	bluetooth.setTimeout(1);
+
 }
 
 void loop()
@@ -61,16 +62,16 @@ void loop()
 
 		if (procitanaBTPoruka.equals("Over"))
 		{
-			if(ProvjeriBrojPrimljenihPoruka())
+			if (ProvjeriBrojPrimljenihPoruka())
 				IzvrsiRadnjuBT();
-			else
-				PosaljiZahtjevZaPonovnimSlanjem();
+			/*else
+				PosaljiZahtjevZaPonovnimSlanjem();*/
 
 			InicijalizirajPolje();
 		}
 		else if (procitanaBTPoruka.equals("NeispravnaPoruka"))
 		{
-			PosaljiZahtjevZaPonovnimSlanjem();
+			//PosaljiZahtjevZaPonovnimSlanjem();
 			InicijalizirajPolje();
 		}
 
@@ -85,25 +86,18 @@ void loop()
 
 			b = false;
 		}
-		
-		Kreni(brzinaKretanja);
-		if (GetFrontSensorDistance() == 0)
-		{ }
-		else if (GetFrontSensorDistance() < 10)
-		{
-			Kreni(-brzinaKretanja);
-			delay(1000);
-			Skreni('d', 90, brzinaKretanja);
-		}
-		else if (GetSideSensorDistance(ultraSonicRight.aRead1()) < 20)
-		{
-			Skreni('l', 90, brzinaKretanja);
-		}
-		else if (GetSideSensorDistance(ultraSonicLeft.aRead1()) < 20)
-		{
-			Skreni('d', 90, brzinaKretanja);
-		}
-		delay(2);
+
+		/*ZapisiNaredbuUPolje("Hello");
+		ZapisiNaredbuUPolje("Over");
+
+		SaljiPoruke();*/
+
+		//ZapisiNaredbuUPolje("Hello");
+
+		ZapisiNaredbuUPolje("HI");
+		ZapisiNaredbuUPolje("Over");
+		SaljiPoruke();
+		InicijalizirajMetodeZaSlanje();
 
 		a = true;
 		break;
@@ -195,19 +189,34 @@ int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
 	return porukaBezBrojaPoruka.substring(porukaBezBrojaPoruka.lastIndexOf(';') + 1).toInt();
 }
 
-String SpojiPoruku() {
-	for (int i = 0; i < indexNaredba; i++) {
-		int asciiSuma = IzracunajASciiSumu(metodeZaSlanje[i]);
-		int ocekivaniBrojPoruka = indexNaredba;
-		metodeZaSlanje[i] = "MS:" + metodeZaSlanje[i] + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
-	}
+String SpojiPoruku(String poruka) {
+
+	int asciiSuma = IzracunajASciiSumu(poruka);
+	int ocekivaniBrojPoruka = indexNaredba + 1;
+	String returnPoruka = "MS:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
+
+	return returnPoruka;
 }
 
 void SaljiPoruke() {
-	SpojiPoruku();
-	for (int i = 0; i< indexNaredba; i++) {
-		bluetooth.print(metodeZaSlanje[i]);
-		delay(20);
+	for (int i = 0; i < indexNaredba; i++) {
+
+		String porukaZaSlanje = SpojiPoruku(metodeZaSlanje[i]);
+		Serial.print(porukaZaSlanje);
+		delay(12);
+	}
+
+	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
+ FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
+ LFL - LineFollowerLeft  LFR - LineFolovwerRight
+ Šalje se informacija po informacija, te na kraju "Over"*/
+}
+
+void InicijalizirajMetodeZaSlanje()
+{
+	for (int i = 0; i <= indexNaredba; i++)
+	{
+		metodeZaSlanje[i] = { "" };
 	}
 	indexNaredba = 0;
 }
@@ -224,13 +233,21 @@ uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 
 void PosaljiZahtjevZaPonovnimSlanjem()
 {
-	bluetooth.print("SendAgain");
+	ZapisiNaredbuUPolje("SendAgain");
+	ZapisiNaredbuUPolje("Over");
+
+	SaljiPoruke();
+}
+
+void PonovnoPosaljiPoruke()
+{
+	SaljiPoruke();
 }
 
 bool ProvjeriBrojPrimljenihPoruka() {
 	for (int i = 0; i <= index; i++)
 	{
-		if (poljeRadnji[i].brojPoruka != index+1)
+		if (poljeRadnji[i].brojPoruka != index + 1)
 			return false;
 		for (int j = 1; j <= index; j++)
 		{
@@ -254,6 +271,7 @@ int IzracunajASciiSumu(String rijec) {
 	return output;
 }
 
+bool poljeJeInicijalizirano = false;
 void IzvrsiRadnjuBT()
 {
 	int chckIndex = index - 1;
@@ -261,6 +279,13 @@ void IzvrsiRadnjuBT()
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
+		if (radnja.equals("SendAgain"))
+			PonovnoPosaljiPoruke();
+		else if (!radnja.equals("SendAgain") && !poljeJeInicijalizirano)
+		{
+			InicijalizirajMetodeZaSlanje();
+			poljeJeInicijalizirano = true;
+		}
 
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
@@ -285,27 +310,19 @@ void IzvrsiRadnjuBT()
 			leftMotor.run(-brzinaKretanja);
 		}
 	}
+
+	poljeJeInicijalizirano = false;
 }
 
 void InicijalizirajPolje()
 {
 	for (int i = 0; i < velicinaPolja; i++)
 	{
-		poljeRadnji[i].sadrzaj = {""};
-		poljeRadnji[i].brojPoruka = {0};
+		poljeRadnji[i].sadrzaj = { "" };
+		poljeRadnji[i].brojPoruka = { 0 };
 	}
 
 	index = -1;
-}
-
-
-void PosaljiBTPoruku()
-{
-	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
-	 FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
-	 LFL - LineFollowerLeft  LFR - LineFolovwerRight
-	 Šalje se informacija po informacija, te na kraju "Over"*/
-	bluetooth.print("Hello");
 }
 
 void Kreni(uint16_t brzinaKretanja)
@@ -347,7 +364,7 @@ void exitLab() {
 
 }
 
-void lineFollow() {
+/*void lineFollow() {
 	int sensorStateCenter = lineFollower.readSensors();
 
 	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
@@ -356,19 +373,19 @@ void lineFollow() {
 	{
 	case S1_IN_S2_IN:
 		//senzori su na centru, kre�i se ravno
-		bluetooth.print("OnLine");
+		Serial.print("OnLine");
 		break;
 	case S1_IN_S2_OUT:
 		//senzor 2 je van linije (desni senzor)
-		bluetooth.print("RightOut");
+		Serial.print("RightOut");
 		break;
 	case S1_OUT_S2_IN:
 		//senzor 1 je van linije (lijevi senzor)
-		bluetooth.print("LeftOut");
+		Serial.print("LeftOut");
 		break;
 	case S1_OUT_S2_OUT:
 		//oba senzora su van linije
-		bluetooth.print("BothOut");
+		Serial.print("BothOut");
 		break;
 	}
-}
+}*/

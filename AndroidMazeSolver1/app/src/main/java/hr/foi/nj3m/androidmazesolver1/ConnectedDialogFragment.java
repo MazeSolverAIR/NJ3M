@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
+import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
 
 public class ConnectedDialogFragment extends Fragment {
@@ -56,7 +58,9 @@ public class ConnectedDialogFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(start)
+                MBotPathFinder pathFinder = MBotPathFinder.createInstance();
+                sendReceive.write(pathFinder.TestMethod());
+                /*if(start)
                 {
                     sendReceive.write(CommandsGenerator.StartMBot());
 
@@ -67,8 +71,7 @@ public class ConnectedDialogFragment extends Fragment {
                     sendReceive.write(CommandsGenerator.StopMBot());
 
                     start = true;
-                }
-
+                }*/
             }
         });
     }
@@ -97,13 +100,16 @@ public class ConnectedDialogFragment extends Fragment {
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 
+                Log.d("Poruka:", message);
                 if(message.startsWith("MS:"))
                 {
                     MSMessageFromACK messageAck = new MSMessageFromACK();
                     messageAck.setMessage(message);
                     listOfRecvMessages.add(messageAck);
 
-                    if(messageAck.returnFinalMessage().contains("Over"))
+                    Log.d("TocnaPor:", messageAck.returnFinalMessage());
+
+                    if(messageAck.returnFinalMessage().equals("Over"))
                     {
                         if(ProcessInfo(listOfRecvMessages) == -2)
                         {
