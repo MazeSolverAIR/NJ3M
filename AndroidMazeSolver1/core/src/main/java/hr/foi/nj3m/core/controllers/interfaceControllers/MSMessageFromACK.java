@@ -13,12 +13,12 @@ public class MSMessageFromACK implements IMessageACK {
 
     @Override
     public void setMessage(String message) {
-        String msgToSave = message.substring(message.lastIndexOf(':')+1);
+        String msgToSave = message.substring(message.lastIndexOf(':')+1, message.indexOf('\r'));
         setExpectedAsciiSum(msgToSave);
         setNumberOfMessages(msgToSave);
-        this.calculatedAsciiSum = calculateAsciiSum(msgToSave);
-
         this.mMessage = msgToSave;
+
+        this.calculatedAsciiSum = calculateAsciiSum(returnFinalMessage());
     }
 
     @Override

@@ -15,24 +15,22 @@ public class InfoFromMBotController {
 
     public static InfoFromMBot getStringFromComandEnum(String infoFromMBot) {
 
-        String workingString = infoFromMBot.substring(0, infoFromMBot.lastIndexOf(':'));
-
-        if(workingString.equals("PSnz"))
+        if(infoFromMBot.equals("PSnz"))
             return FrontUltrasonic;
 
-        else if(workingString.equals("LSnz"))
+        else if(infoFromMBot.equals("LSnz"))
             return LeftUltrasonic;
 
-        else if(workingString.equals("DSnz"))
+        else if(infoFromMBot.equals("DSnz"))
             return RightUltrasonic;
 
-        else if(workingString.equals("RdSnz"))
+        else if(infoFromMBot.equals("RdSnz"))
             return LineReader;
 
-        else if(workingString.equals("Over"))
+        else if(infoFromMBot.equals("Over"))
             return LastMessage;
 
-        else if(workingString.equals("SendAgain"))
+        else if(infoFromMBot.equals("SendAgain"))
             return SendAgain;
 
         return Null;

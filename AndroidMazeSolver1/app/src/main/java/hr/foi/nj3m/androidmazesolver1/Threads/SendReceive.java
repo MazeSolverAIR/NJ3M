@@ -1,5 +1,6 @@
 package hr.foi.nj3m.androidmazesolver1.Threads;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.List;
 
@@ -28,7 +29,9 @@ public class SendReceive extends Thread {
     }
 
     public void write(final List<CommandsToMBot> listaNaredbi){
+        this.listOfLastCommands = listaNaredbi;
         final int numberOfMessages=listaNaredbi.size();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -38,8 +41,10 @@ public class SendReceive extends Thread {
                     messegeACK.setNumberOfMessages(numberOfMessages);
 
                     iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
+
+                    Log.d("Saljem", messegeACK.returnFinalMessage());
                     try {
-                        sleep(12);
+                        sleep(20);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -50,6 +55,7 @@ public class SendReceive extends Thread {
 
     public void writeAgain()
     {
-        write(this.listOfLastCommands);
+        if(this.listOfLastCommands != null)
+            write(this.listOfLastCommands);
     }
 }

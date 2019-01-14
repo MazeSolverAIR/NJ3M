@@ -22,7 +22,7 @@ public class MBotInfoProcesser
             return -2;
         }
 
-        return CheckRecvListInfo();
+        return CheckRecvListInfo(); //ponovno saljem info ili zapisujem podatke u senzore ako su dobri
     }
 
     private static int CheckRecvListInfo()
@@ -36,6 +36,7 @@ public class MBotInfoProcesser
                 case SendAgain:
                     return -1;
                 case FrontUltrasonic:
+                    //MBotPathFinder.FrontSensor.setCurrentValue(msg.returnFinalMessage());
                     //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
                     break;
                 case LeftUltrasonic:
