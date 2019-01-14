@@ -22,6 +22,7 @@ import static java.lang.Thread.sleep;
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.checkACK.ACKChecker;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
@@ -112,13 +113,16 @@ public class ConnectedDialogFragment extends Fragment {
                     if(messageAck.returnFinalMessage().equals("Over"))
                     {
                         if(ProcessInfo(listOfRecvMessages) == -2)
-                        {
                             sendReceive.write(CommandsGenerator.SendMeAgain());
-                        }
+
                         else if(ProcessInfo(listOfRecvMessages) == -1)
-                        {
                             sendReceive.writeAgain();
-                        }
+
+                        listOfRecvMessages.clear();
+                    }
+                    else if(!ACKChecker.checkSum(messageAck))
+                    {
+                        sendReceive.write(CommandsGenerator.SendMeAgain());
                         listOfRecvMessages.clear();
                     }
                 }

@@ -9,25 +9,21 @@ import hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot;
 
 public class MBotInfoProcesser
 {
-    private static List<MSMessageFromACK> listOfMessages;
-
     public static int ProcessInfo(List<MSMessageFromACK> listOfMsg)
     {
-        listOfMessages = listOfMsg;
-        ACKChecker checker = new ACKChecker(listOfMessages);
 
-        if(!checker.CkeckAckAtOnce()) {
+        if(!ACKChecker.checkNumerOfRecvMessages(listOfMsg)) {
             //Posalji zahtjev za ponovnim slajnjem informacija
 
             return -2;
         }
 
-        return CheckRecvListInfo(); //ponovno saljem info ili zapisujem podatke u senzore ako su dobri
+        return CheckRecvListInfo(listOfMsg); //ponovno saljem info ili zapisujem podatke u senzore ako su dobri
     }
 
-    private static int CheckRecvListInfo()
+    private static int CheckRecvListInfo(List<MSMessageFromACK> listOfMsg)
     {
-        for(MSMessageFromACK msg: listOfMessages)
+        for(MSMessageFromACK msg: listOfMsg)
         {
             InfoFromMBot infoFromMBot = InfoFromMBotController.getStringFromComandEnum(msg.returnFinalMessage());
 

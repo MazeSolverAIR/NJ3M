@@ -6,33 +6,18 @@ import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
 
 public class ACKChecker {
 
-    private List<MSMessageFromACK> listOfMessages;
-
-    public ACKChecker(List<MSMessageFromACK> listOfMsg)
+    public static boolean checkSum(MSMessageFromACK ackObject)
     {
-        this.listOfMessages = listOfMsg;
+        return ackObject.calculatedAsciiSum == ackObject.expectedAsciiSum;
     }
-
-    public boolean CkeckAckAtOnce()
+    public static boolean checkNumerOfRecvMessages(List<MSMessageFromACK> listOfRcvMessages)
     {
-        for(MSMessageFromACK msgObjFromList:listOfMessages)
+        for (MSMessageFromACK msg: listOfRcvMessages)
         {
-            if(!checkNumerOfRecvMessages(msgObjFromList))
-                return false;
-
-            if(!checkSum(msgObjFromList))
+            if(msg.expectedNumberOfMessages != listOfRcvMessages.size())
                 return false;
         }
 
         return true;
-    }
-
-    public boolean checkSum(MSMessageFromACK ackObject)
-    {
-        return ackObject.calculatedAsciiSum == ackObject.expectedAsciiSum;
-    }
-    public boolean checkNumerOfRecvMessages(MSMessageFromACK ackObject)
-    {
-        return ackObject.expectedNumberOfMessages == this.listOfMessages.size();
     }
 }

@@ -29,7 +29,9 @@ public class SendReceive extends Thread {
     }
 
     public void write(final List<CommandsToMBot> listaNaredbi){
-        this.listOfLastCommands = listaNaredbi;
+        if(listaNaredbi.get(0) != CommandsToMBot.SendAgain)
+            this.listOfLastCommands = listaNaredbi;
+
         final int numberOfMessages=listaNaredbi.size();
 
         new Thread(new Runnable() {
@@ -43,11 +45,13 @@ public class SendReceive extends Thread {
                     iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
 
                     Log.d("Saljem", messegeACK.returnFinalMessage());
+
                     try {
                         sleep(20);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                 }
             }
         }).start();

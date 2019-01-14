@@ -8,7 +8,7 @@ bool a = true;
 bool b = true;
 
 int index = -1;
-int indexNaredba = -1;
+int indexZaSlanje = -1;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
@@ -16,8 +16,10 @@ typedef struct objektPrimljenePoruke {
 };
 
 const int velicinaPolja = 10;
+
 objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
 String metodeZaSlanje[velicinaPolja] = {};
+
 MeBuzzer buzzer = MeBuzzer();
 String myString;
 MeDCMotor leftMotor(M1);
@@ -36,6 +38,8 @@ Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
 
+bool canSendAgain = true;
+
 void setup()
 {
 
@@ -43,7 +47,7 @@ void setup()
 
 	bluetooth.begin(115200);
 	bluetooth.setTimeout(1);
-
+	bluetooth.listen();
 }
 
 void loop()
@@ -62,17 +66,19 @@ void loop()
 
 		if (procitanaBTPoruka.equals("Over"))
 		{
+			canSendAgain = true;
 			if (ProvjeriBrojPrimljenihPoruka())
 				IzvrsiRadnjuBT();
 			else
 				PosaljiZahtjevZaPonovnimSlanjem();
 
-			InicijalizirajPolje();
+			InicijalizirajPoljePrimljenihRadnji();
 		}
 		else if (procitanaBTPoruka.equals("NeispravnaPoruka"))
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
-			InicijalizirajPolje();
+
+			InicijalizirajPoljePrimljenihRadnji();
 		}
 
 		//lineFollow();
@@ -84,12 +90,11 @@ void loop()
 			buzzer.tone(700, 500);
 
 			b = false;
+			delay(1000);
+
 		}
 
-		ZapisiNaredbuUPolje("HI");
-		ZapisiNaredbuUPolje("Over");
-		SaljiPoruke();
-		InicijalizirajMetodeZaSlanje();
+		
 
 		a = true;
 		break;
@@ -131,7 +136,9 @@ void IzvrsiPritisakTipke()
 
 String CitajBluetooth()
 {
-	String btPoruka = bluetooth.readString();
+	canSendAgain = false;
+	String btPoruka = "";
+	btPoruka = bluetooth.readString();
 
 	if (btPoruka.startsWith("MS:"))
 	{
@@ -184,18 +191,22 @@ int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
 String SpojiPoruku(String poruka) {
 
 	int asciiSuma = IzracunajASciiSumu(poruka);
-	int ocekivaniBrojPoruka = indexNaredba + 1;
-	String returnPoruka = "MBot:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
+	int ocekivaniBrojPoruka = indexZaSlanje + 1;
 
-	return returnPoruka;
+	return "MBot:" + poruka + ';' + asciiSuma + '#' + ocekivaniBrojPoruka;
 }
 
-void SaljiPoruke() {
-	for (int i = 0; i <= indexNaredba; i++) {
+bool poljeInfoJeInicijalizirano = true;
 
-		String porukaZaSlanje = SpojiPoruku(metodeZaSlanje[i]);
-		Serial.println(porukaZaSlanje);
-		delay(30);
+void SaljiPoruke(String poljePoruka[10]) {
+	if (canSendAgain)
+	{
+		for (int i = 0; i <= indexZaSlanje; i++) {
+			String porukaZaSlanje = SpojiPoruku(poljePoruka[i]);
+			Serial.print(porukaZaSlanje);
+			delay(30);
+		}
+		poljeInfoJeInicijalizirano = false;
 	}
 
 	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
@@ -206,16 +217,19 @@ void SaljiPoruke() {
 
 void InicijalizirajMetodeZaSlanje()
 {
-	for (int i = 0; i <= indexNaredba; i++)
+	for (int i = 0; i <= indexZaSlanje; i++)
 	{
 		metodeZaSlanje[i] = { "" };
+
+		if (metodeZaSlanje[i + 1].equals(""))
+			break;
 	}
-	indexNaredba = -1;
+	indexZaSlanje = -1;
 }
 
 void ZapisiNaredbuUPolje(String poruka) {
-	indexNaredba++;
-	metodeZaSlanje[indexNaredba] = poruka;
+	indexZaSlanje++;
+	metodeZaSlanje[indexZaSlanje] = poruka;
 }
 
 uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
@@ -225,15 +239,18 @@ uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 
 void PosaljiZahtjevZaPonovnimSlanjem()
 {
-	ZapisiNaredbuUPolje("SendAgain");
-	ZapisiNaredbuUPolje("Over");
+	if (metodeZaSlanje->length() == 0)
+	{
+		ZapisiNaredbuUPolje("SendAgain");
+		ZapisiNaredbuUPolje("Over");
+	}
 
-	SaljiPoruke();
+	SaljiPoruke(metodeZaSlanje);
 }
 
 void PonovnoPosaljiPoruke()
 {
-	SaljiPoruke();
+	SaljiPoruke(metodeZaSlanje);
 }
 
 bool ProvjeriBrojPrimljenihPoruka() {
@@ -263,7 +280,8 @@ int IzracunajASciiSumu(String rijec) {
 	return output;
 }
 
-bool poljeJeInicijalizirano = false;
+
+
 void IzvrsiRadnjuBT()
 {
 	int chckIndex = index - 1;
@@ -271,15 +289,16 @@ void IzvrsiRadnjuBT()
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
-		if (radnja.equals("SendAgain") && poljeJeInicijalizirano)
+		if (radnja.equals("SendAgain"))
 		{
 			PonovnoPosaljiPoruke();
-			poljeJeInicijalizirano = false;
+
+			break;
 		}
-		else if (!radnja.equals("SendAgain") && !poljeJeInicijalizirano)
+		if (!radnja.equals("SendAgain") && !poljeInfoJeInicijalizirano)
 		{
 			InicijalizirajMetodeZaSlanje();
-			poljeJeInicijalizirano = true;
+			poljeInfoJeInicijalizirano = true;
 		}
 
 		if (radnja.equals("RotateLeft"))
@@ -305,16 +324,17 @@ void IzvrsiRadnjuBT()
 			leftMotor.run(-brzinaKretanja);
 		}
 	}
-
-	poljeJeInicijalizirano = false;
 }
 
-void InicijalizirajPolje()
+void InicijalizirajPoljePrimljenihRadnji()
 {
 	for (int i = 0; i < velicinaPolja; i++)
 	{
 		poljeRadnji[i].sadrzaj = { "" };
 		poljeRadnji[i].brojPoruka = { 0 };
+
+		if (poljeRadnji[i + 1].sadrzaj.equals("") && poljeRadnji[i + 1].brojPoruka == 0)
+			break;
 	}
 
 	index = -1;
