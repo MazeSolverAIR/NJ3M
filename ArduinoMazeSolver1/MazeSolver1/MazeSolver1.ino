@@ -8,6 +8,7 @@ bool a = true;
 bool b = true;
 
 int index = -1;
+int indexNaredba = 0;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
@@ -172,6 +173,8 @@ void ZapisiPorukuUPolje(String cijelaPoruka)
 	poljeRadnji[index].brojPoruka = ocekivaniBrojPoruka;
 }
 
+
+
 String DohvatiTekstPoruke(String cijelaPoruka)
 {
 	return cijelaPoruka.substring(0, cijelaPoruka.lastIndexOf(';'));
@@ -193,21 +196,25 @@ int DohvatiAsciiSumuIzPoruke(String cijelaPoruka)
 }
 
 String SpojiPoruku() {
-	for each (String poruka in metodeZaSlanje)
-	{
-		int asciiSuma = IzracunajASciiSumu(poruka);
-		int ocekivaniBrojPoruka = metodeZaSlanje->length();
-	    poruka = "MS:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
+	for (int i = 0; i < indexNaredba; i++) {
+		int asciiSuma = IzracunajASciiSumu(metodeZaSlanje[i]);
+		int ocekivaniBrojPoruka = indexNaredba;
+		metodeZaSlanje[i] = "MS:" + metodeZaSlanje[i] + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
 	}
 }
 
 void SaljiPoruke() {
 	SpojiPoruku();
-	for each (String poruka in metodeZaSlanje)
-	{
-		bluetooth.print(poruka);
+	for (int i = 0; i< indexNaredba; i++) {
+		bluetooth.print(metodeZaSlanje[i]);
 		delay(20);
 	}
+	indexNaredba = 0;
+}
+
+void ZapisiNaredbuUPolje(String poruka) {
+	metodeZaSlanje[indexNaredba] = poruka;
+	indexNaredba++;
 }
 
 uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
