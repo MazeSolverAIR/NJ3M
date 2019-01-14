@@ -22,6 +22,8 @@ public class CommandsToMBotController {
                 return "SpeedUpRight";
             case LastCommand:
                 return "Over";
+            case SendAgain:
+                return "SendAgain";
         }
 
         return "StopMotors";

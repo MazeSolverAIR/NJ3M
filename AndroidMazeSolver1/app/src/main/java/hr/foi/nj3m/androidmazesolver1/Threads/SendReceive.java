@@ -5,18 +5,20 @@ import java.util.List;
 
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
-import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessage;
+import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageToACK;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IMessageACK;
 import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class SendReceive extends Thread {
 
-    IRobotMessenger iRobotMessenger;
-    IMessageACK messegeACK;
+    private IRobotMessenger iRobotMessenger;
+    private IMessageACK messegeACK;
+
+    private List<CommandsToMBot> listOfLastCommands;
 
     public SendReceive(String address, Handler handler){
-        messegeACK= new MSMessage();
+        messegeACK= new MSMessageToACK();
         iRobotMessenger = ConnectionController.getInstanceOfIRobot();
         iRobotMessenger.initializeSocket(address, handler);
     }
@@ -32,15 +34,22 @@ public class SendReceive extends Thread {
             public void run() {
                 for (CommandsToMBot naredba:listaNaredbi)
                 {
-                    messegeACK.GetMessage(CommandsToMBotController.getStringFromComandEnum(naredba),numberOfMessages);
-                    iRobotMessenger.sendCommand(messegeACK.ReturnFinalMessage());
+                    messegeACK.setMessage(CommandsToMBotController.getStringFromComandEnum(naredba));
+                    messegeACK.setNumberOfMessages(numberOfMessages);
+
+                    iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
                     try {
-                        sleep(20);
+                        sleep(12);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+    }
+
+    public void writeAgain()
+    {
+        write(this.listOfLastCommands);
     }
 }

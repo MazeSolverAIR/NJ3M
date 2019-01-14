@@ -217,7 +217,7 @@ uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 
 void PosaljiZahtjevZaPonovnimSlanjem()
 {
-	//TODO: Napraviti metodu koja šalje zahtjev za ponovnim slanjem istih poruka jer se je dogodila greška
+	bluetooth.print("SendAgain");
 }
 
 bool ProvjeriBrojPrimljenihPoruka() {

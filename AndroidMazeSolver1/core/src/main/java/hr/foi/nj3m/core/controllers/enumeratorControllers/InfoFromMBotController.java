@@ -8,11 +8,12 @@ import static hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot.LeftUltrasonic;
 import static hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot.LineReader;
 import static hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot.Null;
 import static hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot.RightUltrasonic;
+import static hr.foi.nj3m.interfaces.Enumerations.InfoFromMBot.SendAgain;
 
 
 public class InfoFromMBotController {
 
-    public InfoFromMBot getStringFromComandEnum(String infoFromMBot) {
+    public static InfoFromMBot getStringFromComandEnum(String infoFromMBot) {
 
         String workingString = infoFromMBot.substring(0, infoFromMBot.lastIndexOf(':'));
 
@@ -30,6 +31,9 @@ public class InfoFromMBotController {
 
         else if(workingString.equals("Over"))
             return LastMessage;
+
+        else if(workingString.equals("SendAgain"))
+            return SendAgain;
 
         return Null;
     }

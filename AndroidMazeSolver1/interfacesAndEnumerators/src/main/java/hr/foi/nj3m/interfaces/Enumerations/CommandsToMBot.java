@@ -8,6 +8,7 @@ public enum CommandsToMBot {
     SpeedUpLeft,
     RotateFull,
     SpeedUpRight,
+    SendAgain,
     LastCommand,
     Null
 }
