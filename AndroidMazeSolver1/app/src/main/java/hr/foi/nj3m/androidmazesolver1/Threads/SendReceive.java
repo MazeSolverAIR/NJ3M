@@ -12,8 +12,10 @@ import hr.foi.nj3m.interfaces.IRobotMessenger;
 
 public class SendReceive extends Thread {
 
-    IRobotMessenger iRobotMessenger;
-    IMessageACK messegeACK;
+    private IRobotMessenger iRobotMessenger;
+    private IMessageACK messegeACK;
+
+    private List<CommandsToMBot> listOfLastCommands;
 
     public SendReceive(String address, Handler handler){
         messegeACK= new MSMessageToACK();
@@ -37,12 +39,17 @@ public class SendReceive extends Thread {
 
                     iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
                     try {
-                        sleep(20);
+                        sleep(12);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }).start();
+    }
+
+    public void writeAgain()
+    {
+        write(this.listOfLastCommands);
     }
 }

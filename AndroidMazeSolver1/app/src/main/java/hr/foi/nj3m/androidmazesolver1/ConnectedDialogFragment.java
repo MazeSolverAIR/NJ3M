@@ -6,12 +6,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +19,8 @@ import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessI
 import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
-import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
-import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
+import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
-import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
-import hr.foi.nj3m.interfaces.IMessageACK;
-
-import static java.lang.Thread.sleep;
 
 public class ConnectedDialogFragment extends Fragment {
 
@@ -35,6 +28,8 @@ public class ConnectedDialogFragment extends Fragment {
     SendReceive sendReceive;
     String deviceAddress;
     SharedPreferences sharedPreferences;
+
+    boolean start = true;
 
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -60,10 +55,20 @@ public class ConnectedDialogFragment extends Fragment {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MBotPathFinder finder = MBotPathFinder.createInstance();
 
-                List<CommandsToMBot> listaNaredbi = finder.TestMethod();
-                sendReceive.write(listaNaredbi);
+                if(start)
+                {
+                    sendReceive.write(CommandsGenerator.StartMBot());
+
+                    start = false;
+                }
+                else
+                {
+                    sendReceive.write(CommandsGenerator.StopMBot());
+
+                    start = true;
+                }
+
             }
         });
     }
@@ -100,7 +105,14 @@ public class ConnectedDialogFragment extends Fragment {
 
                     if(messageAck.returnFinalMessage().contains("Over"))
                     {
-                        ProcessInfo(listOfRecvMessages);
+                        if(ProcessInfo(listOfRecvMessages) == -2)
+                        {
+                            sendReceive.write(CommandsGenerator.SendMeAgain());
+                        }
+                        else if(ProcessInfo(listOfRecvMessages) == -1)
+                        {
+                            sendReceive.writeAgain();
+                        }
                         listOfRecvMessages.clear();
                     }
                 }

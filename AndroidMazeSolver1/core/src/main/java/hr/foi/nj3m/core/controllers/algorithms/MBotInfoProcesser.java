@@ -11,7 +11,7 @@ public class MBotInfoProcesser
 {
     private static List<MSMessageFromACK> listOfMessages;
 
-    public static boolean ProcessInfo(List<MSMessageFromACK> listOfMsg)
+    public static int ProcessInfo(List<MSMessageFromACK> listOfMsg)
     {
         listOfMessages = listOfMsg;
         ACKChecker checker = new ACKChecker(listOfMessages);
@@ -19,15 +19,13 @@ public class MBotInfoProcesser
         if(!checker.CkeckAckAtOnce()) {
             //Posalji zahtjev za ponovnim slajnjem informacija
 
-            return false;
+            return -2;
         }
 
-        CheckListInfo();
-
-        return true;
+        return CheckRecvListInfo();
     }
 
-    private static void CheckListInfo()
+    private static int CheckRecvListInfo()
     {
         for(MSMessageFromACK msg: listOfMessages)
         {
@@ -36,8 +34,7 @@ public class MBotInfoProcesser
             switch (infoFromMBot)
             {
                 case SendAgain:
-                    //TODO: Posalji opet sve poruke iz polje kao i prošli put kad si slao
-                    break;
+                    return -1;
                 case FrontUltrasonic:
                     //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
                     break;
@@ -55,5 +52,6 @@ public class MBotInfoProcesser
                     break;
             }
         }
+        return 0;
     }
 }
