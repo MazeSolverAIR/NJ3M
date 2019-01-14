@@ -29,7 +29,9 @@ public class SendReceive extends Thread {
     }
 
     public void write(final List<CommandsToMBot> listaNaredbi){
+        this.listOfLastCommands = listaNaredbi;
         final int numberOfMessages=listaNaredbi.size();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -39,6 +41,8 @@ public class SendReceive extends Thread {
                     messegeACK.setNumberOfMessages(numberOfMessages);
 
                     iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
+
+                    Log.d("Saljem", messegeACK.returnFinalMessage());
                     try {
                         sleep(20);
                     } catch (InterruptedException e) {

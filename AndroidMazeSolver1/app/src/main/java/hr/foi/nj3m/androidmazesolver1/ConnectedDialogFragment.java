@@ -23,6 +23,7 @@ import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialogFragment extends Fragment {
 
@@ -100,14 +101,13 @@ public class ConnectedDialogFragment extends Fragment {
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 
-                Log.d("Poruka:", message);
-                if(message.startsWith("MS:"))
+                if(message.startsWith("MBot:"))
                 {
                     MSMessageFromACK messageAck = new MSMessageFromACK();
                     messageAck.setMessage(message);
                     listOfRecvMessages.add(messageAck);
 
-                    Log.d("TocnaPor:", messageAck.returnFinalMessage());
+                    Log.d("Primio", messageAck.returnFinalMessage());
 
                     if(messageAck.returnFinalMessage().equals("Over"))
                     {

@@ -36,6 +36,7 @@ public class MBotInfoProcesser
                 case SendAgain:
                     return -1;
                 case FrontUltrasonic:
+                    //MBotPathFinder.FrontSensor.setCurrentValue(msg.returnFinalMessage());
                     //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
                     break;
                 case LeftUltrasonic:

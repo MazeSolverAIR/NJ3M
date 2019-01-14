@@ -8,7 +8,7 @@ bool a = true;
 bool b = true;
 
 int index = -1;
-int indexNaredba = 0;
+int indexNaredba = -1;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
@@ -64,14 +64,14 @@ void loop()
 		{
 			if (ProvjeriBrojPrimljenihPoruka())
 				IzvrsiRadnjuBT();
-			/*else
-				PosaljiZahtjevZaPonovnimSlanjem();*/
+			else
+				PosaljiZahtjevZaPonovnimSlanjem();
 
 			InicijalizirajPolje();
 		}
 		else if (procitanaBTPoruka.equals("NeispravnaPoruka"))
 		{
-			//PosaljiZahtjevZaPonovnimSlanjem();
+			PosaljiZahtjevZaPonovnimSlanjem();
 			InicijalizirajPolje();
 		}
 
@@ -82,17 +82,9 @@ void loop()
 
 		if (b) {
 			buzzer.tone(700, 500);
-			//Serial.write("KreceWrite;");
 
 			b = false;
 		}
-
-		/*ZapisiNaredbuUPolje("Hello");
-		ZapisiNaredbuUPolje("Over");
-
-		SaljiPoruke();*/
-
-		//ZapisiNaredbuUPolje("Hello");
 
 		ZapisiNaredbuUPolje("HI");
 		ZapisiNaredbuUPolje("Over");
@@ -193,17 +185,17 @@ String SpojiPoruku(String poruka) {
 
 	int asciiSuma = IzracunajASciiSumu(poruka);
 	int ocekivaniBrojPoruka = indexNaredba + 1;
-	String returnPoruka = "MS:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
+	String returnPoruka = "MBot:" + poruka + ";" + asciiSuma + "#" + ocekivaniBrojPoruka;
 
 	return returnPoruka;
 }
 
 void SaljiPoruke() {
-	for (int i = 0; i < indexNaredba; i++) {
+	for (int i = 0; i <= indexNaredba; i++) {
 
 		String porukaZaSlanje = SpojiPoruku(metodeZaSlanje[i]);
-		Serial.print(porukaZaSlanje);
-		delay(12);
+		Serial.println(porukaZaSlanje);
+		delay(30);
 	}
 
 	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
@@ -218,12 +210,12 @@ void InicijalizirajMetodeZaSlanje()
 	{
 		metodeZaSlanje[i] = { "" };
 	}
-	indexNaredba = 0;
+	indexNaredba = -1;
 }
 
 void ZapisiNaredbuUPolje(String poruka) {
-	metodeZaSlanje[indexNaredba] = poruka;
 	indexNaredba++;
+	metodeZaSlanje[indexNaredba] = poruka;
 }
 
 uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
@@ -279,8 +271,11 @@ void IzvrsiRadnjuBT()
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
-		if (radnja.equals("SendAgain"))
+		if (radnja.equals("SendAgain") && poljeJeInicijalizirano)
+		{
 			PonovnoPosaljiPoruke();
+			poljeJeInicijalizirano = false;
+		}
 		else if (!radnja.equals("SendAgain") && !poljeJeInicijalizirano)
 		{
 			InicijalizirajMetodeZaSlanje();
