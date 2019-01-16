@@ -47,7 +47,7 @@ public class SendReceive extends Thread {
                     Log.d("Saljem", messegeACK.returnFinalMessage());
 
                     try {
-                        sleep(20);
+                        sleep(30);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

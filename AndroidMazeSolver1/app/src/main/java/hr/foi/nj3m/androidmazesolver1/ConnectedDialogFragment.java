@@ -11,24 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.os.SystemClock;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessInfo;
-import static hr.foi.nj3m.interfaces.Enumerations.ACKs.DemandMessagesAgain;
-import static hr.foi.nj3m.interfaces.Enumerations.ACKs.OK;
-import static hr.foi.nj3m.interfaces.Enumerations.ACKs.SendMessagesAgain;
-import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.checkACK.ACKChecker;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
-import hr.foi.nj3m.interfaces.Enumerations.ACKs;
-import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialogFragment extends Fragment {
 
@@ -100,7 +94,10 @@ public class ConnectedDialogFragment extends Fragment {
 
 
     List<MSMessageFromACK> listOfRecvMessages = new ArrayList<>();
+    long timeElapsedRecv = 0;
+    long timeElapsedLoop = 0;
 
+    boolean errorAtSum = false;
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -110,14 +107,18 @@ public class ConnectedDialogFragment extends Fragment {
             if(msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
+                timeElapsedLoop = SystemClock.elapsedRealtime();
 
                 if(message.startsWith("MBot:"))
                 {
+                    errorAtSum = false;
+
+                    Log.d("Primio",message);
                     MSMessageFromACK messageAck = new MSMessageFromACK();
                     messageAck.setMessage(message);
                     listOfRecvMessages.add(messageAck);
 
-                    Log.d("Primio", messageAck.returnFinalMessage());
+                    timeElapsedRecv = SystemClock.elapsedRealtime();
 
                     if(messageAck.returnFinalMessage().equals("Over"))
                     {
@@ -137,9 +138,14 @@ public class ConnectedDialogFragment extends Fragment {
                     }
                     else if(!ACKChecker.checkSum(messageAck))
                     {
-                        sendReceive.write(CommandsGenerator.SendMeAgain());
-                        listOfRecvMessages.clear();
+                        errorAtSum = true;
                     }
+                }
+
+                if(errorAtSum && Math.abs(timeElapsedLoop - timeElapsedRecv) > 100)
+                {
+                    sendReceive.write(CommandsGenerator.SendMeAgain());
+                    listOfRecvMessages.clear();
                 }
             }
             return true;

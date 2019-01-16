@@ -17,7 +17,6 @@ public class ACKChecker {
             if(msg.expectedNumberOfMessages != listOfRcvMessages.size())
                 return false;
         }
-
         return true;
     }
 }

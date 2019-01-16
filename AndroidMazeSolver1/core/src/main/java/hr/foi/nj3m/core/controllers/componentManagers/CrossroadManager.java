@@ -27,7 +27,7 @@ public class CrossroadManager {
         return (distanceToCheck > (MBotPathFinder.labyrinthWidth + 2*MBotPathFinder.ultrasonicSensorhWidth));
     }
 
-    private static boolean checkCrossroadSide(double sensorDistanceFromWall)
+    public static boolean checkCrossroadSide(double sensorDistanceFromWall)
     {
         return (sensorDistanceFromWall > (MBotPathFinder.labyrinthWidth-MBotPathFinder.mBotWidth));
     }

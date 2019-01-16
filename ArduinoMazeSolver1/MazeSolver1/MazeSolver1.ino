@@ -2,6 +2,7 @@
 #include <SoftwareSerial.h>
 #include "Arduino.h"
 
+
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
 bool a = true;
@@ -10,6 +11,9 @@ bool b = true;
 int index = -1;
 int indexZaSlanje = -1;
 bool neispravnaPorukaPrimljena = false;
+
+long vrijemePrimanjaPoruke = 0;
+long vrijemePocetkaPetlje = 0;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
@@ -41,12 +45,13 @@ MeBluetooth bluetooth = MeBluetooth();
 
 void setup()
 {
-
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(1);
+	bluetooth.setTimeout(2);
 	bluetooth.listen();
+
+	Serial.setTimeout(5);
 }
 
 void loop()
@@ -60,7 +65,7 @@ void loop()
 			buzzer.tone(700, 500);
 			a = false;
 		}
-
+		vrijemePocetkaPetlje = millis();
 		procitanaBTPoruka = CitajBluetooth();
 
 		if (procitanaBTPoruka.equals("Over"))
@@ -76,12 +81,13 @@ void loop()
 
 			InicijalizirajPoljePrimljenihRadnji();
 		}
-		else if (neispravnaPorukaPrimljena)
+		else if (neispravnaPorukaPrimljena && vrijemeOdZadnjePoruke() > 100)
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
 
 			InicijalizirajPoljePrimljenihRadnji();
 		}
+
 
 		//lineFollow();
 		b = true;
@@ -103,6 +109,12 @@ void loop()
 		ZaustaviMotore();
 		break;
 	}
+}
+
+
+long vrijemeOdZadnjePoruke()
+{
+	return abs(vrijemePrimanjaPoruke-vrijemePocetkaPetlje);
 }
 
 float GetFrontSensorDistance()
@@ -137,21 +149,26 @@ void IzvrsiPritisakTipke()
 String CitajBluetooth()
 {
 	String btPoruka = "";
-	btPoruka = bluetooth.readString();
-
-	if (btPoruka.startsWith("MS:") && !neispravnaPorukaPrimljena)
+	if (Serial.available() > 0)
 	{
-		index++;
+		btPoruka = Serial.readString();
 
-		String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1); //Poruka nakon MS:
+		if (btPoruka.startsWith("MS:"))
+		{
+			index++;
 
-		ZapisiPorukuUPolje(cijelaPoruka);
+			String cijelaPoruka = btPoruka.substring(btPoruka.lastIndexOf(':') + 1); //Poruka nakon MS:
 
-		if (!CheckAsciiSuma(cijelaPoruka))
-			neispravnaPorukaPrimljena = true;
+			ZapisiPorukuUPolje(cijelaPoruka);
 
-		return DohvatiTekstPoruke(cijelaPoruka);
-	}
+			if (!CheckAsciiSuma(cijelaPoruka))
+				neispravnaPorukaPrimljena = true;
+
+			vrijemePrimanjaPoruke = millis();
+
+			return DohvatiTekstPoruke(cijelaPoruka);
+		}
+	}	
 
 	return btPoruka;
 }
@@ -192,36 +209,32 @@ String SpojiPoruku(String poruka) {
 	int asciiSuma = IzracunajASciiSumu(poruka);
 	int ocekivaniBrojPoruka = indexZaSlanje + 1;
 
-	return "MBot:" + poruka + ';' + asciiSuma + '#' + ocekivaniBrojPoruka;
+	return "MBot:" + poruka + ';' + asciiSuma + '#' + ocekivaniBrojPoruka + "&";
 }
 
 bool poljeInfoJeInicijalizirano = true;
 
 void SaljiPoruke(String poljePoruka[10]) {
+	for (int i = 0; i <= indexZaSlanje; i++) {
+		String porukaZaSlanje = SpojiPoruku(poljePoruka[i]);
 
-	if (bluetooth.available() < 1)
-	{
-		for (int i = 0; i <= indexZaSlanje; i++) {
-			String porukaZaSlanje = SpojiPoruku(poljePoruka[i]);
-			Serial.print(porukaZaSlanje);
-			delay(30);
+		//Serial.print(porukaZaSlanje);
+		for (int j=0;j<porukaZaSlanje.length();j++)
+		{
+			Serial.print(porukaZaSlanje[j]);
+			Serial.flush();
 		}
-		poljeInfoJeInicijalizirano = false;
-		neispravnaPorukaPrimljena = false;
+		delay(30);
 	}
+	poljeInfoJeInicijalizirano = false;
+	neispravnaPorukaPrimljena = false;
 
-
+	InicijalizirajPoljePrimljenihRadnji();
 }
 
 void InicijalizirajMetodeZaSlanje()
 {
-	for (int i = 0; i <= indexZaSlanje; i++)
-	{
-		metodeZaSlanje[i] = { "" };
-
-		if (metodeZaSlanje[i + 1].equals(""))
-			break;
-	}
+	metodeZaSlanje[velicinaPolja] = { "" };
 	indexZaSlanje = -1;
 }
 
@@ -237,22 +250,22 @@ uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 
 void PosaljiInfoSenzora()
 {
-	if (metodeZaSlanje->length() == 0)
-	{
-		String FUS = "FUS'";
-		FUS += ultraSonic.distanceCm();
-		ZapisiNaredbuUPolje(FUS);
 
-		String LUS = "LUS'";
-		LUS += GetSideSensorDistance(ultraSonicLeft.aRead1());
-		ZapisiNaredbuUPolje(LUS);
+	InicijalizirajMetodeZaSlanje();
 
-		String RUS = "RUS'";
-		RUS += GetSideSensorDistance(ultraSonicRight.aRead1());
-		ZapisiNaredbuUPolje(RUS);
+	String FUS = "FUS'";
+	FUS += ultraSonic.distanceCm();
+	ZapisiNaredbuUPolje(FUS);
 
-		ZapisiNaredbuUPolje("Over");
-	}
+	String LUS = "LUS'";
+	LUS += GetSideSensorDistance(ultraSonicLeft.aRead1());
+	ZapisiNaredbuUPolje(LUS);
+
+	String RUS = "RUS'";
+	RUS += GetSideSensorDistance(ultraSonicRight.aRead1());
+	ZapisiNaredbuUPolje(RUS);
+
+	ZapisiNaredbuUPolje("Over");
 
 	SaljiPoruke(metodeZaSlanje);
 
@@ -264,11 +277,10 @@ LFL - LineFollowerLeft  LFR - LineFolovwerRight
 
 void PosaljiZahtjevZaPonovnimSlanjem()
 {
-	if (metodeZaSlanje->length() == 0)
-	{
-		ZapisiNaredbuUPolje("SendAgain");
-		ZapisiNaredbuUPolje("Over");
-	}
+	InicijalizirajMetodeZaSlanje();
+
+	ZapisiNaredbuUPolje("SendAgain");
+	ZapisiNaredbuUPolje("Over");
 
 	SaljiPoruke(metodeZaSlanje);
 }
@@ -320,7 +332,7 @@ void IzvrsiRadnjuBT()
 
 			break;
 		}
-		if (!radnja.equals("SendAgain") && !poljeInfoJeInicijalizirano)
+		if (!radnja.equals("SendAgain") /*&& !poljeInfoJeInicijalizirano*/)
 		{
 			InicijalizirajMetodeZaSlanje();
 			poljeInfoJeInicijalizirano = true;
@@ -353,14 +365,16 @@ void IzvrsiRadnjuBT()
 
 void InicijalizirajPoljePrimljenihRadnji()
 {
-	for (int i = 0; i < velicinaPolja; i++)
+	poljeRadnji->sadrzaj = { "" };
+	poljeRadnji->brojPoruka = {  };
+	/*for (int i = 0; i < velicinaPolja; i++)
 	{
 		poljeRadnji[i].sadrzaj = { "" };
 		poljeRadnji[i].brojPoruka = { 0 };
 
 		if (poljeRadnji[i + 1].sadrzaj.equals("") && poljeRadnji[i + 1].brojPoruka == 0)
 			break;
-	}
+	}*/
 
 	index = -1;
 }

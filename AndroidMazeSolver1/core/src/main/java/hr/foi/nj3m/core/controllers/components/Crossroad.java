@@ -4,6 +4,7 @@ import java.util.List;
 
 import hr.foi.nj3m.core.R;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
 
@@ -20,11 +21,12 @@ public class Crossroad {
 
     public void setCrossroadSize()
     {
-        if(!MBotPathFinder.FrontSensor.seesObstacle())
+
+        if(CrossroadManager.checkCrossroadSide(MBotPathFinder.FrontSensor.getNumericValue()))
             this.maxNumberOfVisits++;
-        if(!MBotPathFinder.LeftSensor.seesObstacle())
+        if(CrossroadManager.checkCrossroadSide(MBotPathFinder.LeftSensor.getNumericValue()))
             this.maxNumberOfVisits++;
-        if(!MBotPathFinder.RightSensor.seesObstacle())
+        if(CrossroadManager.checkCrossroadSide(MBotPathFinder.RightSensor.getNumericValue()))
             this.maxNumberOfVisits++;
 
         //zato jer se zadnji senzor ne moze provjeriti
