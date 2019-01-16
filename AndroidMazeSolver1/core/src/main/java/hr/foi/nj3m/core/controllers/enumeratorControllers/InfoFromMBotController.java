@@ -15,13 +15,13 @@ public class InfoFromMBotController {
 
     public static InfoFromMBot getStringFromComandEnum(String infoFromMBot) {
 
-        if(infoFromMBot.equals("PSnz"))
+        if(infoFromMBot.startsWith("FUS'"))
             return FrontUltrasonic;
 
-        else if(infoFromMBot.equals("LSnz"))
+        else if(infoFromMBot.startsWith("LUS'"))
             return LeftUltrasonic;
 
-        else if(infoFromMBot.equals("DSnz"))
+        else if(infoFromMBot.startsWith("RUS'"))
             return RightUltrasonic;
 
         else if(infoFromMBot.equals("RdSnz"))

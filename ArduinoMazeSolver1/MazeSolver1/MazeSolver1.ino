@@ -15,7 +15,7 @@ typedef struct objektPrimljenePoruke {
 	int brojPoruka;
 };
 
-const int velicinaPolja = 10;
+const int velicinaPolja = 9;
 
 objektPrimljenePoruke poljeRadnji[velicinaPolja] = {};
 String metodeZaSlanje[velicinaPolja] = {};
@@ -68,7 +68,11 @@ void loop()
 		{
 			canSendAgain = true;
 			if (ProvjeriBrojPrimljenihPoruka())
+			{
 				IzvrsiRadnjuBT();
+				PosaljiInfoSenzora();
+			}
+
 			else
 				PosaljiZahtjevZaPonovnimSlanjem();
 
@@ -94,7 +98,7 @@ void loop()
 
 		}
 
-		
+
 
 		a = true;
 		break;
@@ -208,11 +212,6 @@ void SaljiPoruke(String poljePoruka[10]) {
 		}
 		poljeInfoJeInicijalizirano = false;
 	}
-
-	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
- FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
- LFL - LineFollowerLeft  LFR - LineFolovwerRight
- Šalje se informacija po informacija, te na kraju "Over"*/
 }
 
 void InicijalizirajMetodeZaSlanje()
@@ -235,6 +234,33 @@ void ZapisiNaredbuUPolje(String poruka) {
 uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 {
 	return cijelaPoruka.substring(cijelaPoruka.lastIndexOf('#') + 1).toInt();
+}
+
+void PosaljiInfoSenzora()
+{
+	if (metodeZaSlanje->length() == 0)
+	{
+		String FUS = "FUS'";
+		FUS += ultraSonic.distanceCm();
+		ZapisiNaredbuUPolje(FUS);
+
+		String LUS = "LUS'";
+		LUS += GetSideSensorDistance(ultraSonicLeft.aRead1());
+		ZapisiNaredbuUPolje(LUS);
+
+		String RUS = "RUS'";
+		RUS += GetSideSensorDistance(ultraSonicRight.aRead1());
+		ZapisiNaredbuUPolje(RUS);
+
+		ZapisiNaredbuUPolje("Over");
+	}
+
+	SaljiPoruke(metodeZaSlanje);
+
+	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
+FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
+LFL - LineFollowerLeft  LFR - LineFolovwerRight
+Šalje se informacija po informacija, te na kraju "Over"*/
 }
 
 void PosaljiZahtjevZaPonovnimSlanjem()

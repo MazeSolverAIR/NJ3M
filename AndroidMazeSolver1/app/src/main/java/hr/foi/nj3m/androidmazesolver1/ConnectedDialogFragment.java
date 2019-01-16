@@ -17,6 +17,9 @@ import java.util.List;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessInfo;
+import static hr.foi.nj3m.interfaces.Enumerations.ACKs.DemandMessagesAgain;
+import static hr.foi.nj3m.interfaces.Enumerations.ACKs.OK;
+import static hr.foi.nj3m.interfaces.Enumerations.ACKs.SendMessagesAgain;
 import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
@@ -24,6 +27,7 @@ import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.checkACK.ACKChecker;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
+import hr.foi.nj3m.interfaces.Enumerations.ACKs;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialogFragment extends Fragment {
@@ -39,6 +43,8 @@ public class ConnectedDialogFragment extends Fragment {
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         return inflater.inflate(R.layout.fragment_connected_dialog,container,false);
     }
+
+    MBotPathFinder pathFinder;
 
     @Override
     public void onStart() {
@@ -59,8 +65,8 @@ public class ConnectedDialogFragment extends Fragment {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                MBotPathFinder pathFinder = MBotPathFinder.createInstance();
+                if(pathFinder==null)
+                    pathFinder = MBotPathFinder.createInstance();
                 sendReceive.write(pathFinder.TestMethod());
                 /*if(start)
                 {
@@ -98,6 +104,9 @@ public class ConnectedDialogFragment extends Fragment {
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
+            if(pathFinder==null)
+                pathFinder = MBotPathFinder.createInstance();
+
             if(msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
@@ -112,12 +121,18 @@ public class ConnectedDialogFragment extends Fragment {
 
                     if(messageAck.returnFinalMessage().equals("Over"))
                     {
-                        if(ProcessInfo(listOfRecvMessages) == -2)
-                            sendReceive.write(CommandsGenerator.SendMeAgain());
-
-                        else if(ProcessInfo(listOfRecvMessages) == -1)
-                            sendReceive.writeAgain();
-
+                        switch(ProcessInfo(listOfRecvMessages))
+                        {
+                            case SendMessagesAgain:
+                                sendReceive.writeAgain();
+                                break;
+                            case DemandMessagesAgain:
+                                sendReceive.write(CommandsGenerator.SendMeAgain());
+                                break;
+                            case OK:
+                                sendReceive.write(pathFinder.TestMethod());
+                                break;
+                        }
                         listOfRecvMessages.clear();
                     }
                     else if(!ACKChecker.checkSum(messageAck))

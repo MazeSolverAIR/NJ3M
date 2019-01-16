@@ -8,6 +8,7 @@ import hr.foi.nj3m.core.R;
 import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.core.controllers.components.LineFollower;
+import hr.foi.nj3m.core.controllers.components.UltrasonicSensor;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.IUltraSonic;
@@ -49,6 +50,10 @@ public class MBotPathFinder {
     public static MBotPathFinder createInstance()
     {
         Instance = new MBotPathFinder();
+        LeftSensor = new UltrasonicSensor(Left);
+        FrontSensor = new UltrasonicSensor(Front);
+        RightSensor = new UltrasonicSensor(Right);
+
         return Instance;
     }
     private MBotPathFinder()
