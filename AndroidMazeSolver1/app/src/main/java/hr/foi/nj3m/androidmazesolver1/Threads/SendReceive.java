@@ -59,7 +59,7 @@ public class SendReceive extends Thread {
 
     public void writeAgain()
     {
-        if(this.listOfLastCommands != null)
+        if(this.listOfLastCommands != null && this.listOfLastCommands.size() > 1)
             write(this.listOfLastCommands);
     }
 }

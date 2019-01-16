@@ -13,21 +13,18 @@ public class Crossroad {
     public int maxNumberOfVisits = 0;
     public Sides lastTurnSide = null;
 
-    private MBotPathFinder Finder = null;
-
-    public Crossroad(MBotPathFinder finder, Sides sideToTurn)
+    public Crossroad(Sides sideToTurn)
     {
         this.lastTurnSide = sideToTurn;
-        this.Finder = finder;
     }
 
     public void setCrossroadSize()
     {
-        if(!Finder.FrontSensor.seesObstacle())
+        if(!MBotPathFinder.FrontSensor.seesObstacle())
             this.maxNumberOfVisits++;
-        if(!Finder.LeftSensor.seesObstacle())
+        if(!MBotPathFinder.LeftSensor.seesObstacle())
             this.maxNumberOfVisits++;
-        if(!Finder.RightSensor.seesObstacle())
+        if(!MBotPathFinder.RightSensor.seesObstacle())
             this.maxNumberOfVisits++;
 
         //zato jer se zadnji senzor ne moze provjeriti

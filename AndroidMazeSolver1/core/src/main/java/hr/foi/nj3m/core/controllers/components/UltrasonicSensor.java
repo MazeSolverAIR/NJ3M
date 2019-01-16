@@ -29,7 +29,7 @@ public class UltrasonicSensor implements IUltraSonic {
     public double getNumericValue()
     {
         double returnValue = 0;
-        String substring = CurrentValue.substring(CurrentValue.lastIndexOf(':'));
+        String substring = CurrentValue.substring(CurrentValue.lastIndexOf('\'')+1);
 
         try{
 
@@ -45,7 +45,7 @@ public class UltrasonicSensor implements IUltraSonic {
 
     @Override
     public boolean seesObstacle() {
-        if(getNumericValue() < 10)
+        if(getNumericValue() < 18)
             return true;
 
         else return false;

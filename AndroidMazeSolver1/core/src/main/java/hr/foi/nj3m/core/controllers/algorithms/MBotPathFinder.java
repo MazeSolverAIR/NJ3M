@@ -1,10 +1,11 @@
 package hr.foi.nj3m.core.controllers.algorithms;
 
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import hr.foi.nj3m.core.R;
 import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.core.controllers.components.LineFollower;
@@ -28,13 +29,17 @@ import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
 public class MBotPathFinder {
 
+    public static final double labyrinthWidth = 55.0;
+    public static final double mBotWidth = 13.0;
+    public static final double ultrasonicSensorhWidth = 1.8;
+
     private List<IUltraSonic> Sensors = null;
 
     public static IUltraSonic LeftSensor = null;
     public static IUltraSonic RightSensor = null;
     public static IUltraSonic FrontSensor = null;
 
-    public List<Crossroad> CrossroadsList = null;
+    public static List<Crossroad> CrossroadsList = null;
 
     private static MBotPathFinder Instance = null;
 
@@ -53,6 +58,8 @@ public class MBotPathFinder {
         LeftSensor = new UltrasonicSensor(Left);
         FrontSensor = new UltrasonicSensor(Front);
         RightSensor = new UltrasonicSensor(Right);
+
+        CrossroadsList = new ArrayList<>();
 
         return Instance;
     }
@@ -107,7 +114,7 @@ public class MBotPathFinder {
             double rightWallDistance = this.RightSensor.getNumericValue();
             double leftWallDistance = this.LeftSensor.getNumericValue();
 
-            finalCommandList.add(centerMBotTwoOrMoreSensors(this.RightSensor.getNumericValue(), this.LeftSensor.getNumericValue()));
+            finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
             finalCommandList.addAll(findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance));
         }
 
@@ -143,7 +150,7 @@ public class MBotPathFinder {
     private double setOtherSideWallDistance(double realDistance)
     {
         double returnVal = 0;
-        returnVal = R.integer.labyrinth_width - R.integer.mBot_width - R.integer.ultrasonic_sensor_width;
+        returnVal = labyrinthWidth - mBotWidth - ultrasonicSensorhWidth;
 
         if(realDistance <= 38)
             return (returnVal - realDistance);
@@ -159,7 +166,7 @@ public class MBotPathFinder {
         double sensorDistanceSum = rightWallDistance + leftWallDistance;
 
         if(CrossroadManager.checkIfCrossroad(sensorDistanceSum))
-            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(rightWallDistance, leftWallDistance, this));
+            commandsToMBotList.addAll(CrossroadManager.manageCrossroad(rightWallDistance, leftWallDistance));
 
         else if(!FrontSensor.seesObstacle())
             commandsToMBotList.add(RunMotors);

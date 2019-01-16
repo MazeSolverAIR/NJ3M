@@ -130,7 +130,7 @@ public class ConnectedDialogFragment extends Fragment {
                                 sendReceive.write(CommandsGenerator.SendMeAgain());
                                 break;
                             case OK:
-                                sendReceive.write(pathFinder.TestMethod());
+                                sendReceive.write(pathFinder.FindPath());
                                 break;
                         }
                         listOfRecvMessages.clear();

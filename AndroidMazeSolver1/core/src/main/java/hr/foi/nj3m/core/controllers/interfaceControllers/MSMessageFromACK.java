@@ -29,14 +29,14 @@ public class MSMessageFromACK implements IMessageACK {
     private void setNumberOfMessages(String msg)
     {
         int returnNumberOfMsg = 0;
-        String numberOfMsgFromString = msg.substring(msg.lastIndexOf('#')+1);
 
         try{
+            String numberOfMsgFromString = msg.substring(msg.lastIndexOf('#')+1);
             returnNumberOfMsg = Integer.parseInt(numberOfMsgFromString);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+             e.printStackTrace();
         }
 
         this.expectedNumberOfMessages = returnNumberOfMsg;
@@ -49,13 +49,11 @@ public class MSMessageFromACK implements IMessageACK {
 
     private void setExpectedAsciiSum(String msgToSave)
     {
-        String expectedAscii = "";
-        expectedAscii = msgToSave.substring(msgToSave.lastIndexOf(';')+1, msgToSave.lastIndexOf('#'));
-
         try{
+            String expectedAscii = msgToSave.substring(msgToSave.lastIndexOf(';')+1, msgToSave.lastIndexOf('#'));
             this.expectedAsciiSum = Integer.parseInt(expectedAscii);
         }
-        catch(Exception e)
+        catch(Exception ex)
         {
             this.expectedAsciiSum = 0;
         }

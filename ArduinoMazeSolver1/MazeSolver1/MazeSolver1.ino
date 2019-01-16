@@ -9,6 +9,7 @@ bool b = true;
 
 int index = -1;
 int indexZaSlanje = -1;
+bool neispravnaPorukaPrimljena = false;
 
 typedef struct objektPrimljenePoruke {
 	String sadrzaj;
@@ -38,8 +39,6 @@ Me4Button button = Me4Button();
 
 MeBluetooth bluetooth = MeBluetooth();
 
-bool canSendAgain = true;
-
 void setup()
 {
 
@@ -66,7 +65,6 @@ void loop()
 
 		if (procitanaBTPoruka.equals("Over"))
 		{
-			canSendAgain = true;
 			if (ProvjeriBrojPrimljenihPoruka())
 			{
 				IzvrsiRadnjuBT();
@@ -78,7 +76,7 @@ void loop()
 
 			InicijalizirajPoljePrimljenihRadnji();
 		}
-		else if (procitanaBTPoruka.equals("NeispravnaPoruka"))
+		else if (neispravnaPorukaPrimljena)
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
 
@@ -97,8 +95,6 @@ void loop()
 			delay(1000);
 
 		}
-
-
 
 		a = true;
 		break;
@@ -140,11 +136,10 @@ void IzvrsiPritisakTipke()
 
 String CitajBluetooth()
 {
-	canSendAgain = false;
 	String btPoruka = "";
 	btPoruka = bluetooth.readString();
 
-	if (btPoruka.startsWith("MS:"))
+	if (btPoruka.startsWith("MS:") && !neispravnaPorukaPrimljena)
 	{
 		index++;
 
@@ -153,7 +148,7 @@ String CitajBluetooth()
 		ZapisiPorukuUPolje(cijelaPoruka);
 
 		if (!CheckAsciiSuma(cijelaPoruka))
-			return "NeispravnaPoruka";
+			neispravnaPorukaPrimljena = true;
 
 		return DohvatiTekstPoruke(cijelaPoruka);
 	}
@@ -203,7 +198,8 @@ String SpojiPoruku(String poruka) {
 bool poljeInfoJeInicijalizirano = true;
 
 void SaljiPoruke(String poljePoruka[10]) {
-	if (canSendAgain)
+
+	if (bluetooth.available() < 1)
 	{
 		for (int i = 0; i <= indexZaSlanje; i++) {
 			String porukaZaSlanje = SpojiPoruku(poljePoruka[i]);
@@ -211,7 +207,10 @@ void SaljiPoruke(String poljePoruka[10]) {
 			delay(30);
 		}
 		poljeInfoJeInicijalizirano = false;
+		neispravnaPorukaPrimljena = false;
 	}
+
+
 }
 
 void InicijalizirajMetodeZaSlanje()
