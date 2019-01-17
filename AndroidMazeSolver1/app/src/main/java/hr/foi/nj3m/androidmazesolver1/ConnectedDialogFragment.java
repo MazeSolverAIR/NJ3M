@@ -61,7 +61,7 @@ public class ConnectedDialogFragment extends Fragment {
             public void onClick(View v) {
                 if(pathFinder==null)
                     pathFinder = MBotPathFinder.createInstance();
-                sendReceive.write(pathFinder.TestMethod());
+                sendReceive.write(pathFinder.FindPath());
                 /*if(start)
                 {
                     sendReceive.write(CommandsGenerator.StartMBot());
@@ -111,7 +111,6 @@ public class ConnectedDialogFragment extends Fragment {
 
                 if(message.startsWith("MBot:"))
                 {
-                    errorAtSum = false;
 
                     Log.d("Primio",message);
                     MSMessageFromACK messageAck = new MSMessageFromACK();
@@ -120,7 +119,7 @@ public class ConnectedDialogFragment extends Fragment {
 
                     timeElapsedRecv = SystemClock.elapsedRealtime();
 
-                    if(messageAck.returnFinalMessage().equals("Over"))
+                    if(messageAck.returnFinalMessage().equals("Over") && !errorAtSum)
                     {
                         switch(ProcessInfo(listOfRecvMessages))
                         {
@@ -137,14 +136,13 @@ public class ConnectedDialogFragment extends Fragment {
                         listOfRecvMessages.clear();
                     }
                     else if(!ACKChecker.checkSum(messageAck))
-                    {
                         errorAtSum = true;
-                    }
                 }
 
-                if(errorAtSum && Math.abs(timeElapsedLoop - timeElapsedRecv) > 100)
+                if(errorAtSum && Math.abs(timeElapsedLoop - timeElapsedRecv) > 120)
                 {
                     sendReceive.write(CommandsGenerator.SendMeAgain());
+                    errorAtSum = false;
                     listOfRecvMessages.clear();
                 }
             }

@@ -48,10 +48,9 @@ void setup()
 	button.setpin(A7);
 
 	bluetooth.begin(115200);
-	bluetooth.setTimeout(2);
-	bluetooth.listen();
+	bluetooth.setTimeout(1);
 
-	Serial.setTimeout(5);
+	Serial.setTimeout(1);
 }
 
 void loop()
@@ -68,7 +67,7 @@ void loop()
 		vrijemePocetkaPetlje = millis();
 		procitanaBTPoruka = CitajBluetooth();
 
-		if (procitanaBTPoruka.equals("Over"))
+		if (procitanaBTPoruka.equals("Over") && !neispravnaPorukaPrimljena)
 		{
 			if (ProvjeriBrojPrimljenihPoruka())
 			{
@@ -84,6 +83,7 @@ void loop()
 		else if (neispravnaPorukaPrimljena && vrijemeOdZadnjePoruke() > 100)
 		{
 			PosaljiZahtjevZaPonovnimSlanjem();
+			neispravnaPorukaPrimljena = false;
 
 			InicijalizirajPoljePrimljenihRadnji();
 		}
@@ -95,7 +95,7 @@ void loop()
 	case 1:
 
 		if (b) {
-			buzzer.tone(700, 500);
+			buzzer.tone(1800, 500);
 
 			b = false;
 			delay(1000);
@@ -149,9 +149,9 @@ void IzvrsiPritisakTipke()
 String CitajBluetooth()
 {
 	String btPoruka = "";
-	if (Serial.available() > 0)
+	if (bluetooth.available() > 0)
 	{
-		btPoruka = Serial.readString();
+		btPoruka = bluetooth.readString();
 
 		if (btPoruka.startsWith("MS:"))
 		{
@@ -212,29 +212,23 @@ String SpojiPoruku(String poruka) {
 	return "MBot:" + poruka + ';' + asciiSuma + '#' + ocekivaniBrojPoruka + "&";
 }
 
-bool poljeInfoJeInicijalizirano = true;
-
-void SaljiPoruke(String poljePoruka[10]) {
+void SaljiPoruke() {
 	for (int i = 0; i <= indexZaSlanje; i++) {
-		String porukaZaSlanje = SpojiPoruku(poljePoruka[i]);
+		String porukaZaSlanje = SpojiPoruku(metodeZaSlanje[i]);
 
-		//Serial.print(porukaZaSlanje);
 		for (int j=0;j<porukaZaSlanje.length();j++)
 		{
 			Serial.print(porukaZaSlanje[j]);
-			Serial.flush();
 		}
-		delay(30);
+		delay(20);
 	}
-	poljeInfoJeInicijalizirano = false;
-	neispravnaPorukaPrimljena = false;
-
-	InicijalizirajPoljePrimljenihRadnji();
 }
 
 void InicijalizirajMetodeZaSlanje()
 {
-	metodeZaSlanje[velicinaPolja] = { "" };
+	for (int i=0;i<velicinaPolja;i++)
+		metodeZaSlanje[i] = { "" };
+
 	indexZaSlanje = -1;
 }
 
@@ -267,12 +261,7 @@ void PosaljiInfoSenzora()
 
 	ZapisiNaredbuUPolje("Over");
 
-	SaljiPoruke(metodeZaSlanje);
-
-	/*FUS:vrijednost; LUS:vrijednost; RUS:vrijednost; LFL:vrijednost; LFR:vrijednost;
-FUS - FrontUltrasonicSensor  LUS - LeftUltrasonicSensor  RUS - RightUltrasonicSensor
-LFL - LineFollowerLeft  LFR - LineFolovwerRight
-Šalje se informacija po informacija, te na kraju "Over"*/
+	SaljiPoruke();
 }
 
 void PosaljiZahtjevZaPonovnimSlanjem()
@@ -282,12 +271,12 @@ void PosaljiZahtjevZaPonovnimSlanjem()
 	ZapisiNaredbuUPolje("SendAgain");
 	ZapisiNaredbuUPolje("Over");
 
-	SaljiPoruke(metodeZaSlanje);
+	SaljiPoruke();
 }
 
 void PonovnoPosaljiPoruke()
 {
-	SaljiPoruke(metodeZaSlanje);
+	SaljiPoruke();
 }
 
 bool ProvjeriBrojPrimljenihPoruka() {
@@ -326,17 +315,16 @@ void IzvrsiRadnjuBT()
 	for (int i = 0; i <= chckIndex; i++)
 	{
 		String radnja = poljeRadnji[i].sadrzaj;
-		if (radnja.equals("SendAgain"))
-		{
-			PonovnoPosaljiPoruke();
 
-			break;
+		/*if (radnja.equals("SendAgain"))
+		{
+			PosaljiInfoSenzora();
 		}
-		if (!radnja.equals("SendAgain") /*&& !poljeInfoJeInicijalizirano*/)
+		if (!radnja.equals("SendAgain"))
 		{
 			InicijalizirajMetodeZaSlanje();
 			poljeInfoJeInicijalizirano = true;
-		}
+		}*/
 
 		if (radnja.equals("RotateLeft"))
 			Skreni('l', 90, brzinaKretanja);
@@ -352,29 +340,27 @@ void IzvrsiRadnjuBT()
 
 		else if (radnja.equals("SpeedUpLeft"))
 		{
-			leftMotor.run(-137);
+			leftMotor.run(-brzinaKretanja-15);
 			rightMotor.run(brzinaKretanja);
+			delay(250);
 		}
 		else if (radnja.equals("SpeedUpRight"))
 		{
-			rightMotor.run(137);
+			rightMotor.run(brzinaKretanja + 15);
 			leftMotor.run(-brzinaKretanja);
+			delay(250);
 		}
 	}
 }
 
 void InicijalizirajPoljePrimljenihRadnji()
 {
-	poljeRadnji->sadrzaj = { "" };
-	poljeRadnji->brojPoruka = {  };
-	/*for (int i = 0; i < velicinaPolja; i++)
+	for (int i = 0; i < velicinaPolja; i ++ )
 	{
 		poljeRadnji[i].sadrzaj = { "" };
 		poljeRadnji[i].brojPoruka = { 0 };
-
-		if (poljeRadnji[i + 1].sadrzaj.equals("") && poljeRadnji[i + 1].brojPoruka == 0)
-			break;
-	}*/
+	}
+	
 
 	index = -1;
 }
