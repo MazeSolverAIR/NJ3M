@@ -13,7 +13,14 @@ public class MSMessageFromACK implements IMessageACK {
 
     @Override
     public void setMessage(String message) {
-        String msgToSave = message.substring(message.lastIndexOf(':')+1, message.lastIndexOf('&'));
+        String msgToSave = "";
+        try {
+            msgToSave = message.substring(message.lastIndexOf(':') + 1, message.lastIndexOf('&'));
+        }
+        catch(Exception ex)
+        {
+            msgToSave = "";
+        }
         setExpectedAsciiSum(msgToSave);
         setNumberOfMessages(msgToSave);
         this.mMessage = msgToSave;
@@ -37,6 +44,8 @@ public class MSMessageFromACK implements IMessageACK {
         catch (Exception e)
         {
              e.printStackTrace();
+             returnNumberOfMsg = -1;
+
         }
 
         this.expectedNumberOfMessages = returnNumberOfMsg;
@@ -62,7 +71,7 @@ public class MSMessageFromACK implements IMessageACK {
         }
         catch(Exception ex)
         {
-            this.expectedAsciiSum = 0;
+            this.expectedAsciiSum = -1;
         }
     }
 }

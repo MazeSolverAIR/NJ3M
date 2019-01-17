@@ -222,6 +222,8 @@ void SaljiPoruke() {
 		}
 		delay(20);
 	}
+
+	InicijalizirajMetodeZaSlanje();
 }
 
 void InicijalizirajMetodeZaSlanje()
@@ -244,7 +246,6 @@ uint8_t DohvatiOcekivaniBrojPoruka(String cijelaPoruka)
 
 void PosaljiInfoSenzora()
 {
-
 	InicijalizirajMetodeZaSlanje();
 
 	String FUS = "FUS'";
@@ -349,6 +350,12 @@ void IzvrsiRadnjuBT()
 			rightMotor.run(brzinaKretanja + 15);
 			leftMotor.run(-brzinaKretanja);
 			delay(250);
+		}
+
+		else if (radnja.equals("RotateFull"))
+		{
+			Skreni('l', 90, brzinaKretanja);
+			Skreni('l', 90, brzinaKretanja);
 		}
 	}
 }
