@@ -40,6 +40,8 @@ public class CrossroadManager {
         return false;
     }
 
+    static double lastSensorsDistance = 0;
+
     public static ArrayList<CommandsToMBot> manageCrossroad(double rightWallDistance, double leftWallDistance)
     {
         ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
@@ -48,17 +50,17 @@ public class CrossroadManager {
 
         commandsToMBotList.add(StopMotors);
 
-        if(CrossroadManager.checkCrossroadSide(rightWallDistance))
+        if(CrossroadManager.checkCrossroadSide(rightWallDistance) && checkIfCanTurn(sideSensorsDistanceSum))
         {
             commandsToMBotList.add(RotateRight);
             sideToTurn = Right;
         }
-        else if(CrossroadManager.checkCrossroadSide(MBotPathFinder.FrontSensor.getNumericValue()))
+        else if(CrossroadManager.checkCrossroadSide(MBotPathFinder.FrontSensor.getNumericValue()) && checkIfCanTurn(sideSensorsDistanceSum))
         {
             commandsToMBotList.add(RunMotors);
             sideToTurn = Front;
         }
-        else if(CrossroadManager.checkCrossroadSide(leftWallDistance))
+        else if(CrossroadManager.checkCrossroadSide(leftWallDistance) && checkIfCanTurn(sideSensorsDistanceSum))
         {
             commandsToMBotList.add(RotateLeft);
             sideToTurn = Left;
@@ -69,6 +71,8 @@ public class CrossroadManager {
             sideToTurn = FullRotate;
         }
         manageCrossroadsList(sideToTurn);
+
+        lastSensorsDistance = sideSensorsDistanceSum;
 
         return commandsToMBotList;
     }
@@ -94,6 +98,17 @@ public class CrossroadManager {
             MBotPathFinder.CrossroadsList.remove(lastCRFromList);
             MBotPathFinder.CrossroadsList.get(MBotPathFinder.CrossroadsList.size() - 1).newVisit();
         }
+    }
+
+    private static boolean checkIfCanTurn(double currentSensorDIstance)
+    {
+        if(lastSensorsDistance > currentSensorDIstance + 20)
+            return true;
+
+        if(lastSensorsDistance + 20 > currentSensorDIstance)
+            return true;
+
+        return false;
     }
 
 }

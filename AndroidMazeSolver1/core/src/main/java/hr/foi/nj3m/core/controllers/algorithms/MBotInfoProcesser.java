@@ -33,16 +33,16 @@ public class MBotInfoProcesser
                 case SendAgain:
                     return SendMessagesAgain;
                 case FrontUltrasonic:
-                    MBotPathFinder.FrontSensor.setCurrentValue(msg.returnFinalMessage());
-                    //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
+                    if(MBotPathFinder.FrontSensor != null)
+                        MBotPathFinder.FrontSensor.setCurrentValue(msg.returnFinalMessage());
                     break;
                 case LeftUltrasonic:
-                    //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
-                    MBotPathFinder.LeftSensor.setCurrentValue(msg.returnFinalMessage());
+                    if(MBotPathFinder.LeftSensor != null)
+                        MBotPathFinder.LeftSensor.setCurrentValue(msg.returnFinalMessage());
                     break;
                 case RightUltrasonic:
-                    //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to
-                    MBotPathFinder.RightSensor.setCurrentValue(msg.returnFinalMessage());
+                    if(MBotPathFinder.RightSensor != null)
+                        MBotPathFinder.RightSensor.setCurrentValue(msg.returnFinalMessage());
                     break;
                 case LineReader:
                     //TODO: Spremiti prednji senzor nekamo, Osmilsiti još to

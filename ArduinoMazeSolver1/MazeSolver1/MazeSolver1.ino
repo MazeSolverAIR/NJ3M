@@ -402,7 +402,7 @@ void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 
 int IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 {
-	int vrijemeOkretanje = (int)((stupnjevi * 635) / (brzina));
+	int vrijemeOkretanje = (int)((stupnjevi * 650) / (brzina));
 
 	return vrijemeOkretanje;
 }
