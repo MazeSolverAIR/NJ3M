@@ -22,7 +22,9 @@ import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.checkACK.ACKChecker;
+import hr.foi.nj3m.core.controllers.components.LineFollower;
 import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialogFragment extends Fragment {
 
@@ -60,7 +62,7 @@ public class ConnectedDialogFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(pathFinder==null)
-                    pathFinder = MBotPathFinder.createInstance();
+                    pathFinder = MBotPathFinder.createInstance(2);
                 sendReceive.write(pathFinder.FindPath());
                 /*if(start)
                 {
@@ -102,14 +104,60 @@ public class ConnectedDialogFragment extends Fragment {
         @Override
         public boolean handleMessage(Message msg) {
             if(pathFinder==null)
-                pathFinder = MBotPathFinder.createInstance();
+                pathFinder = MBotPathFinder.createInstance(2);
 
             if(msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
-                timeElapsedLoop = SystemClock.elapsedRealtime();
 
-                if(message.startsWith("MBot:"))
+                boolean mbotMsg = false;
+
+                Log.d("pmio", message);
+
+                if(message.startsWith("0")) //1 ak je desni vani , 2 ak je lijevi, a 3 ak su obadva 0 kad su na crti
+                {
+                    LineFollower.right = true;
+                    LineFollower.left = true;
+                    mbotMsg = true;
+                }
+                if(message.startsWith("1"))
+                {
+                    LineFollower.right = false;
+                    LineFollower.left = true;
+                    mbotMsg = true;
+                }
+                if(message.startsWith("2"))
+                {
+                    LineFollower.right = true;
+                    LineFollower.left = false;
+                    mbotMsg = true;
+                }
+                if(message.startsWith("3"))
+                {
+                    LineFollower.right = false;
+                    LineFollower.left = false;
+                    mbotMsg = true;
+                }
+
+                if(mbotMsg)
+                {
+                    String substrFront = "";
+                    try
+                    {
+                        substrFront = message.substring(message.lastIndexOf("c")+1, message.lastIndexOf("m"));
+                    }
+                    catch (Exception ex) {
+                    }
+
+                    Log.d("Primam", substrFront);
+
+                    MBotPathFinder.FrontSensor.setCurrentValue(substrFront);
+                    sendReceive.write(pathFinder.FindPath());
+                }
+
+                //timeElapsedLoop = SystemClock.elapsedRealtime();
+
+                /*if(message.startsWith("MBot:"))
                 {
 
                     Log.d("Primio",message);
@@ -117,9 +165,9 @@ public class ConnectedDialogFragment extends Fragment {
                     messageAck.setMessage(message);
                     listOfRecvMessages.add(messageAck);
 
-                    timeElapsedRecv = SystemClock.elapsedRealtime();
+                    timeElapsedRecv = SystemClock.elapsedRealtime();*/
 
-                    if(messageAck.returnFinalMessage().equals("Over") && !errorAtSum)
+                    /*if(messageAck.returnFinalMessage().equals("Over") && !errorAtSum)
                     {
                         switch(ProcessInfo(listOfRecvMessages))
                         {
@@ -144,7 +192,7 @@ public class ConnectedDialogFragment extends Fragment {
                     sendReceive.write(CommandsGenerator.SendMeAgain());
                     errorAtSum = false;
                     listOfRecvMessages.clear();
-                }
+                }*/
             }
             return true;
         }

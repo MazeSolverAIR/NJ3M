@@ -29,11 +29,10 @@ public class UltrasonicSensor implements IUltraSonic {
     public double getNumericValue()
     {
         double returnValue = 0;
-        String substring = CurrentValue.substring(CurrentValue.lastIndexOf('\'')+1);
 
         try{
 
-            returnValue = Double.parseDouble(substring);
+            returnValue = Double.parseDouble(this.CurrentValue);
         }
         catch (NumberFormatException ex)
         {
@@ -45,7 +44,7 @@ public class UltrasonicSensor implements IUltraSonic {
 
     @Override
     public boolean seesObstacle() {
-        if(getNumericValue() < 20)
+        if(getNumericValue() < 28)
             return true;
 
         else return false;

@@ -19,7 +19,7 @@ public class SendReceive extends Thread {
     private List<CommandsToMBot> listOfLastCommands;
 
     public SendReceive(String address, Handler handler){
-        messegeACK= new MSMessageToACK();
+        //messegeACK= new MSMessageToACK();
         iRobotMessenger = ConnectionController.getInstanceOfIRobot();
         iRobotMessenger.initializeSocket(address, handler);
     }
@@ -28,38 +28,33 @@ public class SendReceive extends Thread {
         iRobotMessenger.receive();
     }
 
-    public void write(final List<CommandsToMBot> listaNaredbi){
-        if(listaNaredbi.get(0) != CommandsToMBot.SendAgain)
-            this.listOfLastCommands = listaNaredbi;
-
-        final int numberOfMessages=listaNaredbi.size();
+    public void write(final List<CommandsToMBot> commandList){
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (CommandsToMBot naredba:listaNaredbi)
+
+                for(CommandsToMBot cmd: commandList)
                 {
-                    messegeACK.setMessage(CommandsToMBotController.getStringFromComandEnum(naredba));
-                    messegeACK.setNumberOfMessages(numberOfMessages);
-
-                    iRobotMessenger.sendCommand(messegeACK.returnFinalMessage());
-
-                    Log.d("Saljem", messegeACK.returnFinalMessage());
-
                     try {
-                        sleep(30);
+                        sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    iRobotMessenger.sendCommand(CommandsToMBotController.getStringFromComandEnum(cmd));
+                    Log.d("Saljem", CommandsToMBotController.getStringFromComandEnum(cmd));
 
                 }
-            }
+
+
+
+                }
         }).start();
     }
 
     public void writeAgain()
     {
-        if(this.listOfLastCommands != null && this.listOfLastCommands.size() > 1)
-            write(this.listOfLastCommands);
+        //if(this.listOfLastCommands != null && this.listOfLastCommands.size() > 1)
+            //write(this.listOfLastCommands);
     }
 }

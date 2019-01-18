@@ -5,7 +5,7 @@ import hr.foi.nj3m.interfaces.ILineFollower;
 
 public class LineFollower implements ILineFollower {
 
-    public boolean left, right;
+    public static boolean left, right;
 
     public LineFollower()
     {
@@ -13,18 +13,18 @@ public class LineFollower implements ILineFollower {
     }
 
     @Override
-    public boolean isOnRightSide() {
-        return false;
+    public boolean rightSideOut() {
+        return !right && left;
     }
 
     @Override
-    public boolean isOnLeftSide() {
-        return false;
+    public boolean leftSideOut() {
+        return right && !left;
     }
 
     @Override
     public boolean isOnCrossroad() {
-        return false;
+        return !right && !left;
     }
 
     @Override
