@@ -96,11 +96,8 @@ public class ConnectedDialogFragment extends Fragment {
     }
 
 
-    List<MSMessageFromACK> listOfRecvMessages = new ArrayList<>();
-    long timeElapsedRecv = 0;
-    long timeElapsedLoop = 0;
-
-    boolean errorAtSum = false;
+    static int brojac = 1;
+    boolean okRecvd = false;
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -121,15 +118,31 @@ public class ConnectedDialogFragment extends Fragment {
                     catch (Exception ex)
                     {
                     }
-                    Log.d("Primio", frontSensorDist.toString());
-                    if(message.equals("OK"))
+                    Log.d("Primio", message);
+
+                    if(message.contains("OK"))
+                    {
                         sendReceive.write("SM");
+                        okRecvd = true;
+                    }
                     else if (frontSensorDist <= 22)
                     {
-                        sendReceive.write("SL");
+                        if(okRecvd)
+                            brojac++;
+                        if(brojac == 2)
+                            sendReceive.write("FR");
+                        else
+                            sendReceive.write("SL");
+
+                        okRecvd = false;
                     }
                     else if(frontSensorDist > 22)
+                    {
                         sendReceive.write("RM");
+                        brojac = 1;
+                        okRecvd = false;
+                    }
+
 
 
                 }
