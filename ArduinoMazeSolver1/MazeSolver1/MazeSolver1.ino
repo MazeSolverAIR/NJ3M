@@ -52,6 +52,8 @@ String saljiPodatkeMobitelu() {
 	return porukaMobitelu;
 }
 
+//TO-DO Napraviti metodu koja čita bluetooth string za ponavljanje zadnje naredbe
+
 void IzvrsiNaredbu() {
 	String poruka = "";
 	poruka = Serial.readString();
@@ -64,7 +66,7 @@ void IzvrsiNaredbu() {
 	else if (poruka.equals("SL")) 
 	{
 		ZaustaviMotore();
-		Skreni('l', 75, brzinaKretanja);
+		Skreni('l', 66, brzinaKretanja);
 		Serial.println("OK");
 		delay(1500);
 	}
@@ -73,7 +75,15 @@ void IzvrsiNaredbu() {
 		Skreni('d', 66, brzinaKretanja);
 		delay(1500);
 	}
+	else if (poruka.equals("FR")) {
+		ZaustaviMotore();
+		Skreni('l', 150, brzinaKretanja);
+		Skreni('l', 150, brzinaKretanja);
+		delay(1500);
+	}
 }
+
+//TO-DO Ako se izvrši neki case da nije na liniji, zapamtiti da se nije zadnja radnja izvršila
 
 void rjesenjeProblemaAutonomno() {
 	Serial.println(saljiPodatkeMobitelu());
@@ -84,7 +94,7 @@ void rjesenjeProblemaAutonomno() {
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
-		IzvrsiNaredbu();
+		IzvrsiNaredbu();	
 		break;
 	case S1_IN_S2_OUT:
 		//senzor 2 je van linije (desni senzor)
@@ -100,6 +110,7 @@ void rjesenjeProblemaAutonomno() {
 		Skreni('l', 5, 40);
 		break;
 	}
+
 }
 
 void IzvrsiPritisakTipke()
