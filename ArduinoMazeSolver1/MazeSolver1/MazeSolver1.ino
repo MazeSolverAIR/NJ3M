@@ -37,128 +37,70 @@ void setup()
 	button.setpin(A7);
 
 	Serial.begin(115200);
-	//Serial.setTimeout(1);
+	Serial.setTimeout(5);
 }
 
-//String poruka = "";
 void loop()
 {
-	rjesenjeProblemaDesno();
-	/*while (!(lineFollower.readSensors() == 3)) {
-		Skreni('l', 90, brzinaKretanja);
-		pronadjiZid();
-		if (detektirajZid == 1) {
-			Skreni('d', 90, brzinaKretanja);
-			pronadjiZid();
-			if (detektirajZid == 1) {
-				Skreni('d', 90, brzinaKretanja);
-				pronadjiZid();
-				if (detektirajZid == 1) {
-					Skreni('d', 90, brzinaKretanja);
-					pronadjiZid();
-				}
-				else {
-					Kreni(brzinaKretanja);
-				}
-			}
-			else {
-				Kreni(brzinaKretanja);
-			}
-		}
-		else {
-			Kreni(brzinaKretanja);
-		}
-	}*/
+	rjesenjeProblemaAutonomno();
+}
 
-	/*if (ultraSonic.distanceCm() < 20) {
-		ZaustaviMotore();
-		if (poslano == false) {
-			Serial.println(lineFollower.readSensors());
-			poruka = "";
-			poruka += "c";
-			poruka += ultraSonic.distanceCm();
-			poruka += "m";
-			Serial.println(poruka);
-		}
-		poslano = true;
-	}
-	else {
-		rjesenjeProblema();
+String saljiPodatkeMobitelu() {
+	String porukaMobitelu = "";
+	porukaMobitelu += ultraSonic.distanceCm();
+	porukaMobitelu += "b";
+	return porukaMobitelu;
+}
+
+void IzvrsiNaredbu() {
+	String poruka = "";
+	poruka = Serial.readString();
+	if (poruka.equals("RM")) {
 		Kreni(brzinaKretanja);
-		poslano = false;
 	}
-	delay(5);
-	if (poslano == true) {
-		String hehe = Serial.readString();
-		if (hehe == "RL")
-		{
-			Skreni('l', 90, brzinaKretanja);
-			poslano = false;
-		}
-
-		if (hehe == "RR")
-		{
-			Skreni('d', 90, brzinaKretanja);
-			poslano = false;
-		}
-
-		if (hehe == "RM")
-		{
-			Kreni(brzinaKretanja);
-			poslano = false;
-		}
-
-		if (hehe == "SM")
-		{
-			ZaustaviMotore();
-			poslano = false;
-		}
-
-		if (hehe == "SUR")
-		{
-			rightMotor.run(brzinaKretanja + 25);
-			leftMotor.run(-brzinaKretanja + 25);
-			poslano = false;
-		}
-
-		if (hehe == "SUL")
-		{
-			leftMotor.run(-brzinaKretanja - 25);
-			rightMotor.run(brzinaKretanja - 25);
-			poslano = false;
-		}
-
-		if (hehe == "RF")
-		{
-			Skreni('l', 90, 500);
-			Skreni('l', 90, 500);
-			poslano = false;
-		}
-
+	else if (poruka.equals("SM")) {
+		ZaustaviMotore();
 	}
-	//delay(5);
-	*/
-}
-	
-	
-
-
-/*long vrijemeOdZadnjePoruke()
-{
-	return abs(vrijemePrimanjaPoruke-vrijemePocetkaPetlje);
-}
-
-float GetFrontSensorDistance()
-{
-	long travelTime = ultraSonic.measure();
-
-	return (travelTime / 2) / 29.1;
+	else if (poruka.equals("SL")) 
+	{
+		ZaustaviMotore();
+		Skreni('l', 75, brzinaKretanja);
+		Serial.println("OK");
+		delay(1500);
+	}
+	else if (poruka.equals("SD")) {
+		ZaustaviMotore();
+		Skreni('d', 66, brzinaKretanja);
+		delay(1500);
+	}
 }
 
-float GetSideSensorDistance(uint16_t analogData)
-{
-	return (analogData / 1.75) * 2.54;
-}*/
+void rjesenjeProblemaAutonomno() {
+	Serial.println(saljiPodatkeMobitelu());
+	delay(10);
+	unsigned long sensorStateCenter = lineFollower.readSensors();
+	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
+	//Serial.println(sensorStateCenter);
+	switch (sensorStateCenter)
+	{
+	case S1_IN_S2_IN:
+		IzvrsiNaredbu();
+		break;
+	case S1_IN_S2_OUT:
+		//senzor 2 je van linije (desni senzor)
+		ZaustaviMotore();
+		Skreni('l', 5, 40);
+		break;
+	case S1_OUT_S2_IN:
+		//senzor 1 je van linije (lijevi senzor)
+		ZaustaviMotore();
+		Skreni('d', 5, 40);
+		break;
+	case S1_OUT_S2_OUT:
+		Skreni('l', 5, 40);
+		break;
+	}
+}
 
 void IzvrsiPritisakTipke()
 {
@@ -210,6 +152,8 @@ unsigned long IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 
 	return vrijemeOkretanje;
 }
+
+
 
 String lineFollow() {
 	int sensorStateCenter = lineFollower.readSensors();
@@ -336,29 +280,7 @@ void rjesenjeProblema() {
 	}
 }
 
-void pronadjiCrtu() {
-	do {
-		Skreni('l', 5, brzinaKretanja);
-	} while (S1_OUT_S2_OUT);
-}
 
-void pronadjiZid() {
-	detektirajZid = 0;
-	delay(0.2);
-	udaljenostDoZida = ultraSonic.distanceCm();
-	trajanje += 0.2;
-	if ((udaljenostDoZida) < (doZidaMax)) {
-		detektirajZid = 1;
-	}
-	
-}
-
-void rjesenjeProblemaGlavnaFora() {
-
-	//Serial.println(haba);
-
-		//Serial.println(Serial.available());
-}
 
 
 
