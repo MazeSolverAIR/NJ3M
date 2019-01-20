@@ -28,23 +28,13 @@ public class SendReceive extends Thread {
         iRobotMessenger.receive();
     }
 
-    public void write(final List<CommandsToMBot> commandList){
+    public void write(final String msg){
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                for(CommandsToMBot cmd: commandList)
-                {
-                    try {
-                        sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    iRobotMessenger.sendCommand(CommandsToMBotController.getStringFromComandEnum(cmd));
-                    Log.d("Saljem", CommandsToMBotController.getStringFromComandEnum(cmd));
-
-                }
+                    iRobotMessenger.sendCommand(msg);
+                    Log.d("Saljem", msg);
 
 
 

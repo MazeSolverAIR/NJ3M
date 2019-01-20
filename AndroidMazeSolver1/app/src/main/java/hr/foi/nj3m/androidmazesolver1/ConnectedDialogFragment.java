@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessInfo;
+import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
@@ -63,7 +64,7 @@ public class ConnectedDialogFragment extends Fragment {
             public void onClick(View v) {
                 if(pathFinder==null)
                     pathFinder = MBotPathFinder.createInstance(2);
-                sendReceive.write(pathFinder.FindPath());
+                sendReceive.write("RM");
                 /*if(start)
                 {
                     sendReceive.write(CommandsGenerator.StartMBot());
@@ -103,58 +104,35 @@ public class ConnectedDialogFragment extends Fragment {
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if(pathFinder==null)
-                pathFinder = MBotPathFinder.createInstance(2);
+            /*if(pathFinder==null)
+                pathFinder = MBotPathFinder.createInstance(2);*/
 
             if(msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 
-                boolean mbotMsg = false;
+                if(!message.startsWith("V")) {
+                    Double frontSensorDist = 0.0;
+                    try{
+                        String msgWotking = message.substring(0, message.indexOf("b"));
+                        frontSensorDist = Double.parseDouble(msgWotking);
 
-                Log.d("pmio", message);
-
-                if(message.startsWith("0")) //1 ak je desni vani , 2 ak je lijevi, a 3 ak su obadva 0 kad su na crti
-                {
-                    LineFollower.right = true;
-                    LineFollower.left = true;
-                    mbotMsg = true;
-                }
-                if(message.startsWith("1"))
-                {
-                    LineFollower.right = false;
-                    LineFollower.left = true;
-                    mbotMsg = true;
-                }
-                if(message.startsWith("2"))
-                {
-                    LineFollower.right = true;
-                    LineFollower.left = false;
-                    mbotMsg = true;
-                }
-                if(message.startsWith("3"))
-                {
-                    LineFollower.right = false;
-                    LineFollower.left = false;
-                    mbotMsg = true;
-                }
-
-                if(mbotMsg)
-                {
-                    String substrFront = "";
-                    try
+                    }
+                    catch (Exception ex)
                     {
-                        substrFront = message.substring(message.lastIndexOf("c")+1, message.lastIndexOf("m"));
                     }
-                    catch (Exception ex) {
+                    Log.d("Primio", frontSensorDist.toString());
+                    if(message.equals("OK"))
+                        sendReceive.write("SM");
+                    else if (frontSensorDist <= 22)
+                    {
+                        sendReceive.write("SL");
                     }
+                    else if(frontSensorDist > 22)
+                        sendReceive.write("RM");
 
-                    Log.d("Primam", substrFront);
 
-                    MBotPathFinder.FrontSensor.setCurrentValue(substrFront);
-                    sendReceive.write(pathFinder.FindPath());
                 }
-
                 //timeElapsedLoop = SystemClock.elapsedRealtime();
 
                 /*if(message.startsWith("MBot:"))
