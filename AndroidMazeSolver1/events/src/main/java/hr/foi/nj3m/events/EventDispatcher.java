@@ -18,7 +18,7 @@ public class EventDispatcher implements IEventDispatcher {
     public void removeEventListener(String str) {
         for(Listener listener: ListenerList)
         {
-            if(listener.getType() == str)
+            if(listener.getType().equals(str))
                 ListenerList.remove(listener);
         }
     }
@@ -33,6 +33,13 @@ public class EventDispatcher implements IEventDispatcher {
                 eventHandler.callback(event);
             }
         }
+        MyCustomClass nekaj=MyCustomClass.getInstance();
+        nekaj.addEvenetListener("nekaj", new IEventHandler() {
+            @Override
+            public void callback(Event event) {
+
+            }
+        });
     }
 
     @Override
