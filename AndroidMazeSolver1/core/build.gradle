@@ -34,4 +34,5 @@ dependencies {
     implementation project(path: ':bluetooth')
     implementation project(path: ':wifi')
     implementation project (':interfacesAndEnumerators')
+    implementation project(path: ':communications')
 }

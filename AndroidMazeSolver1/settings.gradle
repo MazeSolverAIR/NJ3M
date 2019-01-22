@@ -1,1 +1,1 @@
-include ':app', ':bluetooth', ':core', ':core', ':wifi', ':interfacesAndEnumerators'
+include ':app', ':bluetooth', ':core', ':core', ':wifi', ':interfacesAndEnumerators', ':virtualMBot', ':virtualWifi', ':communications', ':events'

@@ -16,9 +16,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import hr.foi.nj3m.interfaces.IConnections;
-import hr.foi.nj3m.interfaces.IRobotMessenger;
-import hr.foi.nj3m.interfaces.IWireless;
+import hr.foi.nj3m.communications.IConnections;
+import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.communications.IWireless;
 
 import static hr.foi.nj3m.wifi.WiFiCommunicator.createWiFiSender;
 

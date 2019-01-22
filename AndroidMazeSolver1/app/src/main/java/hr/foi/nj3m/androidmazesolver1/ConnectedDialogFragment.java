@@ -11,21 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.os.SystemClock;
 
-import java.util.ArrayList;
-import java.util.List;
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
-import static hr.foi.nj3m.core.controllers.algorithms.MBotInfoProcesser.ProcessInfo;
-import static java.lang.Thread.sleep;
 
 import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
-import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
-import hr.foi.nj3m.core.controllers.checkACK.ACKChecker;
-import hr.foi.nj3m.core.controllers.components.LineFollower;
-import hr.foi.nj3m.core.controllers.interfaceControllers.MSMessageFromACK;
-import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 
 public class ConnectedDialogFragment extends Fragment {
 

@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import hr.foi.nj3m.interfaces.IRobotMessenger;
+import hr.foi.nj3m.communications.IRobotMessenger;
 
 public class BluetoothCommunicator implements IRobotMessenger {
 

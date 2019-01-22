@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Environment;
 import android.os.Looper;
@@ -26,14 +24,13 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.util.ArrayList;
 
+import hr.foi.nj3m.communications.IConnections;
+import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.communications.IWireless;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
-import hr.foi.nj3m.interfaces.IConnections;
-import hr.foi.nj3m.interfaces.IRobotMessenger;
-import hr.foi.nj3m.interfaces.IWireless;
 
 
 public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {

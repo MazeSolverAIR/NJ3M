@@ -4,26 +4,21 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import hr.foi.nj3m.interfaces.IConnections;
-import hr.foi.nj3m.interfaces.IRobotMessenger;
-import hr.foi.nj3m.interfaces.IWireless;
+import hr.foi.nj3m.communications.IConnections;
+import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.communications.IWireless;
 
 import static android.content.ContentValues.TAG;
 import static com.example.bluetooth.BluetoothCommunicator.createBluetoothSender;

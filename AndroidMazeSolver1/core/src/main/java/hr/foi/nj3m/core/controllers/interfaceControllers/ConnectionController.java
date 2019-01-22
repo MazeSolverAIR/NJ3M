@@ -2,11 +2,8 @@ package hr.foi.nj3m.core.controllers.interfaceControllers;
 
 import android.content.Context;
 
-import com.example.bluetooth.BluetoothCommunicator;
-
-import hr.foi.nj3m.interfaces.IConnections;
-import hr.foi.nj3m.interfaces.IRobotMessenger;
-import hr.foi.nj3m.wifi.WiFiCommunicator;
+import hr.foi.nj3m.communications.IConnections;
+import hr.foi.nj3m.communications.IRobotMessenger;
 
 import static com.example.bluetooth.Bluetooth.createBluetoothInstance;
 import static com.example.bluetooth.BluetoothCommunicator.createBluetoothSender;
@@ -37,14 +34,14 @@ public class ConnectionController {
     private ConnectionController(String odabranNacinKomunikacije, Context context)
     {
         if(odabranNacinKomunikacije.equals("bluetooth"))
-        {
-            InstanceOfConnection = createBluetoothInstance(context);
-            InstanceOfIRobot = createBluetoothSender(context);
-        }
-        else if(odabranNacinKomunikacije.equals("wifi"))
-        {
-            InstanceOfConnection = createWiFiInstance(context);
-            InstanceOfIRobot = createWiFiSender();
-        }
+    {
+        InstanceOfConnection = createBluetoothInstance(context);
+        InstanceOfIRobot = createBluetoothSender(context);
+    }
+    else if(odabranNacinKomunikacije.equals("wifi"))
+    {
+        InstanceOfConnection = createWiFiInstance(context);
+        InstanceOfIRobot = createWiFiSender();
+    }
     }
 }

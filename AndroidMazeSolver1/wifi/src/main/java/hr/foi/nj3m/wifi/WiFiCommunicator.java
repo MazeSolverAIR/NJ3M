@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import hr.foi.nj3m.interfaces.IRobotMessenger;
+import hr.foi.nj3m.communications.IRobotMessenger;
 
 public class WiFiCommunicator implements IRobotMessenger {
 

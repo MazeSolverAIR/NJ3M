@@ -2,17 +2,9 @@ package hr.foi.nj3m.androidmazesolver1;
 
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-
-import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,18 +13,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
-import java.io.File;
-
-import hr.foi.nj3m.interfaces.IWireless;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 

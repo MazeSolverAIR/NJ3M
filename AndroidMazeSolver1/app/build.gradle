@@ -31,4 +31,5 @@ dependencies {
     implementation project(':interfacesAndEnumerators')
 
     implementation 'com.android.support:design:28.0.0'
+    implementation project(path: ':communications')
 }

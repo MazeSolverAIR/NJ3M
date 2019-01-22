@@ -24,8 +24,8 @@ import android.widget.Toast;
 import static android.os.Environment.DIRECTORY_DCIM;
 import java.io.File;
 
+import hr.foi.nj3m.communications.IWireless;
 import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
-import hr.foi.nj3m.interfaces.IWireless;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
