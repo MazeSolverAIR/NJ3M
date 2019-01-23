@@ -1,18 +1,30 @@
 package hr.foi.nj3m.virtualwifi;
 
-import android.os.Message;
 
-import hr.foi.nj3m.communications.IVirtualMessenger;
+import hr.foi.nj3m.communications.IMessenger;
+import hr.foi.nj3m.communications.VirtualMsgContainer;
+
+public class VirtualWiFi implements IMessenger {
+
+    public String recvdMessage = "";
+    public int recvdUdaljenost = 0;
+    VirtualMsgContainer vContainer = null;
+
+    public VirtualWiFi (VirtualMsgContainer vc)
+    {
+        vContainer = vc;
+    }
 
 
-public class VirtualWiFi implements IVirtualMessenger {
     @Override
-    public String receieveMsg(String msg) {
-        return null;
+    public void sendCommand(String command) {
+        vContainer.setMessage(command);
     }
 
     @Override
-    public boolean sendMsg(String msg) {
-        return false;
+    public void receive() {
+        this.recvdMessage = vContainer.getMessage();
+
     }
+
 }

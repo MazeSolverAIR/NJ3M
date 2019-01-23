@@ -4,6 +4,8 @@ public enum Sides {
     Front,
     Left,
     Right,
+    Up,
+    Down,
     FullRotate,
     Null
 }

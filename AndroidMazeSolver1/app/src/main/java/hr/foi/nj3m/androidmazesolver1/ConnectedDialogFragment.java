@@ -14,7 +14,7 @@ import android.widget.Button;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 
-import hr.foi.nj3m.androidmazesolver1.Threads.SendReceive;
+import hr.foi.nj3m.core.controllers.threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 
 public class ConnectedDialogFragment extends Fragment {
@@ -52,9 +52,9 @@ public class ConnectedDialogFragment extends Fragment {
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(pathFinder==null)
+                /*if(pathFinder==null)
                     pathFinder = MBotPathFinder.createInstance(2);
-                sendReceive.write("RM");
+                sendReceive.write("RM");*/
                 /*if(start)
                 {
                     sendReceive.write(CommandsGenerator.StartMBot());

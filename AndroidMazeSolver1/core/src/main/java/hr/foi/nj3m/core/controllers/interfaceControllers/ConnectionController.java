@@ -34,14 +34,18 @@ public class ConnectionController {
     private ConnectionController(String odabranNacinKomunikacije, Context context)
     {
         if(odabranNacinKomunikacije.equals("bluetooth"))
-    {
-        InstanceOfConnection = createBluetoothInstance(context);
-        InstanceOfIRobot = createBluetoothSender(context);
-    }
-    else if(odabranNacinKomunikacije.equals("wifi"))
-    {
-        InstanceOfConnection = createWiFiInstance(context);
-        InstanceOfIRobot = createWiFiSender();
-    }
+        {
+            InstanceOfConnection = createBluetoothInstance(context);
+            InstanceOfIRobot = createBluetoothSender(context);
+        }
+        else if(odabranNacinKomunikacije.equals("wifi"))
+        {
+            InstanceOfConnection = createWiFiInstance(context);
+            InstanceOfIRobot = createWiFiSender();
+        }
+        else if(odabranNacinKomunikacije.equals("virtualWifi"))
+        {
+            //InstanceOfIRobot = creteVirtualWifiSender();
+        }
     }
 }

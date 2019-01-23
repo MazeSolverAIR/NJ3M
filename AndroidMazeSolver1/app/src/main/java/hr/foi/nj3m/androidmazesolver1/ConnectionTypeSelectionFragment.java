@@ -22,10 +22,17 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import static android.os.Environment.DIRECTORY_DCIM;
+import static java.lang.Thread.sleep;
+
 import java.io.File;
 
 import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.communications.VirtualMsgContainer;
+import hr.foi.nj3m.core.controllers.algorithms.AlgoritamVirtualRobot;
 import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
+import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.virtualmbot.VirtualMBot;
+import hr.foi.nj3m.virtualwifi.VirtualWiFi;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
@@ -65,6 +72,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 prefEditor.putString("TypeOfConnection", "wifi");
                 prefEditor.commit();
@@ -73,6 +81,35 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                     openListOfDevices();
                 else
                     iWireless.enableDisable(mBroadcastReceiver);
+
+
+                VirtualMsgContainer container = new VirtualMsgContainer();
+                VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
+                VirtualWiFi virtualWiFi = new VirtualWiFi(container);
+
+                AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
+                while (true)
+                {
+                    virtualMBot.sendSensorInfo();
+
+                    virtualMBot.receieveMsg();
+
+                    System.out.println(virtualMBot.recvdMessage);
+
+                    System.out.println("Idem Naprijed:");
+                    virtualMBot.moveForward();
+
+                    System.out.println("Rotiram se lijevo:");
+                    virtualMBot.rotateLeft();
+                    System.out.println("Rotiram se Desno:");
+                    virtualMBot.rotateRight();
+
+                    try {
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
