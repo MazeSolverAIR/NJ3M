@@ -51,6 +51,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
 
         final ImageButton tipkaBluetooth = (ImageButton) getView().findViewById(R.id.btnBluetooth);
         final ImageButton tipkaWifi = (ImageButton) getView().findViewById(R.id.btnWifi);
+        final ImageButton tipkaVirtualRobot = (ImageButton) getView().findViewById(R.id.btnVirtualRobot);
 
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
         prefEditor = sharedPreferences.edit();
@@ -83,36 +84,21 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                     iWireless.enableDisable(mBroadcastReceiver);
 
 
-                VirtualMsgContainer container = new VirtualMsgContainer();
-                VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
-                VirtualWiFi virtualWiFi = new VirtualWiFi(container);
 
-                AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
-                while (true)
-                {
-                    virtualMBot.sendSensorInfo();
-
-                    virtualMBot.receieveMsg();
-
-                    System.out.println(virtualMBot.recvdMessage);
-
-                    System.out.println("Idem Naprijed:");
-                    virtualMBot.moveForward();
-
-                    System.out.println("Rotiram se lijevo:");
-                    virtualMBot.rotateLeft();
-                    System.out.println("Rotiram se Desno:");
-                    virtualMBot.rotateRight();
-
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         });
+
+        tipkaVirtualRobot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prefEditor.putString("TypeOfConnection", "virtualWifi");
+                prefEditor.commit();
+                openListOfDevices();
+            }
+        });
+
     }
+
 
     @Override
     public void onPause() {

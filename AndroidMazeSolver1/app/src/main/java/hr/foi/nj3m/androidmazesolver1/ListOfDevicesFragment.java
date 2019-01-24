@@ -73,9 +73,26 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         iWireless = WirelessController.getInstanceOfIWireless();
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
+
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
-        iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iConnections.getDeviceArray());
+        switch(sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+            case "bluetooth":
+                iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
+                adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iConnections.getDeviceArray());
+                break;
+            case "virtualWifi":
+                ArrayList<String> uredaj = new ArrayList<>();
+                uredaj.add("majmun");
+                adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, uredaj);
+                lvNewDevices.setAdapter(adapter);
+                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+                break;
+        }
+
+
+
+        /*iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iConnections.getDeviceArray());*/
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,17 +150,35 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        deviceAddress = iConnections.getDeviceAddress(position);
 
-        if(iConnections.deviceExists(iConnections.getDeviceName(position)))
-            openConnectedDialog(deviceAddress);
 
-        else {
-            iRobotMessenger = iConnections.connect(position);
-            IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-            //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
-            getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
+
+        switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+            case "virtualWifi":
+                Bundle bundle= new Bundle();
+                //bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
+                Fragment fragment= new MazeFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container,fragment);
+                transaction.addToBackStack(null);
+                transaction.commitAllowingStateLoss();
+                break;
+            case "bluetooth":
+                deviceAddress = iConnections.getDeviceAddress(position);
+                if(iConnections.deviceExists(iConnections.getDeviceName(position)))
+                    openConnectedDialog(deviceAddress);
+
+                else {
+                    iRobotMessenger = iConnections.connect(position);
+                    IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+                    //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
+                    getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
+                }
+                break;
         }
+
+
     }
 
     private void openConnectedDialog(String deviceAddress){

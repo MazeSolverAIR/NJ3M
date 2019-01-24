@@ -44,6 +44,8 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
             fullRotate();
         else if(this.recvdMessage.equals("RM"))
             moveForward();
+        else if(this.recvdMessage.equals("SM"))
+            moveForward();
     }
 
     @Override
@@ -81,8 +83,8 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 this.SmjerZadnjeStrane = Sides.Down;
                 break;
             case Down:
-                this.LeftUltrasonic.setNewSensorSide(Sides.Right);
-                this.RightUltrasonic.setNewSensorSide(Sides.Left);
+                this.LeftUltrasonic.setNewSensorSide(Sides.Left);
+                this.RightUltrasonic.setNewSensorSide(Sides.Right);
                 this.SmjerZadnjeStrane = Sides.Up;
                 break;
         }
@@ -92,16 +94,16 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
     @Override
     public void moveForward() {
 
-        Sides fronSide = FrontUltrasonic.getSensorSide();
+        Sides frontSide = FrontUltrasonic.getSensorSide();
         maze[trenutnoY][trenutnoX] = 2;
 
-        switch(fronSide)
+        switch(frontSide)
         {
             case Up:
-                trenutnoY++;
+                trenutnoY--;
                 break;
             case Down:
-                trenutnoY--;
+                trenutnoY++;
                 break;
             case Left:
                 trenutnoX--;
@@ -110,6 +112,13 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 trenutnoX++;
                 break;
         }
+    }
+
+    @Override
+    public void stopMotors(){
+        Sides frontSide = FrontUltrasonic.getSensorSide();
+        maze[trenutnoY][trenutnoX] = 2;
+
     }
 
     @Override

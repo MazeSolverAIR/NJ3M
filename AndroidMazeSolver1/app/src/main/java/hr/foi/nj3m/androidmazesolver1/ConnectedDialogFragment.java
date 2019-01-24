@@ -41,13 +41,13 @@ public class ConnectedDialogFragment extends Fragment {
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
         btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
 
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 deviceAddress = (String) bundle.getSerializable(EXTRA_ADDRESS);
                 Connect(deviceAddress);
             }
-        }).start();
+        }).start();*/
 
         btnSendControl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,6 +81,8 @@ public class ConnectedDialogFragment extends Fragment {
                 // TODO: 2.1.2019. Ako proradi WiFi modul na robotu, potrebno je ovo testirati. 
                 sendReceive = new SendReceive("adresa", handler);
                 sendReceive.start();
+                break;
+            case "virtualWifi":
                 break;
         }
     }

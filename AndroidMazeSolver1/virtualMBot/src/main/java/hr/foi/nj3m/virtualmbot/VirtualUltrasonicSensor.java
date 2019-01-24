@@ -1,5 +1,7 @@
 package hr.foi.nj3m.virtualmbot;
 
+import android.widget.Toast;
+
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 
 public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
@@ -25,14 +27,19 @@ public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
     @Override
     public int measureSensor(int y, int x, int[][] matrix) {
         CurrentValue = 0;
-        while(matrix[y][x]!=1)
+        while(matrix[y][x]!=1 && (matrix[y][x]==0 || matrix[y][x]==3))
         {
+            if(matrix[y][x]==3){
+                System.out.println("IZLAZ JE OVDE DEČA");
+                break;
+            }
+
             switch (this.CurrentSensorSide) {
                 case Up:
-                    y++;
+                    y--;
                     break;
                 case Down:
-                    y--;
+                    y++;
                     break;
                 case Left:
                     x--;

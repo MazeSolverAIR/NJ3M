@@ -68,4 +68,17 @@
         android:layout_marginBottom="76dp"
         android:background="@drawable/ic_wifiikona"></ImageButton>
 
+    <ImageButton
+        android:id="@+id/btnVirtualRobot"
+        android:layout_width="70dp"
+        android:layout_height="74dp"
+        android:layout_alignStart="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignEnd="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_alignBottom="@+id/pozadinaTipkiOdabirVeze"
+        android:layout_marginStart="86dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginBottom="-15dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_wifiikona"></ImageButton>
+
 </RelativeLayout>
