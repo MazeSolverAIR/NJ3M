@@ -44,8 +44,6 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
             fullRotate();
         else if(this.recvdMessage.equals("RM"))
             moveForward();
-        else if(this.recvdMessage.equals("SM"))
-            moveForward();
     }
 
     @Override
@@ -83,19 +81,23 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 this.SmjerZadnjeStrane = Sides.Down;
                 break;
             case Down:
-                this.LeftUltrasonic.setNewSensorSide(Sides.Left);
-                this.RightUltrasonic.setNewSensorSide(Sides.Right);
+                this.LeftUltrasonic.setNewSensorSide(Sides.Right);
+                this.RightUltrasonic.setNewSensorSide(Sides.Left);
                 this.SmjerZadnjeStrane = Sides.Up;
                 break;
         }
     }
 
 
+    boolean exitFound = false;
     @Override
-    public void moveForward() {
+    public void moveForward()
+    {
+        if(exitFound)
+            return;
 
         Sides frontSide = FrontUltrasonic.getSensorSide();
-        maze[trenutnoY][trenutnoX] = 2;
+        maze[trenutnoY][trenutnoX] = 4;
 
         switch(frontSide)
         {
@@ -112,13 +114,12 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 trenutnoX++;
                 break;
         }
-    }
-
-    @Override
-    public void stopMotors(){
-        Sides frontSide = FrontUltrasonic.getSensorSide();
+        if(maze[trenutnoY][trenutnoX]==3)
+        {
+            System.out.println("IZLAZ JE OVDE DEČA");
+            exitFound = true;
+        }
         maze[trenutnoY][trenutnoX] = 2;
-
     }
 
     @Override

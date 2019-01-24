@@ -6,5 +6,4 @@ public interface IVirtualMBot {
     void rotateRight();
     void rotateLeft();
     void fullRotate();
-    void stopMotors();
 }

@@ -27,13 +27,14 @@ public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
     @Override
     public int measureSensor(int y, int x, int[][] matrix) {
         CurrentValue = 0;
-        while(matrix[y][x]!=1 && (matrix[y][x]==0 || matrix[y][x]==3))
+        while(matrix[y][x]!=1)
         {
-            if(matrix[y][x]==3){
-                System.out.println("IZLAZ JE OVDE DEČA");
+            if(matrix[y][x]==3)
+            {
+                CurrentValue+=100;
                 break;
             }
-
+            CurrentValue++;
             switch (this.CurrentSensorSide) {
                 case Up:
                     y--;
@@ -48,7 +49,6 @@ public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
                     x++;
                     break;
             }
-            CurrentValue++;
         }
 
         return this.CurrentValue;

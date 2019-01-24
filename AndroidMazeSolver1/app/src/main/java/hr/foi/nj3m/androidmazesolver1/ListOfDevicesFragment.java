@@ -150,9 +150,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
-
-
         switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
             case "virtualWifi":
                 Bundle bundle= new Bundle();

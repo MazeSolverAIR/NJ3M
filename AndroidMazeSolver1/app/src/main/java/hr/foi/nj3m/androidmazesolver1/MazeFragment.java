@@ -59,7 +59,7 @@ public class MazeFragment extends Fragment {
         int[][] matrix = VirtualMaze.getMatrix();
 
         VirtualMsgContainer container = new VirtualMsgContainer();
-        VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
+        VirtualMBot virtualMBot = new VirtualMBot(container, 14, 5, Sides.Left);
         VirtualWiFi virtualWiFi = new VirtualWiFi(container);
         AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
 
