@@ -1,7 +1,7 @@
 package hr.foi.nj3m.core.controllers.components;
 
 import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
-import hr.foi.nj3m.interfaces.ILineFollower;
+import hr.foi.nj3m.interfaces.sensors.ILineFollower;
 
 public class LineFollower implements ILineFollower {
 

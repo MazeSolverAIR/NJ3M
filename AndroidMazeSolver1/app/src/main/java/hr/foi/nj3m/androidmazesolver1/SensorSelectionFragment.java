@@ -10,14 +10,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import hr.foi.nj3m.core.controllers.components.UltrasonicSensor;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
-import hr.foi.nj3m.interfaces.IUltraSonic;
+import hr.foi.nj3m.interfaces.sensors.IUltraSonic;
 
 public class SensorSelectionFragment extends Fragment {
 

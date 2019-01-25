@@ -1,4 +1,4 @@
-package hr.foi.nj3m.interfaces;
+package hr.foi.nj3m.interfaces.sensors;
 
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 

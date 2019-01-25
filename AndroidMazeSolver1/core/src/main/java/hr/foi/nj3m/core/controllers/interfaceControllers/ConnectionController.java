@@ -2,29 +2,34 @@ package hr.foi.nj3m.core.controllers.interfaceControllers;
 
 import android.content.Context;
 
-import hr.foi.nj3m.communications.IConnections;
-import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
+import hr.foi.nj3m.interfaces.connections.IConnection;
 
 import static com.example.bluetooth.Bluetooth.createBluetoothInstance;
-import static com.example.bluetooth.BluetoothCommunicator.createBluetoothSender;
 import static hr.foi.nj3m.wifi.WiFi.createWiFiInstance;
-import static hr.foi.nj3m.wifi.WiFiCommunicator.createWiFiSender;
 
 public class ConnectionController {
 
     Context context;
     String deviceAddress;
 
-    private static IConnections InstanceOfConnection;
-    private static IRobotMessenger InstanceOfIRobot;
-
-    public static IRobotMessenger getInstanceOfIRobot() {return InstanceOfIRobot;}
-    public static IConnections getInstanceOfConnection()
+    private static IRobotConnector InstanceOfConnection;
+    public static IRobotConnector getInstanceOfConnection()
     {
         return InstanceOfConnection;
     }
 
-    public static IConnections creteInstance(String odabranNacinKomunikacije, Context context)
+    private static IMessenger iMessenger;
+    public static void setIMessenger(IMessenger iMsngr){
+        iMessenger = iMsngr;
+    }
+
+    public static IMessenger getiMessenger(){
+        return iMessenger;
+    }
+
+    public static IRobotConnector creteInstance(String odabranNacinKomunikacije, Context context)
     {
         new ConnectionController(odabranNacinKomunikacije, context);
 
@@ -36,12 +41,12 @@ public class ConnectionController {
         if(odabranNacinKomunikacije.equals("bluetooth"))
         {
             InstanceOfConnection = createBluetoothInstance(context);
-            InstanceOfIRobot = createBluetoothSender(context);
+            //InstanceOfIRobot = createBluetoothSender(context);
         }
         else if(odabranNacinKomunikacije.equals("wifi"))
         {
             InstanceOfConnection = createWiFiInstance(context);
-            InstanceOfIRobot = createWiFiSender();
+            //InstanceOfIRobot = createWiFiSender();
         }
         else if(odabranNacinKomunikacije.equals("virtualWifi"))
         {

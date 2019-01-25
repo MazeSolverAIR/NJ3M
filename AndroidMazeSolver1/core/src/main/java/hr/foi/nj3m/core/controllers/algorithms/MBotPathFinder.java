@@ -10,7 +10,7 @@ import hr.foi.nj3m.core.controllers.components.LineFollower;
 import hr.foi.nj3m.core.controllers.components.UltrasonicSensor;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
-import hr.foi.nj3m.interfaces.IUltraSonic;
+import hr.foi.nj3m.interfaces.sensors.IUltraSonic;
 
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.LastCommand;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Null;

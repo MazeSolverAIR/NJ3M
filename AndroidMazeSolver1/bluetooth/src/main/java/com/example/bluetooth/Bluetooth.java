@@ -4,39 +4,53 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
-import hr.foi.nj3m.communications.IConnections;
-import hr.foi.nj3m.communications.IRobotMessenger;
-import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
+import hr.foi.nj3m.interfaces.connections.IConnection;
+import hr.foi.nj3m.interfaces.connections.IDevice;
+import hr.foi.nj3m.interfaces.connections.IDiscover;
+import hr.foi.nj3m.interfaces.connections.ISocket;
+import hr.foi.nj3m.interfaces.connections.IWireless;
 
 import static android.content.ContentValues.TAG;
-import static com.example.bluetooth.BluetoothCommunicator.createBluetoothSender;
 
-public class Bluetooth extends Activity implements IConnections, IWireless {
+public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotConnector, ISocket {
 
+    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     BluetoothAdapter mBluetoothAdapter;
     Context context;
     ArrayList<BluetoothDevice> bluetoothDevices;
     ArrayList<String> deviceNameArray;
+    private static InputStream inputStream;
+    private static OutputStream outputStream;
+    private static BluetoothSocket bluetoothSocket;
+    private static Handler handler;
 
-    private static Bluetooth instanceOfBluetooth;
+    private static IRobotConnector instanceOfBluetooth;
 
-    public static Bluetooth getBluetoothInstance(){
+    public static IRobotConnector getBluetoothInstance(){
         return instanceOfBluetooth;
     }
 
-    public static Bluetooth createBluetoothInstance(Context context){
+    public static IRobotConnector createBluetoothInstance(Context context){
         if(instanceOfBluetooth == null)
             instanceOfBluetooth = new Bluetooth(context);
 
@@ -48,11 +62,6 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
         this.context = context;
         bluetoothDevices = new ArrayList<>();
         deviceNameArray = new ArrayList<>();
-    }
-
-    @Override
-    public boolean isAvailable() {
-            return false;
     }
 
     @Override
@@ -100,17 +109,12 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
     }
 
     @Override
-    public IRobotMessenger connect(int position) {
+    public IMessenger connect(int position) {
         mBluetoothAdapter.cancelDiscovery();
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             bluetoothDevices.get(position).createBond();
         }
-        return createBluetoothSender(context);
-    }
-
-    @Override
-    public boolean disconnect() {
-        return false;
+        return BluetoothCommunicator.createBluetoothSender(context);
     }
 
     @Override
@@ -160,5 +164,45 @@ public class Bluetooth extends Activity implements IConnections, IWireless {
                 Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
             }
         }
+    }
+
+    @Override
+    public void initializeSocket(String address, Handler handler) {
+        try {
+            bluetoothSocket = mBluetoothAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(mUUID);
+            bluetoothSocket.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.handler = handler;
+
+        InputStream tmpIn = null;
+        OutputStream tmpOut = null;
+
+        try {
+            tmpIn = bluetoothSocket.getInputStream();
+            tmpOut = bluetoothSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        inputStream = tmpIn;
+        outputStream = tmpOut;
+    }
+
+    protected static InputStream getInputStream() {
+        return inputStream;
+    }
+
+    protected static OutputStream getOutputStream() {
+        return outputStream;
+    }
+
+    protected static Handler getHandler() {
+        return handler;
+    }
+
+    protected static BluetoothSocket getBluetoothSocket(){
+        return bluetoothSocket;
     }
 }

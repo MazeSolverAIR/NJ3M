@@ -26,7 +26,9 @@ import static java.lang.Thread.sleep;
 
 import java.io.File;
 
-import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
+import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.connections.IWireless;
 import hr.foi.nj3m.communications.VirtualMsgContainer;
 import hr.foi.nj3m.core.controllers.algorithms.AlgoritamVirtualRobot;
 import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
@@ -36,7 +38,7 @@ import hr.foi.nj3m.virtualwifi.VirtualWiFi;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
-    IWireless iWireless;
+    IRobotConnector iRobotConnector;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor prefEditor;
 
@@ -61,11 +63,11 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                 BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 prefEditor.putString("TypeOfConnection", "bluetooth");
                 prefEditor.commit();
-                iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
+                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 if(mBluetoothAdapter.isEnabled())
                     openListOfDevices();
                 else
-                    iWireless.enableDisable(mBroadcastReceiver);
+                    iRobotConnector.enableDisable(mBroadcastReceiver);
             }
         });
 
@@ -76,11 +78,11 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                 WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 prefEditor.putString("TypeOfConnection", "wifi");
                 prefEditor.commit();
-                iWireless = WirelessController.createInstance(getActivity(), sharedPreferences.getString("TypeOfConnection", "DEFAULT"));
+                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 if(wifiManager.isWifiEnabled())
                     openListOfDevices();
                 else
-                    iWireless.enableDisable(mBroadcastReceiver);
+                    iRobotConnector.enableDisable(mBroadcastReceiver);
 
 
                 VirtualMsgContainer container = new VirtualMsgContainer();

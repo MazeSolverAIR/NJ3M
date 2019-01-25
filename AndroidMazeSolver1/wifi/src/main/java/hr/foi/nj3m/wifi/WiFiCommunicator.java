@@ -5,12 +5,10 @@ import android.os.Handler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 
-import hr.foi.nj3m.communications.IRobotMessenger;
-
-public class WiFiCommunicator implements IRobotMessenger {
+public class WiFiCommunicator implements IMessenger {
 
     private Socket socket;
     private InputStream inputStream;
@@ -29,23 +27,14 @@ public class WiFiCommunicator implements IRobotMessenger {
 
     private WiFiCommunicator()
     {
-        socket = new Socket();
+        this.socket = WiFi.getSocket();
+        this.inputStream = WiFi.getInputStream();
+        this.outputStream = WiFi.getOutputStream();
+        this.handler = WiFi.getHandler();
     }
 
     @Override
-    public void initializeSocket(String address, Handler handler) {
-        try {
-            socket.connect(new InetSocketAddress(address, 8888), 500);
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.handler = handler;
-    }
-
-    @Override
-    public void sendCommand(String command) {
+    public void send(String command) {
         byte[] message = command.getBytes();
         try {
             outputStream.write(message);

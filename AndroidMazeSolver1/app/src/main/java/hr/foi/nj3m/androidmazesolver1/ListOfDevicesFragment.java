@@ -1,6 +1,7 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,27 +28,21 @@ import android.widget.ListView;
 import java.io.File;
 import java.util.ArrayList;
 
-import hr.foi.nj3m.communications.IConnections;
-import hr.foi.nj3m.communications.IRobotMessenger;
-import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
-import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
 
 
 public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     ListView lvNewDevices;
     Button btnDiscover;
-
+    SharedPreferences sharedPreferences;
     String deviceAddress;
     static String EXTRA_ADDRESS = null;
     ArrayAdapter<String> adapter;
-
-    IConnections iConnections;
-    IRobotMessenger iRobotMessenger;
-    IWireless iWireless;
-
-    SharedPreferences sharedPreferences;
+    IMessenger iMessenger;
+    IRobotConnector iRobotConnector;
 
     @Override
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,18 +66,17 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     public void onStart() {
         super.onStart();
 
-        iWireless = WirelessController.getInstanceOfIWireless();
+        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
+        iRobotConnector = ConnectionController.getInstanceOfConnection();
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
-        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
-        iConnections = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iConnections.getDeviceArray());
+        adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iRobotConnector.getDeviceArray());
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iConnections.clearList();
-                iWireless.discover(mBroadcastReceiver);
+                iRobotConnector.clearList();
+                iRobotConnector.discover(mBroadcastReceiver);
             }
         });
 
@@ -95,7 +90,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 ArrayList<BluetoothDevice> bluetoothDevices = new ArrayList<BluetoothDevice>();
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 bluetoothDevices.add(device);
-                iConnections.addDevices(bluetoothDevices);
+                iRobotConnector.addDevices(bluetoothDevices);
                 lvNewDevices.setAdapter(adapter);
                 lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
@@ -116,13 +111,14 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                             for(WifiP2pDevice device : peerList.getDeviceList()){
                                 wifiP2pDevices.add(device);
                             }
-                            iConnections.addDevices(wifiP2pDevices);
+                            iRobotConnector.addDevices(wifiP2pDevices);
                             lvNewDevices.setAdapter(adapter);
                         }
                     });
                 lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)){
+                openConnectedDialog(deviceAddress);
                /* NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
                 if (networkInfo.isConnected())
                     openConnectedDialog(deviceAddress);*/
@@ -133,14 +129,18 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        deviceAddress = iConnections.getDeviceAddress(position);
+        IntentFilter bondedFilter = new IntentFilter();
 
-        if(iConnections.deviceExists(iConnections.getDeviceName(position)))
+        deviceAddress = iRobotConnector.getDeviceAddress(position);
+
+        if(iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
             openConnectedDialog(deviceAddress);
 
         else {
-            iRobotMessenger = iConnections.connect(position);
-            IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            iMessenger = iRobotConnector.connect(position);
+            ConnectionController.setIMessenger(iMessenger);
+            bondedFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+            //bondedFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
             //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
             getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
         }

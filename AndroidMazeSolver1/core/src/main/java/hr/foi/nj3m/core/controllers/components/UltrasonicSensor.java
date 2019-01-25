@@ -1,8 +1,7 @@
 package hr.foi.nj3m.core.controllers.components;
 
-import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
-import hr.foi.nj3m.interfaces.IUltraSonic;
+import hr.foi.nj3m.interfaces.sensors.IUltraSonic;
 
 public class UltrasonicSensor implements IUltraSonic {
 

@@ -1,4 +1,4 @@
-package hr.foi.nj3m.interfaces;
+package hr.foi.nj3m.interfaces.sensors;
 
 public interface ILineFollower extends ISensors {
 

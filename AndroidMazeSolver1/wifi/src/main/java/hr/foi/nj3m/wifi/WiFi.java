@@ -10,19 +10,29 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 
-import hr.foi.nj3m.communications.IConnections;
-import hr.foi.nj3m.communications.IRobotMessenger;
-import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
+import hr.foi.nj3m.interfaces.connections.IConnection;
+import hr.foi.nj3m.interfaces.connections.IDevice;
+import hr.foi.nj3m.interfaces.connections.IDiscover;
+import hr.foi.nj3m.interfaces.connections.IWireless;
 
 import static hr.foi.nj3m.wifi.WiFiCommunicator.createWiFiSender;
 
-public class WiFi implements IConnections, IWireless {
+public class WiFi implements IWireless, IDiscover, IRobotConnector {
 
     private WifiManager wifiManager;
     private Context context;
@@ -32,14 +42,18 @@ public class WiFi implements IConnections, IWireless {
     private ArrayList<WifiP2pDevice> wifiP2pDevices;
     private WifiP2pConfig wifiP2pConfig;
     private ArrayList<String> deviceNameArray;
+    private static Socket socket;
+    private static InputStream inputStream;
+    private static OutputStream outputStream;
+    private static Handler handler;
 
-    private static WiFi InstanceOfWiFi;
+    private static IRobotConnector InstanceOfWiFi;
 
-    public static WiFi getWiFiInstance() {
+    public static IRobotConnector getWiFiInstance() {
         return InstanceOfWiFi;
     }
 
-    public static WiFi createWiFiInstance(Context context) {
+    public static IRobotConnector createWiFiInstance(Context context) {
         if (InstanceOfWiFi == null)
             InstanceOfWiFi = new WiFi(context);
 
@@ -62,17 +76,6 @@ public class WiFi implements IConnections, IWireless {
 
         wifiP2pDevices = new ArrayList<>();
         deviceNameArray = new ArrayList<>();
-    }
-
-    @Override
-    public boolean disconnect() {
-        InstanceOfWiFi = null;
-        return true;
-    }
-
-    @Override
-    public boolean isAvailable() {
-        return false;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class WiFi implements IConnections, IWireless {
     }
 
     @Override
-    public IRobotMessenger connect(final int position) {
+    public IMessenger connect(final int position) {
         wifiP2pConfig = new WifiP2pConfig();
         wifiP2pConfig.deviceAddress = getDeviceAddress(position);
         wifiP2pManager.connect(wifiP2pChannel, wifiP2pConfig, new WifiP2pManager.ActionListener() {
@@ -164,5 +167,33 @@ public class WiFi implements IConnections, IWireless {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
             }
         }
+    }
+
+    @Override
+    public void initializeSocket(String address, Handler handler) {
+        try {
+            socket.connect(new InetSocketAddress(address, 8888), 500);
+            inputStream = socket.getInputStream();
+            outputStream = socket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.handler = handler;
+    }
+
+    protected static OutputStream getOutputStream(){
+        return outputStream;
+    }
+
+    protected static InputStream getInputStream(){
+        return inputStream;
+    }
+
+    protected static Socket getSocket(){
+        return socket;
+    }
+
+    protected static Handler getHandler(){
+        return handler;
     }
 }

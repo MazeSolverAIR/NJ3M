@@ -8,13 +8,11 @@ import android.os.Handler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.UUID;
 
-import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 
-public class BluetoothCommunicator implements IRobotMessenger {
+public class BluetoothCommunicator implements IMessenger {
 
-    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Context context;
     private InputStream inputStream;
     private OutputStream outputStream;
@@ -22,9 +20,9 @@ public class BluetoothCommunicator implements IRobotMessenger {
     private Handler handler;
     private BluetoothAdapter mBluetoothAdapter;
 
-    private static BluetoothCommunicator InstanceOfSender;
+    private static IMessenger InstanceOfSender;
 
-    public static BluetoothCommunicator createBluetoothSender(Context context)
+    public static IMessenger createBluetoothSender(Context context)
     {
         if(InstanceOfSender == null)
             InstanceOfSender = new BluetoothCommunicator(context);
@@ -32,38 +30,22 @@ public class BluetoothCommunicator implements IRobotMessenger {
         return InstanceOfSender;
     }
 
+    public static IMessenger getBluetoothSender(){
+        return InstanceOfSender;
+    }
+
     private BluetoothCommunicator(Context context)
     {
         this.context = context;
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        this.inputStream = Bluetooth.getInputStream();
+        this.outputStream = Bluetooth.getOutputStream();
+        this.handler = Bluetooth.getHandler();
+        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
     }
 
     @Override
-    public void initializeSocket(String address, Handler handler) {
-        try {
-            bluetoothSocket = mBluetoothAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(mUUID);
-            bluetoothSocket.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.handler = handler;
-
-        InputStream tmpIn = null;
-        OutputStream tmpOut = null;
-
-        try {
-            tmpIn = bluetoothSocket.getInputStream();
-            tmpOut = bluetoothSocket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        inputStream = tmpIn;
-        outputStream = tmpOut;
-    }
-
-    @Override
-    public void sendCommand(String command) {
+    public void send(String command) {
         byte[] message = command.getBytes();
         try {
             outputStream.write(message);

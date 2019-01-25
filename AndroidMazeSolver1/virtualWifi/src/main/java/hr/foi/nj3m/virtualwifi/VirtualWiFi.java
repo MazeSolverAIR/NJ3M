@@ -1,10 +1,13 @@
 package hr.foi.nj3m.virtualwifi;
 
 
-import hr.foi.nj3m.communications.IMessenger;
-import hr.foi.nj3m.communications.VirtualMsgContainer;
+import java.util.ArrayList;
 
-public class VirtualWiFi implements IMessenger {
+import hr.foi.nj3m.communications.VirtualMsgContainer;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
+import hr.foi.nj3m.interfaces.connections.IDevice;
+
+public class VirtualWiFi implements IMessenger, IDevice {
 
     public String recvdMessage = "";
     public int recvdUdaljenost = 0;
@@ -17,7 +20,7 @@ public class VirtualWiFi implements IMessenger {
 
 
     @Override
-    public void sendCommand(String command) {
+    public void send(String command) {
         vContainer.setMessage(command);
     }
 
@@ -27,4 +30,8 @@ public class VirtualWiFi implements IMessenger {
 
     }
 
+    @Override
+    public ArrayList<String> getDeviceArray() {
+        return null;
+    }
 }
