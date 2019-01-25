@@ -56,18 +56,9 @@ public class AlgoritamVirtualRobot {
         else
             returnString = "FR";
 
-        if(returnString.equals("RM"))
-        {
-            kreceSe();
-            mazeDrawer.addpathOn(trenutniX, trenutniY);
-
-            inLoop = mazeDrawer.checkIfLoop();
-        }
 
         if(inLoop)
         {
-            korakUnatrag();
-            mazeDrawer.pathList.remove(mazeDrawer.pathList.size()-1);
             returnString = manageLoop(returnString, prednjiSenzor, desniSenzor, lijeviSenzor);
         }
 
@@ -84,6 +75,7 @@ public class AlgoritamVirtualRobot {
         {
             kreceSe();
             mazeDrawer.addpathOn(trenutniX, trenutniY);
+            inLoop = mazeDrawer.checkIfLoop();
         }
 
 
@@ -207,18 +199,26 @@ public class AlgoritamVirtualRobot {
     {
         if(decidedComand.equals("RR"))
         {
-            if(checkCrossroadSide(desniSenzor))
+            if(checkCrossroadSide(lijeviSenzor))
                 return "RL";
             else if(checkCrossroadSide(prednjiSenzor))
                 return "RM";
         }
         else if(decidedComand.equals("RM"))
         {
-            if(checkCrossroadSide(lijeviSenzor))
-                return "RL";
-            else if(checkCrossroadSide(prednjiSenzor))
+            if(checkCrossroadSide(prednjiSenzor))
                 return "RM";
+            else if(checkCrossroadSide(lijeviSenzor))
+                return "RL";
         }
+        else if(decidedComand.equals("RL"))
+        {
+            if(canMoveTo(desniSenzor))
+                return "RR";
+            else if(checkCrossroadSide(lijeviSenzor))
+                return "RL";
+        }
+
 
         return "FR";
     }
