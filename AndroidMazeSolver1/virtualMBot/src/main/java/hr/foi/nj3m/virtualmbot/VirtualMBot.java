@@ -93,9 +93,6 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
     @Override
     public void moveForward()
     {
-        if(exitFound)
-            return;
-
         Sides frontSide = FrontUltrasonic.getSensorSide();
         maze[trenutnoY][trenutnoX] = 4;
 

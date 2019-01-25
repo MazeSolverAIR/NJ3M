@@ -31,7 +31,7 @@ public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
         {
             if(matrix[y][x]==3)
             {
-                CurrentValue+=100;
+                CurrentValue+=5;
                 break;
             }
             CurrentValue++;
