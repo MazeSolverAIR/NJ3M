@@ -1,7 +1,6 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +69,17 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iRobotConnector.getDeviceArray());
+        lvNewDevices.setAdapter(adapter);
+        lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+
+        /*switch(sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+            case "bluetooth":
+                break;
+            case "virtualWifi":
+                lvNewDevices.setAdapter(adapter);
+                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+                break;
+        }*/
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,8 +100,8 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 bluetoothDevices.add(device);
                 iRobotConnector.addDevices(bluetoothDevices);
-                lvNewDevices.setAdapter(adapter);
-                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+                //lvNewDevices.setAdapter(adapter);
+                //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -112,10 +121,10 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                                 wifiP2pDevices.add(device);
                             }
                             iRobotConnector.addDevices(wifiP2pDevices);
-                            lvNewDevices.setAdapter(adapter);
+                            //lvNewDevices.setAdapter(adapter);
                         }
                     });
-                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
+                //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)){
                 openConnectedDialog(deviceAddress);
@@ -129,20 +138,26 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        IntentFilter bondedFilter = new IntentFilter();
-
-        deviceAddress = iRobotConnector.getDeviceAddress(position);
-
-        if(iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
-            openConnectedDialog(deviceAddress);
-
-        else {
-            iMessenger = iRobotConnector.connect(position);
-            ConnectionController.setIMessenger(iMessenger);
-            bondedFilter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-            //bondedFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-            //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
-            getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
+        switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+            case "bluetooth":
+                deviceAddress = iRobotConnector.getDeviceAddress(position);
+                if(iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
+                    openConnectedDialog(deviceAddress);
+                else {
+                    iMessenger = iRobotConnector.connect(position);
+                    ConnectionController.setIMessenger(iMessenger);
+                    IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+                    //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
+                    getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
+                }
+                break;
+            case "wifi":
+                IntentFilter connectedFilter = new IntentFilter(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+                getActivity().registerReceiver(mBroadcastReceiver, connectedFilter);
+                break;
+            case "virtualWifi":
+                openMaze();
+                break;
         }
     }
 
@@ -150,6 +165,17 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         Bundle bundle= new Bundle();
         bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
         Fragment fragment= new ConnectedDialogFragment();
+        fragment.setArguments(bundle);
+        FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container,fragment);
+        transaction.addToBackStack(null);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void openMaze(){
+        Bundle bundle= new Bundle();
+        //bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
+        Fragment fragment= new MazeFragment();
         fragment.setArguments(bundle);
         FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container,fragment);

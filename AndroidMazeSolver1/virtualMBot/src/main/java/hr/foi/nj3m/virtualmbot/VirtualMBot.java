@@ -89,19 +89,20 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
     }
 
 
+    boolean exitFound = false;
     @Override
-    public void moveForward() {
+    public void moveForward()
+    {
+        Sides frontSide = FrontUltrasonic.getSensorSide();
+        maze[trenutnoY][trenutnoX] = 4;
 
-        Sides fronSide = FrontUltrasonic.getSensorSide();
-        maze[trenutnoY][trenutnoX] = 2;
-
-        switch(fronSide)
+        switch(frontSide)
         {
             case Up:
-                trenutnoY++;
+                trenutnoY--;
                 break;
             case Down:
-                trenutnoY--;
+                trenutnoY++;
                 break;
             case Left:
                 trenutnoX--;
@@ -110,6 +111,12 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 trenutnoX++;
                 break;
         }
+        if(maze[trenutnoY][trenutnoX]==3)
+        {
+            System.out.println("IZLAZ JE OVDE DEČA");
+            exitFound = true;
+        }
+        maze[trenutnoY][trenutnoX] = 2;
     }
 
     @Override

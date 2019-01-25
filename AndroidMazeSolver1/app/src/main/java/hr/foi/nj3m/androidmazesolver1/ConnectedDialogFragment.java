@@ -90,6 +90,8 @@ public class ConnectedDialogFragment extends Fragment {
                 /*sendReceive = new SendReceive();
                 sendReceive.start();*/
                 break;
+            case "virtualWifi":
+                break;
         }
     }
 

@@ -50,6 +50,7 @@ public class ConnectionController {
         }
         else if(odabranNacinKomunikacije.equals("virtualWifi"))
         {
+
             //InstanceOfIRobot = creteVirtualWifiSender();
         }
     }
