@@ -109,12 +109,26 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
     }
 
     @Override
+    public void setIntent(BroadcastReceiver broadcastReceiver) {
+        IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        context.registerReceiver(broadcastReceiver, bondedFilter);
+    }
+
+    @Override
     public IMessenger connect(int position) {
         mBluetoothAdapter.cancelDiscovery();
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             bluetoothDevices.get(position).createBond();
         }
         return BluetoothCommunicator.createBluetoothSender(context);
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (mBluetoothAdapter.isEnabled())
+            return true;
+        else
+            return false;
     }
 
     @Override

@@ -7,6 +7,7 @@ import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.interfaces.connections.IConnection;
 
 import static com.example.bluetooth.Bluetooth.createBluetoothInstance;
+import static hr.foi.nj3m.virtualwifi.VirtualWiFi.createVirtualWifiInstance;
 import static hr.foi.nj3m.wifi.WiFi.createWiFiInstance;
 
 public class ConnectionController {
@@ -50,7 +51,7 @@ public class ConnectionController {
         }
         else if(odabranNacinKomunikacije.equals("virtualWifi"))
         {
-
+            InstanceOfConnection = createVirtualWifiInstance(context);
             //InstanceOfIRobot = creteVirtualWifiSender();
         }
     }

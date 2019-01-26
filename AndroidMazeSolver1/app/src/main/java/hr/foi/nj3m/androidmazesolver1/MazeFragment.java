@@ -60,7 +60,7 @@ public class MazeFragment extends Fragment {
 
         VirtualMsgContainer container = new VirtualMsgContainer();
         VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
-        VirtualWiFi virtualWiFi = new VirtualWiFi(container);
+        VirtualWiFi virtualWiFi = new VirtualWiFi(getContext(), container);
         AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
 
         btnPocni.setOnClickListener(new View.OnClickListener() {

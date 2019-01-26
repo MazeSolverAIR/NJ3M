@@ -116,6 +116,12 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
     }
 
     @Override
+    public void setIntent(BroadcastReceiver broadcastReceiver) {
+        IntentFilter connectedFilter = new IntentFilter(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        context.registerReceiver(broadcastReceiver, connectedFilter);
+    }
+
+    @Override
     public IMessenger connect(final int position) {
         wifiP2pConfig = new WifiP2pConfig();
         wifiP2pConfig.deviceAddress = getDeviceAddress(position);
@@ -131,6 +137,14 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
             }
         });
         return createWiFiSender();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (wifiManager.isWifiEnabled())
+            return true;
+        else
+            return false;
     }
 
     @Override

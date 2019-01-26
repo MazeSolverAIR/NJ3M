@@ -15,12 +15,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import java.io.File;
@@ -100,7 +102,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 bluetoothDevices.add(device);
                 iRobotConnector.addDevices(bluetoothDevices);
-                //lvNewDevices.setAdapter(adapter);
+                lvNewDevices.setAdapter(adapter);
                 //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
@@ -121,7 +123,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                                 wifiP2pDevices.add(device);
                             }
                             iRobotConnector.addDevices(wifiP2pDevices);
-                            //lvNewDevices.setAdapter(adapter);
+                            lvNewDevices.setAdapter(adapter);
                         }
                     });
                 //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
@@ -138,7 +140,24 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+        deviceAddress = iRobotConnector.getDeviceAddress(position);
+        if (iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
+            switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+                case "virtualWifi":
+                    openMaze();
+                    break;
+                default:
+                    openConnectedDialog(deviceAddress);
+                    break;
+            }
+
+        else {
+            iMessenger = iRobotConnector.connect(position);
+            ConnectionController.setIMessenger(iMessenger);
+            iRobotConnector.setIntent(mBroadcastReceiver);
+        }
+
+        /*switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
             case "bluetooth":
                 deviceAddress = iRobotConnector.getDeviceAddress(position);
                 if(iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
@@ -158,7 +177,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
             case "virtualWifi":
                 openMaze();
                 break;
-        }
+        }*/
     }
 
     private void openConnectedDialog(String deviceAddress){

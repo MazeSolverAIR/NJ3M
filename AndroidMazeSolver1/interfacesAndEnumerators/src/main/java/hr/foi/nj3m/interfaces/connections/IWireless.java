@@ -5,5 +5,6 @@ package hr.foi.nj3m.interfaces.connections;
 import android.content.BroadcastReceiver;
 
 public interface IWireless {
+    boolean isEnabled();
     void enableDisable(BroadcastReceiver mBroadcastReceiver);
 }

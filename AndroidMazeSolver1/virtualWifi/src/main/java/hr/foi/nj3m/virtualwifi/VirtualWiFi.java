@@ -2,6 +2,16 @@ package hr.foi.nj3m.virtualwifi;
 
 
 import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
+import android.os.Environment;
+import android.os.Handler;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
@@ -11,12 +21,14 @@ import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.interfaces.connections.IDevice;
 import hr.foi.nj3m.interfaces.connections.IDiscover;
 
-public class VirtualWiFi implements IMessenger, IDevice, IDiscover {
+public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnector {
 
     public String recvdMessage = "";
     public int recvdUdaljenost = 0;
     static VirtualMsgContainer vContainer = null;
     ArrayList<String> virtualDevices;
+    private WifiManager wifiManager;
+    private Context context;
 
     private static IRobotConnector instanceOfVirtualWifi;
 
@@ -24,14 +36,19 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover {
         return instanceOfVirtualWifi;
     }
 
-    public static IRobotConnector createVirtualWifiInstance(){
+    public static IRobotConnector createVirtualWifiInstance(Context context){
         if(instanceOfVirtualWifi == null)
-            instanceOfVirtualWifi = new VirtualWiFi(vContainer);
+            instanceOfVirtualWifi = new VirtualWiFi(context, vContainer);
+
+        return instanceOfVirtualWifi;
     }
 
-    public VirtualWiFi (VirtualMsgContainer vc)
+    public VirtualWiFi (Context context, VirtualMsgContainer vc)
     {
         vContainer = vc;
+        this.context = context;
+        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        virtualDevices = new ArrayList<>();
     }
 
 
@@ -48,12 +65,13 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover {
 
     @Override
     public ArrayList<String> getDeviceArray() {
+        virtualDevices.add("Virtual mBot");
         return virtualDevices;
     }
 
     @Override
     public void discover(BroadcastReceiver mBroadcastReceiver) {
-        virtualDevices = new ArrayList<>();
+
     }
 
     @Override
@@ -78,6 +96,38 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover {
 
     @Override
     public boolean deviceExists(String deviceName) {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void setIntent(BroadcastReceiver broadcastReceiver) {
+
+    }
+
+    @Override
+    public IMessenger connect(int position) {
+        return null;
+    }
+
+    @Override
+    public void initializeSocket(String address, Handler handler) {
+
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (wifiManager.isWifiEnabled())
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public void enableDisable(BroadcastReceiver mBroadcastReceiver) {
+        if(!wifiManager.isWifiEnabled()){
+            wifiManager.setWifiEnabled(true);
+            IntentFilter WiFiIntent = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            context.registerReceiver(mBroadcastReceiver, WiFiIntent);
+        }
     }
 }

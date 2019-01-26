@@ -61,11 +61,11 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                //BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 prefEditor.putString("TypeOfConnection", "bluetooth");
                 prefEditor.commit();
                 iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                if(mBluetoothAdapter.isEnabled())
+                if(iRobotConnector.isEnabled())
                     openListOfDevices();
                 else
                     iRobotConnector.enableDisable(mBroadcastReceiver);
@@ -75,12 +75,11 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                //WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 prefEditor.putString("TypeOfConnection", "wifi");
                 prefEditor.commit();
                 iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                if(wifiManager.isWifiEnabled())
+                if(iRobotConnector.isEnabled())
                     openListOfDevices();
                 else
                     iRobotConnector.enableDisable(mBroadcastReceiver);
@@ -95,7 +94,7 @@ public class ConnectionTypeSelectionFragment extends Fragment {
             public void onClick(View v) {
                 prefEditor.putString("TypeOfConnection", "virtualWifi");
                 prefEditor.commit();
-                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "Default"), getActivity());
+                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
                 openListOfDevices();
             }
         });
