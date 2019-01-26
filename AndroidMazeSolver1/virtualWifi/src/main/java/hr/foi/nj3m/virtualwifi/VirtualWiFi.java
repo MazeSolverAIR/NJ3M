@@ -38,14 +38,14 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
 
     public static IRobotConnector createVirtualWifiInstance(Context context){
         if(instanceOfVirtualWifi == null)
-            instanceOfVirtualWifi = new VirtualWiFi(context, vContainer);
+            instanceOfVirtualWifi = new VirtualWiFi(context);
 
         return instanceOfVirtualWifi;
     }
 
-    public VirtualWiFi (Context context, VirtualMsgContainer vc)
+    public VirtualWiFi (Context context)
     {
-        vContainer = vc;
+        //vContainer = vc;
         this.context = context;
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         virtualDevices = new ArrayList<>();
@@ -58,9 +58,9 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
     }
 
     @Override
-    public void receive() {
+    public void receive(Object channel) {
+        vContainer = (VirtualMsgContainer) channel;
         this.recvdMessage = vContainer.getMessage();
-
     }
 
     @Override
@@ -107,11 +107,6 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
     @Override
     public IMessenger connect(int position) {
         return null;
-    }
-
-    @Override
-    public void initializeSocket(String address, Handler handler) {
-
     }
 
     @Override

@@ -137,7 +137,7 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
                 Toast.makeText(context, "Greška prilikom spajanja", Toast.LENGTH_LONG).show();
             }
         });
-        return createWiFiSender();
+        return createWiFiSender(wifiP2pConfig.deviceAddress);
     }
 
     @Override
@@ -182,38 +182,5 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
                 ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001);
             }
         }
-    }
-
-    @Override
-    public void initializeSocket(String address, Handler handler) {
-        this.handler = handler;
-        try {
-            if (socket != null){
-                socket.connect(new InetSocketAddress(address, 8888), 500);
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
-            }
-            else
-                handler.obtainMessage(2, "WiFi komunikacija nije implementirana");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    protected static OutputStream getOutputStream(){
-        return outputStream;
-    }
-
-    protected static InputStream getInputStream(){
-        return inputStream;
-    }
-
-    protected static Socket getSocket(){
-        return socket;
-    }
-
-    protected static Handler getHandler(){
-        return handler;
     }
 }

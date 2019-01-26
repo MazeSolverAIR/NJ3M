@@ -78,8 +78,8 @@ public class ConnectedDialogFragment extends Fragment {
     }
 
     private void Connect(String deviceAddress){
-        iRobotConnector.initializeSocket(deviceAddress, handler);
-        sendReceive = new SendReceive();
+        //iRobotConnector.initializeSocket(deviceAddress, handler);
+        sendReceive = new SendReceive(handler);
         sendReceive.start();
     }
 

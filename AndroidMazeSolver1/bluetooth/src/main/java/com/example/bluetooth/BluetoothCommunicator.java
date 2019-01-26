@@ -1,5 +1,6 @@
 package com.example.bluetooth;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
@@ -7,23 +8,27 @@ import android.os.Handler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.UUID;
 
 import hr.foi.nj3m.interfaces.communications.IMessenger;
 
 public class BluetoothCommunicator implements IMessenger {
 
+    private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Context context;
     private InputStream inputStream;
     private OutputStream outputStream;
     private BluetoothSocket bluetoothSocket;
     private Handler handler;
+    private String deviceAddress;
+    private BluetoothAdapter bluetoothAdapter;
 
     private static IMessenger InstanceOfSender;
 
-    public static IMessenger createBluetoothSender(Context context)
+    public static IMessenger createBluetoothSender(Context context, String deviceAddress)
     {
         if(InstanceOfSender == null)
-            InstanceOfSender = new BluetoothCommunicator(context);
+            InstanceOfSender = new BluetoothCommunicator(context, deviceAddress);
 
         return InstanceOfSender;
     }
@@ -32,15 +37,16 @@ public class BluetoothCommunicator implements IMessenger {
         return InstanceOfSender;
     }
 
-    private BluetoothCommunicator(Context context)
+    private BluetoothCommunicator(Context context, String deviceAddress)
     {
         this.context = context;
+        this.deviceAddress = deviceAddress;
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        initializeSocket();
     }
 
     @Override
     public void send(String command) {
-        if (outputStream == null)
-            initializeOutput();
         byte[] message = command.getBytes();
         try {
             outputStream.write(message);
@@ -55,9 +61,8 @@ public class BluetoothCommunicator implements IMessenger {
     //TODO: Postaviti neki delay od npr 2ms
     /*Znaci handler bude vracal polje stringova ili listu, svejedno samo ako je primil poruku Over, inace bude vracal null.*/
     @Override
-    public void receive() {
-        if (inputStream == null)
-            initializeInput();
+    public void receive(Object channel) {
+        handler = (Handler) channel;
         byte[] buffer = new byte[1024];
         int bytes;
         while (bluetoothSocket != null){
@@ -70,15 +75,25 @@ public class BluetoothCommunicator implements IMessenger {
         }
     }
 
-    private void initializeOutput(){
-        this.outputStream = Bluetooth.getOutputStream();
-        this.handler = Bluetooth.getHandler();
-        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
-    }
+    private void initializeSocket(){
+        try {
+            bluetoothSocket = bluetoothAdapter.getRemoteDevice(deviceAddress).createRfcommSocketToServiceRecord(mUUID);
+            bluetoothSocket.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    private void initializeInput(){
-        this.inputStream = Bluetooth.getInputStream();
-        this.handler = Bluetooth.getHandler();
-        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
+        InputStream tmpIn = null;
+        OutputStream tmpOut = null;
+
+        try {
+            tmpIn = bluetoothSocket.getInputStream();
+            tmpOut = bluetoothSocket.getOutputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        inputStream = tmpIn;
+        outputStream = tmpOut;
     }
 }

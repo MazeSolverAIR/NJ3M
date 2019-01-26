@@ -32,7 +32,7 @@ import hr.foi.nj3m.interfaces.connections.IWireless;
 
 import static android.content.ContentValues.TAG;
 
-public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotConnector, ISocket {
+public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotConnector {
 
     private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     BluetoothAdapter mBluetoothAdapter;
@@ -117,11 +117,12 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
     @Override
     public IMessenger connect(int position) {
         mBluetoothAdapter.cancelDiscovery();
+        String deviceAddress = getDeviceAddress(position);
         if (!deviceExists(getDeviceName(position)))
             if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
                 bluetoothDevices.get(position).createBond();
             }
-        return BluetoothCommunicator.createBluetoothSender(context);
+        return BluetoothCommunicator.createBluetoothSender(context, deviceAddress);
     }
 
     @Override
@@ -180,7 +181,7 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
             }
         }
     }
-
+/*
     @Override
     public void initializeSocket(String address, Handler handler) {
         try {
@@ -219,5 +220,5 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
 
     protected static BluetoothSocket getBluetoothSocket(){
         return bluetoothSocket;
-    }
+    }*/
 }

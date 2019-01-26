@@ -3,6 +3,7 @@ package hr.foi.nj3m.androidmazesolver1;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class MazeFragment extends Fragment {
     TextView txtMaze;
     int trenutnoX = 14;
     int trenutnoY = 6;
+    static VirtualMsgContainer vContainer = null;
 
 
     @Override
@@ -60,7 +62,7 @@ public class MazeFragment extends Fragment {
 
         VirtualMsgContainer container = new VirtualMsgContainer();
         VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
-        VirtualWiFi virtualWiFi = new VirtualWiFi(getContext(), container);
+        VirtualWiFi virtualWiFi = new VirtualWiFi(getContext());
         AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
 
         btnPocni.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +76,7 @@ public class MazeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 virtualMBot.sendSensorInfo();
-                virtualWiFi.receive();
+                virtualWiFi.receive(container);
                 String strToSend = algoritamVirtualRobot.FindPath(virtualWiFi.recvdMessage);
 
                 virtualWiFi.send(strToSend);
