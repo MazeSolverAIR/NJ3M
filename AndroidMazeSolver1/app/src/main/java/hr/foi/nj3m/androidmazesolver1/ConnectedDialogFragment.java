@@ -78,7 +78,10 @@ public class ConnectedDialogFragment extends Fragment {
     }
 
     private void Connect(String deviceAddress){
-        switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
+        iRobotConnector.initializeSocket(deviceAddress, handler);
+        sendReceive = new SendReceive();
+        sendReceive.start();
+        /*switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
             case "bluetooth":
                 iRobotConnector.initializeSocket(deviceAddress, handler);
                 sendReceive = new SendReceive();
@@ -89,10 +92,10 @@ public class ConnectedDialogFragment extends Fragment {
                 Toast.makeText(getContext(), "WiFi komunikacija nije implementirana", Toast.LENGTH_LONG).show();
                 /*sendReceive = new SendReceive();
                 sendReceive.start();*/
-                break;
+                /*break;
             case "virtualWifi":
                 break;
-        }
+        }*/
     }
 
 
@@ -104,7 +107,10 @@ public class ConnectedDialogFragment extends Fragment {
             /*if(pathFinder==null)
                 pathFinder = MBotPathFinder.createInstance(2);*/
 
-            if(msg.what == 1){
+            if (msg.what == 2)
+                Toast.makeText(getContext(), msg.arg1, Toast.LENGTH_LONG).show();
+
+            else if (msg.what == 1){
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 

@@ -11,6 +11,7 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
@@ -185,14 +186,19 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
 
     @Override
     public void initializeSocket(String address, Handler handler) {
+        this.handler = handler;
         try {
-            socket.connect(new InetSocketAddress(address, 8888), 500);
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
+            if (socket != null){
+                socket.connect(new InetSocketAddress(address, 8888), 500);
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
+            }
+            else
+                handler.obtainMessage(2, "WiFi komunikacija nije implementirana");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.handler = handler;
+
     }
 
     protected static OutputStream getOutputStream(){

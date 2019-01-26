@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -129,10 +130,9 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)){
-                openConnectedDialog(deviceAddress);
-               /* NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+                NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
                 if (networkInfo.isConnected())
-                    openConnectedDialog(deviceAddress);*/
+                    openConnectedDialog(deviceAddress);
             }
         }
     };
