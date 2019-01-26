@@ -139,9 +139,12 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
         deviceAddress = iRobotConnector.getDeviceAddress(position);
-        if (iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
+        iMessenger = iRobotConnector.connect(position);
+        ConnectionController.setIMessenger(iMessenger);
+        if (!iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
+            iRobotConnector.setIntent(mBroadcastReceiver);
+        else {
             switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
                 case "virtualWifi":
                     openMaze();
@@ -150,34 +153,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                     openConnectedDialog(deviceAddress);
                     break;
             }
-
-        else {
-            iMessenger = iRobotConnector.connect(position);
-            ConnectionController.setIMessenger(iMessenger);
-            iRobotConnector.setIntent(mBroadcastReceiver);
         }
-
-        /*switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
-            case "bluetooth":
-                deviceAddress = iRobotConnector.getDeviceAddress(position);
-                if(iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
-                    openConnectedDialog(deviceAddress);
-                else {
-                    iMessenger = iRobotConnector.connect(position);
-                    ConnectionController.setIMessenger(iMessenger);
-                    IntentFilter bondedFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-                    //LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mBroadcastReceiver, bondedFilter);
-                    getActivity().registerReceiver(mBroadcastReceiver, bondedFilter);
-                }
-                break;
-            case "wifi":
-                IntentFilter connectedFilter = new IntentFilter(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-                getActivity().registerReceiver(mBroadcastReceiver, connectedFilter);
-                break;
-            case "virtualWifi":
-                openMaze();
-                break;
-        }*/
     }
 
     private void openConnectedDialog(String deviceAddress){
@@ -193,7 +169,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
 
     private void openMaze(){
         Bundle bundle= new Bundle();
-        //bundle.putSerializable(EXTRA_ADDRESS,deviceAddress);
         Fragment fragment= new MazeFragment();
         fragment.setArguments(bundle);
         FragmentTransaction transaction= getActivity().getSupportFragmentManager().beginTransaction();

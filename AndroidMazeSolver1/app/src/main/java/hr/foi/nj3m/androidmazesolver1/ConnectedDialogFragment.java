@@ -81,21 +81,6 @@ public class ConnectedDialogFragment extends Fragment {
         iRobotConnector.initializeSocket(deviceAddress, handler);
         sendReceive = new SendReceive();
         sendReceive.start();
-        /*switch (sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
-            case "bluetooth":
-                iRobotConnector.initializeSocket(deviceAddress, handler);
-                sendReceive = new SendReceive();
-                sendReceive.start();
-                break;
-            case "wifi":
-                // TODO: 2.1.2019. Ako proradi WiFi modul na robotu, potrebno je ovo testirati.
-                Toast.makeText(getContext(), "WiFi komunikacija nije implementirana", Toast.LENGTH_LONG).show();
-                /*sendReceive = new SendReceive();
-                sendReceive.start();*/
-                /*break;
-            case "virtualWifi":
-                break;
-        }*/
     }
 
 

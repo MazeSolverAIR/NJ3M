@@ -117,9 +117,10 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
     @Override
     public IMessenger connect(int position) {
         mBluetoothAdapter.cancelDiscovery();
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
-            bluetoothDevices.get(position).createBond();
-        }
+        if (!deviceExists(getDeviceName(position)))
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+                bluetoothDevices.get(position).createBond();
+            }
         return BluetoothCommunicator.createBluetoothSender(context);
     }
 

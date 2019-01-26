@@ -1,6 +1,5 @@
 package com.example.bluetooth;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
@@ -18,7 +17,6 @@ public class BluetoothCommunicator implements IMessenger {
     private OutputStream outputStream;
     private BluetoothSocket bluetoothSocket;
     private Handler handler;
-    private BluetoothAdapter mBluetoothAdapter;
 
     private static IMessenger InstanceOfSender;
 
@@ -37,15 +35,12 @@ public class BluetoothCommunicator implements IMessenger {
     private BluetoothCommunicator(Context context)
     {
         this.context = context;
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        this.inputStream = Bluetooth.getInputStream();
-        this.outputStream = Bluetooth.getOutputStream();
-        this.handler = Bluetooth.getHandler();
-        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
     }
 
     @Override
     public void send(String command) {
+        if (outputStream == null)
+            initializeOutput();
         byte[] message = command.getBytes();
         try {
             outputStream.write(message);
@@ -61,9 +56,10 @@ public class BluetoothCommunicator implements IMessenger {
     /*Znaci handler bude vracal polje stringova ili listu, svejedno samo ako je primil poruku Over, inace bude vracal null.*/
     @Override
     public void receive() {
+        if (inputStream == null)
+            initializeInput();
         byte[] buffer = new byte[1024];
         int bytes;
-
         while (bluetoothSocket != null){
             try {
                 bytes = inputStream.read(buffer);
@@ -72,5 +68,17 @@ public class BluetoothCommunicator implements IMessenger {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void initializeOutput(){
+        this.outputStream = Bluetooth.getOutputStream();
+        this.handler = Bluetooth.getHandler();
+        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
+    }
+
+    private void initializeInput(){
+        this.inputStream = Bluetooth.getInputStream();
+        this.handler = Bluetooth.getHandler();
+        this.bluetoothSocket = Bluetooth.getBluetoothSocket();
     }
 }
