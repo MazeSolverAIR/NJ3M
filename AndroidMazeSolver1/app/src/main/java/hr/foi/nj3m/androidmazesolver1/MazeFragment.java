@@ -37,8 +37,6 @@ public class MazeFragment extends Fragment {
 
     AlgoritamVirtualRobot algoritamVirtualRobot;
     TextView txtMaze;
-    int trenutnoX = 14;
-    int trenutnoY = 6;
     static VirtualMsgContainer vContainer = null;
 
 
@@ -75,18 +73,21 @@ public class MazeFragment extends Fragment {
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                virtualMBot.sendSensorInfo();
-                virtualWiFi.receive(container);
-                String strToSend = algoritamVirtualRobot.FindPath(virtualWiFi.recvdMessage);
+                if(!virtualMBot.exitFound)
+                {
+                    virtualMBot.sendSensorInfo();
+                    virtualWiFi.receive(container);
+                    String strToSend = algoritamVirtualRobot.FindPath(virtualWiFi.recvdMessage);
 
-                virtualWiFi.send(strToSend);
+                    virtualWiFi.send(strToSend);
 
-                virtualMBot.receieveMsg();
+                    virtualMBot.receieveMsg();
 
-                virtualMBot.IzvrsiRadnju();
+                    virtualMBot.IzvrsiRadnju();
 
-                System.out.println(virtualMBot.recvdMessage);
-                printMatrix(matrix);
+                    System.out.println(virtualMBot.recvdMessage);
+                    printMatrix(matrix);
+                }
             }
         });
 

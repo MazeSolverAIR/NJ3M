@@ -1,29 +1,28 @@
 package hr.foi.nj3m.core.controllers.algorithms;
 
-import hr.foi.nj3m.core.controllers.componentManagers.CrossroadManager;
 import hr.foi.nj3m.core.controllers.componentManagers.MazeDrawer;
+import hr.foi.nj3m.core.controllers.components.VirtualCrossroad;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
+
+import static hr.foi.nj3m.core.controllers.algorithms.LoopInVirtualMaze.canMoveTo;
+import static hr.foi.nj3m.core.controllers.algorithms.LoopInVirtualMaze.manageLoop;
+import static hr.foi.nj3m.core.controllers.components.VirtualCrossroad.manageCrossroad;
 
 public class AlgoritamVirtualRobot {
 
-    public String trenutniSenzorValue = "";
     private int lastSumSenzora = 0;
-    private boolean rotatedLeft = false;
-    private boolean rotatedRight = false;
 
-    Sides prednjaStranae = null;
-    Sides lijevaStrana = null;
-    Sides desnaStrana = null;
-    Sides zadnjaStrana = null;
+    private Sides prednjaStranae = null;
+    private Sides lijevaStrana = null;
+    private Sides desnaStrana = null;
+    private Sides zadnjaStrana = null;
 
     private MazeDrawer mazeDrawer = null;
 
     private int trenutniX = 0;
     private int trenutniY = 0;
 
-    private Sides lastRotateSide = null;
-
-    boolean inLoop = false;
+    private boolean inLoop = false;
 
     public AlgoritamVirtualRobot()
     {
@@ -43,15 +42,15 @@ public class AlgoritamVirtualRobot {
 
         int sumBocnihSenzora = lijeviSenzor + desniSenzor;
 
-        if(checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!=lastSumSenzora)
+        if(VirtualCrossroad.checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!=lastSumSenzora)
         {
             returnString = manageCrossroad(prednjiSenzor, desniSenzor, lijeviSenzor);
         }
         else if(canMoveTo(prednjiSenzor))
         {
             returnString = "RM";
-            rotatedLeft = false;
-            rotatedRight = false;
+            VirtualCrossroad.rotatedLeft = false;
+            VirtualCrossroad.rotatedRight = false;
         }
         else
             returnString = "FR";
@@ -62,70 +61,27 @@ public class AlgoritamVirtualRobot {
             returnString = manageLoop(returnString, prednjiSenzor, desniSenzor, lijeviSenzor);
         }
 
-        if(returnString.equals("RR"))
-            postaviSmjerRobota(desnaStrana);
-        else if(returnString.equals("RL"))
-            postaviSmjerRobota(lijevaStrana);
-        else if (returnString.equals("FR"))
-        {
-            postaviSmjerRobota(desnaStrana);
-            postaviSmjerRobota(desnaStrana);
+        switch (returnString) {
+            case "RR":
+                postaviSmjerRobota(desnaStrana);
+                break;
+            case "RL":
+                postaviSmjerRobota(lijevaStrana);
+                break;
+            case "FR":
+                postaviSmjerRobota(desnaStrana);
+                postaviSmjerRobota(desnaStrana);
+                break;
+            case "RM":
+                kreceSe();
+                mazeDrawer.addpathOn(trenutniX, trenutniY);
+                inLoop = mazeDrawer.checkIfLoop();
+                break;
         }
-        else if(returnString.equals("RM"))
-        {
-            kreceSe();
-            mazeDrawer.addpathOn(trenutniX, trenutniY);
-            inLoop = mazeDrawer.checkIfLoop();
-        }
-
 
         lastSumSenzora = sumBocnihSenzora;
 
         return returnString;
-    }
-
-    private String manageCrossroad(int prednjiSenzor, int desniSenzor, int lijeviSenzor)
-    {
-        if(checkCrossroadSide(desniSenzor) && !rotatedRight && desniSenzor >= lijeviSenzor)
-        {
-            rotatedRight = true;
-            return "RR";
-        }
-        else if(checkCrossroadSide(prednjiSenzor))
-        {
-            return "RM";
-        }
-        else if(checkCrossroadSide(lijeviSenzor) && !rotatedLeft)
-        {
-            rotatedLeft = true;
-            return "RL";
-        }
-        else if(checkIfDeadEnd(desniSenzor + lijeviSenzor, prednjiSenzor))
-        {
-            return "FR";
-        }
-
-        return "";
-    }
-
-    private boolean canMoveTo(int distance)
-    {
-       return distance > 1;
-    }
-
-    private boolean checkCrossroadSide(int distance)
-    {
-        return distance > 3;
-    }
-
-    private boolean checkIfCrossroad(int sumDist)
-    {
-        return sumDist > 4;
-    }
-
-    private boolean checkIfDeadEnd(int sumDist, int prednjiSensor)
-    {
-        return !checkIfCrossroad(sumDist) && !canMoveTo(prednjiSensor);
     }
 
     private void postaviSmjerRobota(Sides smjerPrednjegSenzora)
@@ -175,52 +131,4 @@ public class AlgoritamVirtualRobot {
         }
 
     }
-
-    private void korakUnatrag()
-    {
-        switch(prednjaStranae)
-        {
-            case Up:
-                this.trenutniY++;
-                break;
-            case Down:
-                this.trenutniY--;
-                break;
-            case Left:
-                this.trenutniX++;
-                break;
-            case Right:
-                this.trenutniX--;
-                break;
-        }
-    }
-
-    private String manageLoop(String decidedComand, int prednjiSenzor, int desniSenzor, int lijeviSenzor)
-    {
-        if(decidedComand.equals("RR"))
-        {
-            if(checkCrossroadSide(lijeviSenzor))
-                return "RL";
-            else if(checkCrossroadSide(prednjiSenzor))
-                return "RM";
-        }
-        else if(decidedComand.equals("RM"))
-        {
-            if(checkCrossroadSide(prednjiSenzor))
-                return "RM";
-            else if(checkCrossroadSide(lijeviSenzor))
-                return "RL";
-        }
-        else if(decidedComand.equals("RL"))
-        {
-            if(canMoveTo(desniSenzor))
-                return "RR";
-            else if(checkCrossroadSide(lijeviSenzor))
-                return "RL";
-        }
-
-
-        return "FR";
-    }
-
 }

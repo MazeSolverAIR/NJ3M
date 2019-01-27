@@ -51,13 +51,15 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
         this.recvdMessage = vContainer.getMessage();
     }
 
+
+    public boolean exitFound = false;
     @Override
     public void sendSensorInfo() {
-        String strToSend = "FS:"+FrontUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
-        strToSend+="LS:"+LeftUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
-        strToSend+="RS:"+RightUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
+            String strToSend = "FS:" + FrontUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
+            strToSend += "LS:" + LeftUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
+            strToSend += "RS:" + RightUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
 
-        vContainer.setMessage(strToSend);
+            vContainer.setMessage(strToSend);
     }
 
     private void setSensorSides(Sides smjerPrednjegSenzora)
@@ -88,8 +90,6 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
         }
     }
 
-
-    boolean exitFound = false;
     @Override
     public void moveForward()
     {
@@ -112,10 +112,8 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
                 break;
         }
         if(maze[trenutnoY][trenutnoX]==3)
-        {
-            System.out.println("IZLAZ JE OVDE DEČA");
             exitFound = true;
-        }
+
         maze[trenutnoY][trenutnoX] = 2;
     }
 
