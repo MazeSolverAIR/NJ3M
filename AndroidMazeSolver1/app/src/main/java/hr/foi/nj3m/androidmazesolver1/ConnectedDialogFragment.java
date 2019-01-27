@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 
+import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.core.controllers.threads.SendReceive;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
@@ -23,7 +25,7 @@ import hr.foi.nj3m.interfaces.communications.IMessenger;
 
 public class ConnectedDialogFragment extends Fragment {
 
-    Button btnSendControl;
+    Switch onOffSwitch;
     SendReceive sendReceive;
     String deviceAddress;
     SharedPreferences sharedPreferences;
@@ -44,7 +46,7 @@ public class ConnectedDialogFragment extends Fragment {
         final Bundle bundle= this.getArguments();
 
         sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
-        btnSendControl = (Button) getView().findViewById(R.id.btnSendControl);
+        onOffSwitch = (Switch) getView().findViewById(R.id.swStartStop);
         iRobotConnector = ConnectionController.getInstanceOfConnection();
 
         new Thread(new Runnable() {
@@ -55,25 +57,11 @@ public class ConnectedDialogFragment extends Fragment {
             }
         }).start();
 
-        btnSendControl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*if(pathFinder==null)
-                    pathFinder = MBotPathFinder.createInstance(2);
-                sendReceive.write("RM");*/
-                /*if(start)
-                {
-                    sendReceive.write(CommandsGenerator.StartMBot());
-
-                    start = false;
-                }
-                else
-                {
-                    sendReceive.write(CommandsGenerator.StopMBot());
-
-                    start = true;
-                }*/
-            }
+        onOffSwitch.setOnClickListener(v -> {
+            if(onOffSwitch.isChecked())
+                sendReceive.write("RUN");
+            else
+                sendReceive.write("STP");
         });
     }
 

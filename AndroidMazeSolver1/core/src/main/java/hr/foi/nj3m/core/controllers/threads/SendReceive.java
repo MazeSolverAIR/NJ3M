@@ -23,5 +23,7 @@ public class SendReceive extends Thread {
 
     public void write(final String msg){
         iMessenger.send(msg);
+
+        System.out.println("Saljem"+msg);
     }
 }
