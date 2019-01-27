@@ -54,9 +54,7 @@ String saljiPodatkeMobitelu() {
 
 //TO-DO Napraviti metodu koja čita bluetooth string za ponavljanje zadnje naredbe
 
-void IzvrsiNaredbu() {
-	String poruka = "";
-	poruka = Serial.readString();
+void IzvrsiNaredbu(String poruka) {
 	if (poruka.equals("RM")) {
 		Kreni(brzinaKretanja);
 	}
@@ -86,6 +84,11 @@ void IzvrsiNaredbu() {
 //TO-DO Ako se izvrši neki case da nije na liniji, zapamtiti da se nije zadnja radnja izvršila
 
 void rjesenjeProblemaAutonomno() {
+	String poruka = "";
+	poruka = Serial.readString();
+	if (poruka.equals("STP"))
+		return;
+
 	Serial.println(saljiPodatkeMobitelu());
 	delay(10);
 	unsigned long sensorStateCenter = lineFollower.readSensors();
@@ -94,7 +97,7 @@ void rjesenjeProblemaAutonomno() {
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
-		IzvrsiNaredbu();	
+		IzvrsiNaredbu(poruka);
 		break;
 	case S1_IN_S2_OUT:
 		//senzor 2 je van linije (desni senzor)
