@@ -83,37 +83,46 @@ void IzvrsiNaredbu(String poruka) {
 
 //TO-DO Ako se izvrši neki case da nije na liniji, zapamtiti da se nije zadnja radnja izvršila
 
+bool stop = true;
 void rjesenjeProblemaAutonomno() {
 	String poruka = "";
 	poruka = Serial.readString();
+
 	if (poruka.equals("STP"))
-		return;
-
-	Serial.println(saljiPodatkeMobitelu());
-	delay(10);
-	unsigned long sensorStateCenter = lineFollower.readSensors();
-	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
-	//Serial.println(sensorStateCenter);
-	switch (sensorStateCenter)
 	{
-	case S1_IN_S2_IN:
-		IzvrsiNaredbu(poruka);
-		break;
-	case S1_IN_S2_OUT:
-		//senzor 2 je van linije (desni senzor)
-		ZaustaviMotore();
-		Skreni('l', 5, 40);
-		break;
-	case S1_OUT_S2_IN:
-		//senzor 1 je van linije (lijevi senzor)
-		ZaustaviMotore();
-		Skreni('d', 5, 40);
-		break;
-	case S1_OUT_S2_OUT:
-		Skreni('l', 5, 40);
-		break;
+		stop = true;
+		return;
 	}
+	else if (poruka.equals("RUN"))
+		stop = false;
 
+	if (!stop)
+	{
+		Serial.println(saljiPodatkeMobitelu());
+		delay(10);
+		unsigned long sensorStateCenter = lineFollower.readSensors();
+		//provjeriti slanje očitanja senzora mobilnoj aplikaciji
+		//Serial.println(sensorStateCenter);
+		switch (sensorStateCenter)
+		{
+		case S1_IN_S2_IN:
+			IzvrsiNaredbu(poruka);
+			break;
+		case S1_IN_S2_OUT:
+			//senzor 2 je van linije (desni senzor)
+			ZaustaviMotore();
+			Skreni('l', 5, 40);
+			break;
+		case S1_OUT_S2_IN:
+			//senzor 1 je van linije (lijevi senzor)
+			ZaustaviMotore();
+			Skreni('d', 5, 40);
+			break;
+		case S1_OUT_S2_OUT:
+			Skreni('l', 5, 40);
+			break;
+		}
+	}
 }
 
 void IzvrsiPritisakTipke()
