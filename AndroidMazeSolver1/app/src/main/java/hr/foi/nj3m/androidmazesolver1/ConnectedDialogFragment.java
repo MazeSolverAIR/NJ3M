@@ -40,6 +40,7 @@ public class ConnectedDialogFragment extends Fragment {
 
     MBotPathFinder pathFinder;
 
+    boolean stopAll = true;
     @Override
     public void onStart() {
         super.onStart();
@@ -59,9 +60,16 @@ public class ConnectedDialogFragment extends Fragment {
 
         onOffSwitch.setOnClickListener(v -> {
             if(onOffSwitch.isChecked())
+            {
+                stopAll = false;
                 sendReceive.write("RUN");
+            }
+
             else
+            {
+                stopAll = true;
                 sendReceive.write("STP");
+            }
         });
     }
 
@@ -87,7 +95,7 @@ public class ConnectedDialogFragment extends Fragment {
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 
-                if(!message.startsWith("V")) {
+                if(!message.startsWith("V") && !stopAll) {
                     Double frontSensorDist = 0.0;
                     try{
                         String msgWotking = message.substring(0, message.indexOf("b"));
