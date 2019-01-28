@@ -1,6 +1,7 @@
 package hr.foi.nj3m.wifi;
 
 import android.os.Handler;
+import android.os.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,7 @@ public class WiFiCommunicator implements IMessenger {
     private Handler handler;
     private String address;
     private Socket socket;
+    private String obtainedMsg;
 
     private static WiFiCommunicator InstanceOfSender;
 
@@ -54,12 +56,19 @@ public class WiFiCommunicator implements IMessenger {
             try {
                 bytes = inputStream.read(buffer);
                 if (bytes > 0){
-                    handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
+                    Message msg = handler.obtainMessage(1, bytes, -1, buffer);
+                    msg.sendToTarget();
+                    obtainedMsg = msg.toString();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public String getRcvdMsg() {
+        return this.obtainedMsg;
     }
 
     private void initializeSocket(){

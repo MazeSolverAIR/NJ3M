@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ public class BluetoothCommunicator implements IMessenger {
     private Handler handler;
     private String deviceAddress;
     private BluetoothAdapter bluetoothAdapter;
+    private String obtainedMsg;
 
     private static IMessenger InstanceOfSender;
 
@@ -68,11 +70,18 @@ public class BluetoothCommunicator implements IMessenger {
         while (bluetoothSocket != null){
             try {
                 bytes = inputStream.read(buffer);
-                handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
+                Message msg = handler.obtainMessage(1, bytes, -1, buffer);
+                msg.sendToTarget();
+                obtainedMsg = msg.toString();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public String getRcvdMsg() {
+        return obtainedMsg;
     }
 
     private void initializeSocket(){

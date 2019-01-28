@@ -1,5 +1,6 @@
-package hr.foi.nj3m.core.controllers.algorithms;
+package hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm;
 
+import hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgoritamVirtualRobot;
 import hr.foi.nj3m.core.controllers.components.VirtualCrossroad;
 
 public class LoopInVirtualMaze {
@@ -22,18 +23,13 @@ public class LoopInVirtualMaze {
         }
         else if(decidedComand.equals("RL"))
         {
-            if(canMoveTo(desniSenzor))
+            if(AlgoritamVirtualRobot.canMoveTo(desniSenzor))
                 return "RR";
             else if(VirtualCrossroad.checkCrossroadSide(lijeviSenzor))
                 return "RL";
         }
 
         return "FR";
-    }
-
-    public static boolean canMoveTo(int distance)
-    {
-        return distance > 1;
     }
 
 

@@ -1,21 +1,23 @@
-package hr.foi.nj3m.core.controllers.algorithms;
+package hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm;
 
 import hr.foi.nj3m.core.controllers.componentManagers.MazeDrawer;
 import hr.foi.nj3m.core.controllers.components.VirtualCrossroad;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 
-import static hr.foi.nj3m.core.controllers.algorithms.LoopInVirtualMaze.canMoveTo;
-import static hr.foi.nj3m.core.controllers.algorithms.LoopInVirtualMaze.manageLoop;
+import static hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.LoopInVirtualMaze.manageLoop;
 import static hr.foi.nj3m.core.controllers.components.VirtualCrossroad.manageCrossroad;
 
 public class AlgoritamVirtualRobot {
 
-    private int lastSumSenzora = 0;
+    private int lastSensorSum = 0;
 
     private Sides prednjaStranae = null;
     private Sides lijevaStrana = null;
     private Sides desnaStrana = null;
     private Sides zadnjaStrana = null;
+    private int prednjiSenzor = 0;
+    private int lijeviSenzor = 0;
+    private int desniSenzor = 0;
 
     private MazeDrawer mazeDrawer = null;
 
@@ -35,17 +37,12 @@ public class AlgoritamVirtualRobot {
     {
         String returnString = "";
 
-        String pomocna = message.substring(message.indexOf(":")+1);
-        int prednjiSenzor = Integer.parseInt(message.substring(message.indexOf(":")+1,message.lastIndexOf("L")));
-        int lijeviSenzor = Integer.parseInt(pomocna.substring(pomocna.indexOf(":")+1,pomocna.lastIndexOf("R")));
-        int desniSenzor = Integer.parseInt(pomocna.substring(pomocna.lastIndexOf(":")+1));
+        setSensorValues(message);
 
         int sumBocnihSenzora = lijeviSenzor + desniSenzor;
 
-        if(VirtualCrossroad.checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!=lastSumSenzora)
-        {
+        if(VirtualCrossroad.checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!= lastSensorSum)
             returnString = manageCrossroad(prednjiSenzor, desniSenzor, lijeviSenzor);
-        }
         else if(canMoveTo(prednjiSenzor))
         {
             returnString = "RM";
@@ -55,12 +52,18 @@ public class AlgoritamVirtualRobot {
         else
             returnString = "FR";
 
-
         if(inLoop)
-        {
             returnString = manageLoop(returnString, prednjiSenzor, desniSenzor, lijeviSenzor);
-        }
 
+        manageInternalAlgorithmWork(returnString);
+
+        lastSensorSum = sumBocnihSenzora;
+
+        return returnString;
+    }
+
+
+    private void manageInternalAlgorithmWork(String returnString) {
         switch (returnString) {
             case "RR":
                 postaviSmjerRobota(desnaStrana);
@@ -78,10 +81,15 @@ public class AlgoritamVirtualRobot {
                 inLoop = mazeDrawer.checkIfLoop();
                 break;
         }
+    }
 
-        lastSumSenzora = sumBocnihSenzora;
+    private void setSensorValues(String message) {
 
-        return returnString;
+        String pomocna = message.substring(message.indexOf(":")+1);
+        this.prednjiSenzor = Integer.parseInt(message.substring(message.indexOf(":")+1,message.lastIndexOf("L")));
+        this.lijeviSenzor = Integer.parseInt(pomocna.substring(pomocna.indexOf(":")+1,pomocna.lastIndexOf("R")));
+        this.desniSenzor = Integer.parseInt(pomocna.substring(pomocna.lastIndexOf(":")+1));
+
     }
 
     private void postaviSmjerRobota(Sides smjerPrednjegSenzora)
@@ -130,5 +138,10 @@ public class AlgoritamVirtualRobot {
                 break;
         }
 
+    }
+
+    public static boolean canMoveTo(int distance)
+    {
+        return distance > 1;
     }
 }

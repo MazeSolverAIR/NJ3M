@@ -95,17 +95,16 @@ public class ConnectedDialogFragment extends Fragment {
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 
-                if(!message.startsWith("V") && !stopAll) {
+                if(!message.startsWith("V") && !stopAll)
+                {
                     Double frontSensorDist = 0.0;
                     try{
                         String msgWotking = message.substring(0, message.indexOf("b"));
                         frontSensorDist = Double.parseDouble(msgWotking);
-
                     }
                     catch (Exception ex)
                     {
                     }
-                    Log.d("Primio", message);
 
                     if(message.contains("OK"))
                     {
@@ -133,44 +132,6 @@ public class ConnectedDialogFragment extends Fragment {
 
 
                 }
-                //timeElapsedLoop = SystemClock.elapsedRealtime();
-
-                /*if(message.startsWith("MBot:"))
-                {
-
-                    Log.d("Primio",message);
-                    MSMessageFromACK messageAck = new MSMessageFromACK();
-                    messageAck.setMessage(message);
-                    listOfRecvMessages.add(messageAck);
-
-                    timeElapsedRecv = SystemClock.elapsedRealtime();*/
-
-                    /*if(messageAck.returnFinalMessage().equals("Over") && !errorAtSum)
-                    {
-                        switch(ProcessInfo(listOfRecvMessages))
-                        {
-                            case SendMessagesAgain:
-                                sendReceive.writeAgain();
-                                break;
-                            case DemandMessagesAgain:
-                                sendReceive.write(CommandsGenerator.SendMeAgain());
-                                break;
-                            case OK:
-                                sendReceive.write(pathFinder.FindPath());
-                                break;
-                        }
-                        listOfRecvMessages.clear();
-                    }
-                    else if(!ACKChecker.checkSum(messageAck))
-                        errorAtSum = true;
-                }
-
-                if(errorAtSum && Math.abs(timeElapsedLoop - timeElapsedRecv) > 120)
-                {
-                    sendReceive.write(CommandsGenerator.SendMeAgain());
-                    errorAtSum = false;
-                    listOfRecvMessages.clear();
-                }*/
             }
             return true;
         }

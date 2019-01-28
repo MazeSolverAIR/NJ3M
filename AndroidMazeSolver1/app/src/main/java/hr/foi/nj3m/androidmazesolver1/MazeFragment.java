@@ -1,32 +1,20 @@
 package hr.foi.nj3m.androidmazesolver1;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import hr.foi.nj3m.communications.VirtualMsgContainer;
-import hr.foi.nj3m.core.controllers.algorithms.AlgoritamVirtualRobot;
+import hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgoritamVirtualRobot;
+import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.virtualmbot.VirtualMBot;
 import hr.foi.nj3m.virtualmbot.VirtualMaze;
-import hr.foi.nj3m.virtualwifi.VirtualWiFi;
-
-import static java.lang.Thread.sleep;
 
 
 public class MazeFragment extends Fragment {
@@ -60,7 +48,7 @@ public class MazeFragment extends Fragment {
 
         VirtualMsgContainer container = new VirtualMsgContainer();
         VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
-        VirtualWiFi virtualWiFi = new VirtualWiFi(getContext());
+        IMessenger messenger = ConnectionController.getiMessenger();
         AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
 
         btnPocni.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +64,10 @@ public class MazeFragment extends Fragment {
                 if(!virtualMBot.exitFound)
                 {
                     virtualMBot.sendSensorInfo();
-                    virtualWiFi.receive(container);
-                    String strToSend = algoritamVirtualRobot.FindPath(virtualWiFi.recvdMessage);
+                    messenger.receive(container);
+                    String strToSend = algoritamVirtualRobot.FindPath(messenger.getRcvdMsg());
 
-                    virtualWiFi.send(strToSend);
+                    messenger.send(strToSend);
 
                     virtualMBot.receieveMsg();
 

@@ -1,6 +1,5 @@
 package hr.foi.nj3m.core.controllers.components;
 
-import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
 import hr.foi.nj3m.interfaces.sensors.ILineFollower;
 
 public class LineFollower implements ILineFollower {
@@ -36,8 +35,6 @@ public class LineFollower implements ILineFollower {
     //neka se ova metoda kod ove klase poziva kao setCurrentValue("")
     @Override
     public void setCurrentValue(String value) {
-        left = MBotInfoCutter.LineFollowerLeft;
-        right = MBotInfoCutter.LineFollowerRight;
         /*if(currentVal=="OnLine"){
             left=true;
             right=true;

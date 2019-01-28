@@ -35,5 +35,4 @@ dependencies {
     implementation project(path: ':wifi')
     implementation project(path: ':virtualWifi')
     implementation project (':interfacesAndEnumerators')
-    implementation project(path: ':communications')
 }

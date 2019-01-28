@@ -28,13 +28,6 @@ import java.io.File;
 
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.interfaces.IRobotConnector;
-import hr.foi.nj3m.interfaces.connections.IWireless;
-import hr.foi.nj3m.communications.VirtualMsgContainer;
-import hr.foi.nj3m.core.controllers.algorithms.AlgoritamVirtualRobot;
-import hr.foi.nj3m.core.controllers.interfaceControllers.WirelessController;
-import hr.foi.nj3m.interfaces.Enumerations.Sides;
-import hr.foi.nj3m.virtualmbot.VirtualMBot;
-import hr.foi.nj3m.virtualwifi.VirtualWiFi;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 

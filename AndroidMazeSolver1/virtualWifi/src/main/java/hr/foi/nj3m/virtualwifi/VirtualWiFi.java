@@ -24,7 +24,6 @@ import hr.foi.nj3m.interfaces.connections.IDiscover;
 public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnector {
 
     public String recvdMessage = "";
-    public int recvdUdaljenost = 0;
     static VirtualMsgContainer vContainer = null;
     ArrayList<String> virtualDevices;
     private WifiManager wifiManager;
@@ -62,6 +61,12 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         vContainer = (VirtualMsgContainer) channel;
         this.recvdMessage = vContainer.getMessage();
     }
+
+    @Override
+    public String getRcvdMsg() {
+        return this.recvdMessage;
+    }
+
 
     @Override
     public ArrayList<String> getDeviceArray() {
@@ -106,7 +111,7 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
 
     @Override
     public IMessenger connect(int position) {
-        return null;
+        return (IMessenger) instanceOfVirtualWifi;
     }
 
     @Override
