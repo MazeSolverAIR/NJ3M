@@ -2,7 +2,6 @@ package hr.foi.nj3m.androidmazesolver1;
 
 
 import android.Manifest;
-
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,18 +18,18 @@ import android.view.View;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
 
 
     /**
      * @param savedInstanceState objekt tipa Bundle koji sadrži prethodno spremljeno stanje activity-ja
-     * prvi blok koda uklanja status bar s vrha zaslona
-     * drugi blok koda inicijalizira navigation drawer
-     * treći blok postavlja početni fragment u slučaju da nema ništa spremljeno u savedInstanceState
-     *
-     * peti blok koda je provjera dopuštenja za zapis datoteka na mobilni uređaj
+     *                           prvi blok koda uklanja status bar s vrha zaslona
+     *                           drugi blok koda inicijalizira navigation drawer
+     *                           treći blok postavlja početni fragment u slučaju da nema ništa spremljeno u savedInstanceState
+     *                           <p>
+     *                           peti blok koda je provjera dopuštenja za zapis datoteka na mobilni uređaj
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer = findViewById(R.id.drawer_layout);
         final NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
 
         if (savedInstanceState == null) {
@@ -71,9 +69,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (ActivityCompat.checkSelfPermission(MainActivity.this, permission)
                 != PackageManager.PERMISSION_GRANTED
 
-                ) {
+        ) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]
-                    {permission},123);
+                    {permission}, 123);
         }
 
 
@@ -81,27 +79,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     /**
      * @param menuItem predstavlja odabrani item iz navigation drawera
-     * @return
-     * u switchu se vrši izmjena fragmenata
+     * @return u switchu se vrši izmjena fragmenata
      */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()){
+        switch (menuItem.getItemId()) {
             case R.id.nav_gallery:
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(R.anim.enter_left_to_right,R.anim.exit_left_to_right,R.anim.enter_right_to_left,R.anim.exit_right_to_left)
-                        .replace(R.id.fragment_container,new GalleryFragment())
+                        .setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_left_to_right, R.anim.enter_right_to_left, R.anim.exit_right_to_left)
+                        .replace(R.id.fragment_container, new GalleryFragment())
                         .commit();
                 break;
             case R.id.nav_add_photo:
-                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_left_to_right,R.anim.exit_left_to_right,R.anim.enter_right_to_left,R.anim.exit_right_to_left).replace(R.id.fragment_container,new AddFragment()).commit();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_left_to_right, R.anim.enter_right_to_left, R.anim.exit_right_to_left).replace(R.id.fragment_container, new AddFragment()).commit();
                 break;
             case R.id.nav_info:
-                Toast.makeText(this,"Info",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Info", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_sensor_selection:
-                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_left_to_right,R.anim.exit_left_to_right,R.anim.enter_right_to_left,R.anim.exit_right_to_left).replace(R.id.fragment_container,new SensorSelectionFragment()).commitAllowingStateLoss();
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_left_to_right, R.anim.exit_left_to_right, R.anim.enter_right_to_left, R.anim.exit_right_to_left).replace(R.id.fragment_container, new SensorSelectionFragment()).commitAllowingStateLoss();
                 break;
 
         }
@@ -119,10 +116,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * metoda za pritisak gumba za nazad, ako je drawer izvućen on se zatvara, ako nije zatvara se activity/fragment/aplikacija
      */
     @Override
-    public void onBackPressed(){
-        if(drawer.isDrawerOpen(GravityCompat.START)){
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else{
-            super.onBackPressed();}
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -1,11 +1,9 @@
 package hr.foi.nj3m.androidmazesolver1;
 
 import android.content.Intent;
-import android.media.Image;
-import android.os.CountDownTimer;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -21,6 +19,12 @@ public class loadingScreen extends AppCompatActivity {
     ImageView tekstMazeSolver;
     ImageView tekstMakeBlock;
 
+    /**
+     * Metoda koja se poziva prilikom pokretanja aktivnosti.
+     *
+     * @param savedInstanceState Ako je true, rekonstruira aktivnost
+     *                           iz prethodno spremljenog stanja.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +34,10 @@ public class loadingScreen extends AppCompatActivity {
         tekstMakeBlock = (ImageView) findViewById(R.id.txtMazeBlock);
         tekstMazeSolver = (ImageView) findViewById(R.id.txtMazeSolver);
 
-        fromTop = AnimationUtils.loadAnimation(this,R.anim.from_top);
-        fromBottom = AnimationUtils.loadAnimation(this,R.anim.from_bottom);
-        fromLeft = AnimationUtils.loadAnimation(this,R.anim.enter_left_to_right);
-        fromRight = AnimationUtils.loadAnimation(this,R.anim.enter_right_to_left);
+        fromTop = AnimationUtils.loadAnimation(this, R.anim.from_top);
+        fromBottom = AnimationUtils.loadAnimation(this, R.anim.from_bottom);
+        fromLeft = AnimationUtils.loadAnimation(this, R.anim.enter_left_to_right);
+        fromRight = AnimationUtils.loadAnimation(this, R.anim.enter_right_to_left);
 
         logo.setAnimation(fromTop);
         tekstMazeSolver.setAnimation(fromLeft);
@@ -51,7 +55,7 @@ public class loadingScreen extends AppCompatActivity {
 
     }
 
-    public void otvoriGlavniProzor(){
+    public void otvoriGlavniProzor() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
