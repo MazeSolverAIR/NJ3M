@@ -24,7 +24,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawer;
 
 
-
+    /**
+     * @param savedInstanceState objekt tipa Bundle koji sadrži prethodno spremljeno stanje activity-ja
+     * prvi blok koda uklanja status bar s vrha zaslona
+     * drugi blok koda inicijalizira navigation drawer
+     * treći blok postavlja početni fragment u slučaju da nema ništa spremljeno u savedInstanceState
+     *
+     * peti blok koda je provjera dopuštenja za zapis datoteka na mobilni uređaj
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /**
+     * @param menuItem predstavlja odabrani item iz navigation drawera
+     * @return
+     * u switchu se vrši izmjena fragmenata
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -103,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * metoda za pritisak gumba za nazad, ako je drawer izvućen on se zatvara, ako nije zatvara se activity/fragment/aplikacija
+     */
     @Override
     public void onBackPressed(){
         if(drawer.isDrawerOpen(GravityCompat.START)){

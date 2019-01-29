@@ -50,6 +50,11 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
     public  View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_of_devices, container, false);
     }
+
+    /**
+     * LocalBroadcastManager unregistrira reciever kako bi se oslobodilo memorije
+     * ostatak metode stvara folder za galeriju naziva MazeSolver_Gallery
+     */
     @Override
     public void onPause() {
         super.onPause();
