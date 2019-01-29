@@ -76,7 +76,11 @@ void rjesenjeProblemaAutonomno() {
 	poruka = Serial.readString();
 
 	if (poruka.equals("STP"))
+	{
 		stop = true;
+		ZaustaviMotore();
+	}
+
 	else if (poruka.equals("RUN"))
 		stop = false;
 
