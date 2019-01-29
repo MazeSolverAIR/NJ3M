@@ -41,7 +41,7 @@ public class ConnectedDialogFragment extends Fragment {
 
     MBotPathFinder pathFinder;
 
-    boolean stopAll = true;
+    static boolean stopAll = true;
     @Override
     public void onStart() {
         super.onStart();

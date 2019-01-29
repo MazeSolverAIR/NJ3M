@@ -75,6 +75,7 @@ public class BluetoothCommunicator implements IMessenger {
                 obtainedMsg = msg.toString();
             } catch (IOException e) {
                 e.printStackTrace();
+                obtainedMsg = "";
             }
         }
     }
