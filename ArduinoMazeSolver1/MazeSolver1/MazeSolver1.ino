@@ -5,33 +5,17 @@
 
 uint8_t modRadnje = -1;
 bool stisnutGumb = true;
-
 MeDCMotor leftMotor(M1);
 MeDCMotor rightMotor(M2);
-
 MeUltrasonicSensor ultraSonic(1);
 MeUltrasonicSensor ultraSonicRight(4);
 MeUltrasonicSensor ultraSonicLeft(3);
-
 MeLineFollower lineFollower(2);
-
 uint16_t brzinaKretanja = 80;
-
-
 Me4Button button = Me4Button();
-
 MeBluetooth bluetooth = MeBluetooth();
-bool poslano = false;
 
-
-double detektirajZid;
-double udaljenostDoZida;
-double doZidaMax;
-double trajanje;
-unsigned long skrenuoDesno=0;
-char previseOkretaja;
-
-
+//Postavljanje inicijalnih postavki za rad sa robotom
 void setup()
 {
 	button.setpin(A7);
@@ -40,6 +24,7 @@ void setup()
 	Serial.setTimeout(5);
 }
 
+//Loop u smislu while(1) koji cijelo vrijeme izvršava algoritam robota za izlazak iz labirinta
 void loop()
 {
 	rjesenjeProblemaAutonomno();
@@ -52,8 +37,8 @@ String saljiPodatkeMobitelu() {
 	return porukaMobitelu;
 }
 
-//TO-DO Napraviti metodu koja čita bluetooth string za ponavljanje zadnje naredbe
 
+//Metoda koja služi za izvršavanje naredbe za kretanje robota, ovisno o poruci koju primi preko bluetootha
 void IzvrsiNaredbu(String poruka) {
 	if (poruka.equals("RM")) {
 		Kreni(brzinaKretanja);
@@ -81,9 +66,11 @@ void IzvrsiNaredbu(String poruka) {
 	}
 }
 
-//TO-DO Ako se izvrši neki case da nije na liniji, zapamtiti da se nije zadnja radnja izvršila
 
 bool stop = true;
+
+
+//Algoritam za izlazak iz labirinta koji jednim dijelom prati liniju, a kada su oba čitača na liniji, izvršava algoritam
 void rjesenjeProblemaAutonomno() {
 	String poruka = "";
 	poruka = Serial.readString();
@@ -101,20 +88,16 @@ void rjesenjeProblemaAutonomno() {
 		Serial.println(saljiPodatkeMobitelu());
 		delay(10);
 		unsigned long sensorStateCenter = lineFollower.readSensors();
-		//provjeriti slanje očitanja senzora mobilnoj aplikaciji
-		//Serial.println(sensorStateCenter);
 		switch (sensorStateCenter)
 		{
 		case S1_IN_S2_IN:
 			IzvrsiNaredbu(poruka);
 			break;
 		case S1_IN_S2_OUT:
-			//senzor 2 je van linije (desni senzor)
 			ZaustaviMotore();
 			Skreni('l', 5, 40);
 			break;
 		case S1_OUT_S2_IN:
-			//senzor 1 je van linije (lijevi senzor)
 			ZaustaviMotore();
 			Skreni('d', 5, 40);
 			break;
@@ -125,6 +108,7 @@ void rjesenjeProblemaAutonomno() {
 	}
 }
 
+//Radnja koja se izvršava pritiskom na tipku
 void IzvrsiPritisakTipke()
 {
 	if (button.pressed() && stisnutGumb)
@@ -141,18 +125,21 @@ void IzvrsiPritisakTipke()
 	}
 }
 
+//Metoda za kretanje robota u smjeru naprijed
 void Kreni(uint16_t brzinaKretanja)
 {
 	leftMotor.run(-brzinaKretanja);
 	rightMotor.run(brzinaKretanja);
 }
 
+//Metoda za zaustavljanje robota
 void ZaustaviMotore()
 {
 	leftMotor.stop();
 	rightMotor.stop();
 }
 
+//Metoda za skretanje robota ovisno o vrijednosti prvog parametra, l kao lijevi ili d kao desno
 void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 {
 	if (smijer == 'l')
@@ -169,6 +156,7 @@ void Skreni(char smijer, uint16_t stupnjevi, uint16_t brzina)
 	ZaustaviMotore();
 }
 
+//Metoda za izračun vremenu duljine okretanja u određenome smjeru kako bi se robot što točnije ka zadanoj vrijednosti
 unsigned long IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 {
 	unsigned long vrijemeOkretanje = (stupnjevi * 650) / (brzina);
@@ -176,34 +164,7 @@ unsigned long IzracunajVrijemeRotacije(uint16_t stupnjevi, uint16_t brzina)
 	return vrijemeOkretanje;
 }
 
-
-
-String lineFollow() {
-	int sensorStateCenter = lineFollower.readSensors();
-
-	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
-
-	switch (sensorStateCenter)
-	{
-	case S1_IN_S2_IN:
-		//senzori su na centru, kre�i se ravno
-		return "OnLine";
-		break;
-	case S1_IN_S2_OUT:
-		//senzor 2 je van linije (desni senzor)
-		return "RightOut";
-		break;
-	case S1_OUT_S2_IN:
-		//senzor 1 je van linije (lijevi senzor)
-		return "LeftOut";
-		break;
-	case S1_OUT_S2_OUT:
-		//oba senzora su van linije
-		return "BothOut";
-		break;
-	}
-}
-
+//Algoritam za izlazak robota iz labirinta sa pravilom skretanja u desno (Bez potrebe android uređaja)
 void rjesenjeProblemaDesno() {
 	unsigned long sensorStateCenter = lineFollower.readSensors();
 	unsigned long udaljenostDoZida = ultraSonic.distanceCm();
@@ -249,12 +210,10 @@ void rjesenjeProblemaDesno() {
 
 		break;
 	case S1_IN_S2_OUT:
-		//senzor 2 je van linije (desni senzor)
 		ZaustaviMotore();
 		Skreni('l', 5, 40);
 		break;
 	case S1_OUT_S2_IN:
-		//senzor 1 je van linije (lijevi senzor)
 		ZaustaviMotore();
 		Skreni('d', 5, 40);
 		break;
@@ -264,11 +223,10 @@ void rjesenjeProblemaDesno() {
 	}
 }
 
+//Algoritam za izlazak robota iz labirinta sa pravilom skretanja u lijevo (Bez potrebe android uređaja)
 void rjesenjeProblema() {
 	unsigned long sensorStateCenter = lineFollower.readSensors();
 	unsigned long udaljenostDoZida = ultraSonic.distanceCm();
-	//provjeriti slanje očitanja senzora mobilnoj aplikaciji
-	//Serial.println(sensorStateCenter);
 	switch (sensorStateCenter)
 	{
 	case S1_IN_S2_IN:
