@@ -11,17 +11,17 @@ public class CommandsToMBotController {
             case StopMotors:
                 return "SM";
             case RotateFull:
-                return "RF";
+                return "FR";
             case RotateLeft:
-                return "RL";
+                return "SL";
             case RotateRight:
-                return "RR";
+                return "SD";
             case SpeedUpLeft:
                 return "SUL";
             case SpeedUpRight:
                 return "SUR";
         }
 
-        return "SM";
+        return "";
     }
 }

@@ -14,16 +14,18 @@ import android.widget.Toast;
 
 import hr.foi.nj3m.core.controllers.Factory;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
+import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.core.controllers.threads.SendReceive;
+import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.IRobotConnector;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 
 public class ConnectedDialogFragment extends Fragment {
 
     static boolean stopAll = true;
-    static int brojac = 1;
     Switch onOffSwitch;
     SendReceive sendReceive;
     String deviceAddress;
@@ -31,13 +33,9 @@ public class ConnectedDialogFragment extends Fragment {
     IRobotConnector iRobotConnector;
     boolean start = true;
     MBotPathFinder pathFinder;
-    boolean okRecvd = false;
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            /*if(pathFinder==null)
-                pathFinder = MBotPathFinder.createInstance(2);*/
-
             if (msg.what == 2)
                 Toast.makeText(getContext(), msg.arg1, Toast.LENGTH_LONG).show();
 
@@ -46,33 +44,11 @@ public class ConnectedDialogFragment extends Fragment {
                 String message = new String(readBuffer, 0, msg.arg1);
 
                 if (!message.startsWith("V") && !stopAll) {
-                    Double frontSensorDist = 0.0;
-                    try {
-                        String msgWotking = message.substring(0, message.indexOf("b"));
-                        frontSensorDist = Double.parseDouble(msgWotking);
-                    } catch (Exception ex) {
-                    }
-
-                    if (message.contains("OK")) {
-                        sendReceive.write("SM");
-                        okRecvd = true;
-                    } else if (frontSensorDist <= 22) {
-                        if (okRecvd)
-                            brojac++;
-                        if (brojac == 2)
-                            sendReceive.write("FR");
-                        else
-                            sendReceive.write("SL");
-
-                        okRecvd = false;
-                    } else if (frontSensorDist > 22) {
-                        sendReceive.write("RM");
-                        brojac = 1;
-                        okRecvd = false;
-                    }
-
-
+                    String msgToSend = CommandsToMBotController.getStringFromComandEnum(pathFinder.FindPath(message));
+                    sendReceive.write(msgToSend);
                 }
+                else if(!message.startsWith("V") && stopAll)
+                    sendReceive.write("STP");
             }
             return true;
         }
@@ -113,10 +89,16 @@ public class ConnectedDialogFragment extends Fragment {
         }).start();
 
         onOffSwitch.setOnClickListener(v -> {
-            if (onOffSwitch.isChecked()) {
+            if (onOffSwitch.isChecked())
+            {
+                if(pathFinder == null)
+                    pathFinder = MBotPathFinder.createInstance(2);
+
                 stopAll = false;
                 sendReceive.write("RUN");
-            } else {
+            }
+            else
+            {
                 stopAll = true;
                 sendReceive.write("STP");
             }

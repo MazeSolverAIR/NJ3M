@@ -8,6 +8,7 @@ import hr.foi.nj3m.core.controllers.components.Crossroad;
 import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 
+import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.Null;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateFull;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateLeft;
 import static hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot.RotateRight;
@@ -42,32 +43,30 @@ public class CrossroadManager {
 
     static double lastSensorsDistance = 0;
 
-    public static ArrayList<CommandsToMBot> manageCrossroad(double rightWallDistance, double leftWallDistance)
+    public static CommandsToMBot manageCrossroad(double rightWallDistance, double leftWallDistance)
     {
-        ArrayList<CommandsToMBot> commandsToMBotList = new ArrayList<>();
+        CommandsToMBot commandsToMBotList = Null;
         Sides sideToTurn = null;
         double sideSensorsDistanceSum = rightWallDistance + leftWallDistance;
 
-        commandsToMBotList.add(StopMotors);
-
         if(CrossroadManager.checkCrossroadSide(rightWallDistance) && checkIfCanTurn(sideSensorsDistanceSum))
         {
-            commandsToMBotList.add(RotateRight);
+            commandsToMBotList = RotateRight;
             sideToTurn = Right;
         }
         else if(CrossroadManager.checkCrossroadSide(MBotPathFinder.FrontSensor.getNumericValue()) && checkIfCanTurn(sideSensorsDistanceSum))
         {
-            commandsToMBotList.add(RunMotors);
+            commandsToMBotList = RunMotors;
             sideToTurn = Front;
         }
         else if(CrossroadManager.checkCrossroadSide(leftWallDistance) && checkIfCanTurn(sideSensorsDistanceSum))
         {
-            commandsToMBotList.add(RotateLeft);
+            commandsToMBotList = RotateLeft;
             sideToTurn = Left;
         }
         else if(CrossroadManager.CheckIfDeadEnd(sideSensorsDistanceSum))
         {
-            commandsToMBotList.add(RotateFull);
+            commandsToMBotList = RotateFull;
             sideToTurn = FullRotate;
         }
         manageCrossroadsList(sideToTurn);
@@ -78,7 +77,6 @@ public class CrossroadManager {
     }
 
 
-    //TODO: Možda ne bi radilo najbolje za 2 senzora, dok za 3 bi. Treba testirati
     private static void manageCrossroadsList(Sides sideToTurn)
     {
         Crossroad lastCRFromList = null;
