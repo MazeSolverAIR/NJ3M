@@ -1,4 +1,4 @@
-package hr.foi.nj3m.virtualmbot;
+package hr.foi.nj3m.interfaces.virtualMBot;
 
 public interface IVirtualMBot {
 

@@ -7,14 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import hr.foi.nj3m.communications.VirtualMsgContainer;
-import hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgoritamVirtualRobot;
+import hr.foi.nj3m.core.controllers.Factory;
+import hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgorithmVirtualRobot;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.communications.IMessenger;
-import hr.foi.nj3m.virtualmbot.VirtualMBot;
-import hr.foi.nj3m.virtualmbot.VirtualMaze;
+import hr.foi.nj3m.interfaces.virtualCommunication.IMsgContainer;
+import hr.foi.nj3m.interfaces.virtualMBot.IVirtualMsgSolverBot;
 
 
 public class MazeFragment extends Fragment {
@@ -23,9 +22,9 @@ public class MazeFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    AlgoritamVirtualRobot algoritamVirtualRobot;
+    AlgorithmVirtualRobot algoritamVirtualRobot;
     TextView txtMaze;
-    static VirtualMsgContainer vContainer = null;
+    static IMsgContainer vContainer = null;
 
 
     @Override
@@ -43,13 +42,13 @@ public class MazeFragment extends Fragment {
         final Button btnRefresh = getView().findViewById(R.id.btnRefresh);
         txtMaze = getView().findViewById(R.id.txtMazer);
 
-        algoritamVirtualRobot = new AlgoritamVirtualRobot();
-        int[][] matrix = VirtualMaze.getMatrix();
+        algoritamVirtualRobot = Factory.CreateAlgForVRobot();
+        int[][] matrix = Factory.CreateMaze().getMatrix();
 
-        VirtualMsgContainer container = new VirtualMsgContainer();
-        VirtualMBot virtualMBot = new VirtualMBot(container, 14, 6, Sides.Left);
+        IMsgContainer container = Factory.CreateVirtualContainer();
+        IVirtualMsgSolverBot virtualMBot = Factory.CreateVirtualMbot(container, matrix,14, 6, Sides.Left);
         IMessenger messenger = ConnectionController.getiMessenger();
-        AlgoritamVirtualRobot algoritamVirtualRobot = new AlgoritamVirtualRobot();
+        AlgorithmVirtualRobot algoritamVirtualRobot = Factory.CreateAlgForVRobot();
 
         btnPocni.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +60,7 @@ public class MazeFragment extends Fragment {
         btnRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!virtualMBot.exitFound)
+                if(!virtualMBot.isExit())
                 {
                     virtualMBot.sendSensorInfo();
                     messenger.receive(container);
@@ -71,9 +70,8 @@ public class MazeFragment extends Fragment {
 
                     virtualMBot.receieveMsg();
 
-                    virtualMBot.IzvrsiRadnju();
+                    virtualMBot.izvrsiRadnju();
 
-                    System.out.println(virtualMBot.recvdMessage);
                     printMatrix(matrix);
                 }
             }

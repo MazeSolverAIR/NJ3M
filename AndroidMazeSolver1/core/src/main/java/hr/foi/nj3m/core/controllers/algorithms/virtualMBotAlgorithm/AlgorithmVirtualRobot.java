@@ -7,7 +7,7 @@ import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import static hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.LoopInVirtualMaze.manageLoop;
 import static hr.foi.nj3m.core.controllers.components.VirtualCrossroad.manageCrossroad;
 
-public class AlgoritamVirtualRobot {
+public class AlgorithmVirtualRobot {
 
     private int lastSensorSum = 0;
 
@@ -26,7 +26,7 @@ public class AlgoritamVirtualRobot {
 
     private boolean inLoop = false;
 
-    public AlgoritamVirtualRobot()
+    public AlgorithmVirtualRobot()
     {
         postaviSmjerRobota(Sides.Left);
         this.mazeDrawer = new MazeDrawer();

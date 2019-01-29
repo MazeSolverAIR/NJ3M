@@ -29,6 +29,7 @@ import android.widget.ListView;
 import java.io.File;
 import java.util.ArrayList;
 
+import hr.foi.nj3m.core.controllers.Factory;
 import hr.foi.nj3m.interfaces.IRobotConnector;
 import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
@@ -54,7 +55,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
         String myfolder=Environment.getExternalStorageDirectory()+"/"+"MazeSolver_Gallery";
-        File f=new File(myfolder);
+        File f=Factory.CreateFile(myfolder);
         if(!f.exists())
             if(!f.mkdir()){
             }

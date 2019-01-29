@@ -1,8 +1,8 @@
 package hr.foi.nj3m.communications;
 
-import java.util.List;
+import hr.foi.nj3m.interfaces.virtualCommunication.IMsgContainer;
 
-public class VirtualMsgContainer {
+public class VirtualMsgContainer implements IMsgContainer {
 
     private String Message = "";
 

@@ -3,28 +3,19 @@ package hr.foi.nj3m.virtualwifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
-import android.os.Handler;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-
 import java.util.ArrayList;
-
-import hr.foi.nj3m.communications.VirtualMsgContainer;
 import hr.foi.nj3m.interfaces.IRobotConnector;
 import hr.foi.nj3m.interfaces.communications.IMessenger;
 import hr.foi.nj3m.interfaces.connections.IDevice;
 import hr.foi.nj3m.interfaces.connections.IDiscover;
+import hr.foi.nj3m.interfaces.virtualCommunication.IMsgContainer;
 
 public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnector {
 
     public String recvdMessage = "";
-    static VirtualMsgContainer vContainer = null;
+    static IMsgContainer vContainer = null;
     ArrayList<String> virtualDevices;
     private WifiManager wifiManager;
     private Context context;
@@ -58,7 +49,7 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
 
     @Override
     public void receive(Object channel) {
-        vContainer = (VirtualMsgContainer) channel;
+        vContainer = (IMsgContainer) channel;
         this.recvdMessage = vContainer.getMessage();
     }
 

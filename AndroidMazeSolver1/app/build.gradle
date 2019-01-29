@@ -35,6 +35,4 @@ dependencies {
 
     implementation project(':core')
     implementation project(':interfacesAndEnumerators')
-    implementation project(path: ':virtualCommunications')
-    implementation project(path: ':virtualMBot')
 }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 
+import hr.foi.nj3m.core.controllers.Factory;
 import hr.foi.nj3m.core.controllers.algorithms.CommandsGenerator;
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.core.controllers.threads.SendReceive;
@@ -75,7 +76,7 @@ public class ConnectedDialogFragment extends Fragment {
 
     private void Connect(String deviceAddress){
         //iRobotConnector.initializeSocket(deviceAddress, handler);
-        sendReceive = new SendReceive(handler);
+        sendReceive = Factory.createSendRecieve(handler);
         sendReceive.start();
     }
 

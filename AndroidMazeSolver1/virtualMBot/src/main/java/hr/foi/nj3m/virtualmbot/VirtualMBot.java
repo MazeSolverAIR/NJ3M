@@ -1,13 +1,15 @@
 package hr.foi.nj3m.virtualmbot;
 
-import hr.foi.nj3m.communications.VirtualMsgContainer;
+import javax.xml.parsers.FactoryConfigurationError;
+
+import hr.foi.nj3m.interfaces.virtualCommunication.IMsgContainer;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.interfaces.virtualMBot.IVirtualMsgSolverBot;
 
 
-public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
-{
+public class VirtualMBot implements IVirtualMsgSolverBot {
     public String recvdMessage = "";
-    VirtualMsgContainer vContainer = null;
+    IMsgContainer vContainer = null;
     int[][] maze = null;
 
     private VirtualUltrasonicSensor FrontUltrasonic = null;
@@ -19,9 +21,9 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
     private int trenutnoY = 0;
 
 
-    public VirtualMBot (VirtualMsgContainer vc, int startingXPosition, int startingYPosition, Sides smjerPrednjegSenzora)
+    public VirtualMBot (IMsgContainer vc, int[][] matrix, int startingXPosition, int startingYPosition, Sides smjerPrednjegSenzora)
     {
-        this.maze = VirtualMaze.getMatrix();
+        this.maze = matrix;
 
         FrontUltrasonic = new VirtualUltrasonicSensor(Sides.Null);
         RightUltrasonic = new VirtualUltrasonicSensor(Sides.Null);
@@ -34,7 +36,7 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
         vContainer = vc;
     }
 
-    public void IzvrsiRadnju()
+    public void izvrsiRadnju()
     {
         if(this.recvdMessage.equals("RL"))
             rotateLeft();
@@ -44,6 +46,11 @@ public class VirtualMBot implements IVirtualMBot, IVirtualMessenger
             fullRotate();
         else if(this.recvdMessage.equals("RM"))
             moveForward();
+    }
+
+    @Override
+    public boolean isExit() {
+        return exitFound;
     }
 
     @Override

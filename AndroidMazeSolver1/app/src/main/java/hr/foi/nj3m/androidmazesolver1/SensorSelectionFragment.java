@@ -12,6 +12,7 @@ import android.widget.CheckBox;
 import java.util.ArrayList;
 import java.util.List;
 
+import hr.foi.nj3m.core.controllers.Factory;
 import hr.foi.nj3m.core.controllers.components.UltrasonicSensor;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
 import hr.foi.nj3m.interfaces.sensors.IUltraSonic;
@@ -50,15 +51,15 @@ public class SensorSelectionFragment extends Fragment {
                             .show();
                 }
                 if (leftChecked) {
-                    mLeft = new UltrasonicSensor(Sides.Left);
+                    mLeft = Factory.CreateUltrasonicSensor(Sides.Left);
                     mListOfSensors.add(mLeft);
                 }
                 if (rightChecked) {
-                    mRight = new UltrasonicSensor(Sides.Right);
+                    mRight = Factory.CreateUltrasonicSensor(Sides.Right);
                     mListOfSensors.add(mRight);
                 }
                 if (frontChecked) {
-                    mFront = new UltrasonicSensor(Sides.Front);
+                    mFront = Factory.CreateUltrasonicSensor(Sides.Front);
                     mListOfSensors.add(mFront);
                 }
             }

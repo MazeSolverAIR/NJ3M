@@ -1,6 +1,6 @@
 package hr.foi.nj3m.core.controllers.components;
 
-import static hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgoritamVirtualRobot.canMoveTo;
+import static hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm.AlgorithmVirtualRobot.canMoveTo;
 
 public class VirtualCrossroad {
 

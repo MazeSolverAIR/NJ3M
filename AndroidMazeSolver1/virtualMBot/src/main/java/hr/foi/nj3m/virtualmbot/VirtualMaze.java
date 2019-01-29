@@ -1,8 +1,13 @@
 package hr.foi.nj3m.virtualmbot;
 
-public class VirtualMaze {
+import hr.foi.nj3m.interfaces.virtualMBot.IVirtualMaze;
 
-    static int[][] matrix= new int[][] {
+public class VirtualMaze implements IVirtualMaze {
+
+    public VirtualMaze() {
+    }
+
+    private int[][] matrix= new int[][] {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -17,7 +22,7 @@ public class VirtualMaze {
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
 
-    public static int[][] getMatrix()
+    public int[][] getMatrix()
     {
         return matrix;
     }

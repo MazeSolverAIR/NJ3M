@@ -1,4 +1,4 @@
-package hr.foi.nj3m.communications;
+package hr.foi.nj3m.interfaces.virtualCommunication;
 
 public interface IMsgContainer {
 

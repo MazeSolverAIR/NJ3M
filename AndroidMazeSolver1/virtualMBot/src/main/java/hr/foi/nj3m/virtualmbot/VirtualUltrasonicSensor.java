@@ -1,8 +1,7 @@
 package hr.foi.nj3m.virtualmbot;
 
-import android.widget.Toast;
-
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
+import hr.foi.nj3m.interfaces.virtualMBot.IVirtualUltrasonic;
 
 public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
 
