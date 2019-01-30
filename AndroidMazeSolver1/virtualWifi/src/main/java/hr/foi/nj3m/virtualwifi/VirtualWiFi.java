@@ -26,6 +26,12 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         return instanceOfVirtualWifi;
     }
 
+    /**
+     * Kreiranje instance VirtualWifi klase koja sadrži metode za povezivanje s virtualnim uređajem.
+     *
+     * @param context Osigurava pristup aplikacijskim resursima kao što je BroadcastReceiver
+     * @return        Instanca klase koja se priključuje na sučelje IRobotConnector
+     */
     public static IRobotConnector createVirtualWifiInstance(Context context){
         if(instanceOfVirtualWifi == null)
             instanceOfVirtualWifi = new VirtualWiFi(context);
@@ -33,32 +39,56 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         return instanceOfVirtualWifi;
     }
 
+    /**
+     * Konstruktor.
+     *
+     * @param context Osigurava pristup aplikacijskim resursima kao što je BroadcastReceiver
+     */
     public VirtualWiFi (Context context)
     {
-        //vContainer = vc;
         this.context = context;
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         virtualDevices = new ArrayList<>();
     }
 
 
+    /**
+     * Metoda koja preko virtualnog kanala šalje instrukcije virtualnom uređaju.
+     *
+     * @param command Instrukcije
+     */
     @Override
     public void send(String command) {
         vContainer.setMessage(command);
     }
 
+    /**
+     * Metoda koja preko virtualnog kanala prima poruke od virtualnog uređaja.
+     *
+     * @param channel Virtualni kanal
+     */
     @Override
     public void receive(Object channel) {
         vContainer = (IMsgContainer) channel;
         this.recvdMessage = vContainer.getMessage();
     }
 
+    /**
+     * Metoda za dohvaćanje zaprimljene poruke.
+     *
+     * @return Zaprimljena poruka
+     */
     @Override
     public String getRcvdMsg() {
         return this.recvdMessage;
     }
 
 
+    /**
+     * Metoda koja vraća hardkodirani virtualni uređaj. Ova lista je izvor podataka za popunjavanje liste uređaja koja je prikazana na fragmentu ListOfDevicesFragment
+     *
+     * @return Hardkodirano ime virtualnog uređaja
+     */
     @Override
     public ArrayList<String> getDeviceArray() {
         virtualDevices.add("Virtual mBot");
@@ -100,11 +130,22 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
 
     }
 
+    /**
+     * Metoda koja vraća instancu kreiranog virtualnog uređaja.
+     *
+     * @param position Pozicija u listi dostupnih uređaja
+     * @return         Instanca kreiranog virtualnog uređaja
+     */
     @Override
     public IMessenger connect(int position) {
         return (IMessenger) instanceOfVirtualWifi;
     }
 
+    /**
+     * Metoda koja provjerava da li je WiFi uključen.
+     *
+     * @return True ako je WiFi uključen, inače false
+     */
     @Override
     public boolean isEnabled() {
         if (wifiManager.isWifiEnabled())
@@ -113,6 +154,11 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
             return false;
     }
 
+    /**
+     * Metoda koja pokreće namjeru za uključivanjem WiFi-ja ako nije uključen.
+     *
+     * @param mBroadcastReceiver Slušatelj obavijesti o događajima koje okida namjera
+     */
     @Override
     public void enableDisable(BroadcastReceiver mBroadcastReceiver) {
         if(!wifiManager.isWifiEnabled()){
