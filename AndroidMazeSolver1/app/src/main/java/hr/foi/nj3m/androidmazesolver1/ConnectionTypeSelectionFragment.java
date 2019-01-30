@@ -22,6 +22,9 @@ import hr.foi.nj3m.interfaces.IRobotConnector;
 
 public class ConnectionTypeSelectionFragment extends Fragment {
 
+    /**
+     * Slušatelj obavijesti o događajima kao što su uključivanje/isključivanje Bluetootha/Wifi-ja. Otvara sljedeći fragment nakon uključivanja Bluetootha/Wifi-ja.
+     */
     private final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -46,7 +49,6 @@ public class ConnectionTypeSelectionFragment extends Fragment {
                 final int state = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, WifiManager.WIFI_STATE_UNKNOWN);
                 switch (state) {
                     case WifiManager.WIFI_STATE_DISABLED:
-                        Toast.makeText(getActivity().getApplicationContext(), "WiFi isključen", Toast.LENGTH_LONG).show();
                         break;
                     case WifiManager.WIFI_STATE_ENABLED:
                         Toast.makeText(getActivity().getApplicationContext(), "WiFi uključen", Toast.LENGTH_LONG).show();
@@ -91,40 +93,21 @@ public class ConnectionTypeSelectionFragment extends Fragment {
         tipkaBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                prefEditor.putString("TypeOfConnection", "bluetooth");
-                prefEditor.commit();
-                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                if (iRobotConnector.isEnabled())
-                    openListOfDevices();
-                else
-                    iRobotConnector.enableDisable(mBroadcastReceiver);
+                chooseTypeOfConnection("bluetooth");
             }
         });
 
         tipkaWifi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //WifiManager wifiManager = (WifiManager) getActivity().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                prefEditor.putString("TypeOfConnection", "wifi");
-                prefEditor.commit();
-                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                if (iRobotConnector.isEnabled())
-                    openListOfDevices();
-                else
-                    iRobotConnector.enableDisable(mBroadcastReceiver);
-
-
+                chooseTypeOfConnection("wifi");
             }
         });
 
         tipkaVirtualRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prefEditor.putString("TypeOfConnection", "virtualWifi");
-                prefEditor.commit();
-                iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
-                openListOfDevices();
+                chooseTypeOfConnection("virtualWifi");
             }
         });
 
@@ -137,6 +120,21 @@ public class ConnectionTypeSelectionFragment extends Fragment {
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mBroadcastReceiver);
+    }
+
+    /**
+     * Metoda čija svrha je spremiti string koji predstavlja odabrani način konekcije, stvoriti odgovarajuću instancu iRobotConnectora te provjeriti uključenost odabranog načina konekcije.
+     *
+     * @param typeOfConnection String koji spremamo kao odabrani način konekcije. Ovisno o tom stringu, stvara se odgovarajuća instanca iRobotConnectora.
+     */
+    private void chooseTypeOfConnection(String typeOfConnection){
+        prefEditor.putString("TypeOfConnection", typeOfConnection);
+        prefEditor.commit();
+        iRobotConnector = ConnectionController.creteInstance(sharedPreferences.getString("TypeOfConnection", "DEFAULT"), getActivity());
+        if (iRobotConnector.isEnabled())
+            openListOfDevices();
+        else
+            iRobotConnector.enableDisable(mBroadcastReceiver);
     }
 
     /**

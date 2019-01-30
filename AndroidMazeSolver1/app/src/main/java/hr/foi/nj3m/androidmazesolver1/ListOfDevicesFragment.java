@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,14 +35,17 @@ import hr.foi.nj3m.interfaces.communications.IMessenger;
 
 public class ListOfDevicesFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    static String EXTRA_ADDRESS = null;
     ListView lvNewDevices;
     Button btnDiscover;
     SharedPreferences sharedPreferences;
-    String deviceAddress;
     ArrayAdapter<String> adapter;
     IMessenger iMessenger;
     IRobotConnector iRobotConnector;
+
+    /**
+     * Slušatelj obavijesti o događajima kao što su pronalazak vidljivih uređaja i promjena stanja konekcije s uređajem. Dodaje pronađene uređaje u listu uređaja, otvara sljedeći fragment
+     * ako smo već upareni s odabranim uređajem ili nakon što smo se uparili s odabranim uređajem.
+     */
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -52,12 +56,11 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 bluetoothDevices.add(device);
                 iRobotConnector.addDevices(bluetoothDevices);
                 lvNewDevices.setAdapter(adapter);
-                //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    openConnectedDialog(deviceAddress);
+                    openConnectedDialog();
                 }
             }
             if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
@@ -75,12 +78,11 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                             lvNewDevices.setAdapter(adapter);
                         }
                     });
-                //lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
             }
             if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
                 NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
                 if (networkInfo.isConnected())
-                    openConnectedDialog(deviceAddress);
+                    openConnectedDialog();
             }
         }
     };
@@ -133,15 +135,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         lvNewDevices.setAdapter(adapter);
         lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
 
-        /*switch(sharedPreferences.getString("TypeOfConnection", "DEFAULT")){
-            case "bluetooth":
-                break;
-            case "virtualWifi":
-                lvNewDevices.setAdapter(adapter);
-                lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
-                break;
-        }*/
-
         btnDiscover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +155,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        deviceAddress = iRobotConnector.getDeviceAddress(position);
         iMessenger = iRobotConnector.connect(position);
         ConnectionController.setIMessenger(iMessenger);
         if (!iRobotConnector.deviceExists(iRobotConnector.getDeviceName(position)))
@@ -173,23 +165,17 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                     openMaze();
                     break;
                 default:
-                    openConnectedDialog(deviceAddress);
+                    openConnectedDialog();
                     break;
             }
         }
     }
 
     /**
-     * Metoda koja otvara fragment ConnectedDialogFragment te mu proslijeđuje
-     * adresu uređaja.
-     *
-     * @param deviceAddress Adresa uređaja.
+     * Metoda koja otvara fragment ConnectedDialogFragment.
      */
-    private void openConnectedDialog(String deviceAddress) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_ADDRESS, deviceAddress);
+    private void openConnectedDialog() {
         Fragment fragment = new ConnectedDialogFragment();
-        fragment.setArguments(bundle);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
@@ -200,9 +186,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
      * Metoda koja otvara fragment MazeFragment.
      */
     private void openMaze() {
-        Bundle bundle = new Bundle();
         Fragment fragment = new MazeFragment();
-        fragment.setArguments(bundle);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);

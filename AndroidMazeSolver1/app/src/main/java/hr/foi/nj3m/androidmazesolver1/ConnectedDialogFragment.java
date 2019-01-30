@@ -1,7 +1,5 @@
 package hr.foi.nj3m.androidmazesolver1;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,24 +13,19 @@ import android.widget.Toast;
 import hr.foi.nj3m.core.controllers.Factory;
 import hr.foi.nj3m.core.controllers.algorithms.MBotPathFinder;
 import hr.foi.nj3m.core.controllers.enumeratorControllers.CommandsToMBotController;
-import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
 import hr.foi.nj3m.core.controllers.threads.SendReceive;
-import hr.foi.nj3m.interfaces.Enumerations.CommandsToMBot;
-import hr.foi.nj3m.interfaces.IRobotConnector;
-import hr.foi.nj3m.interfaces.communications.IMessenger;
-
-import static hr.foi.nj3m.androidmazesolver1.ListOfDevicesFragment.EXTRA_ADDRESS;
 
 public class ConnectedDialogFragment extends Fragment {
 
     static boolean stopAll = true;
     Switch onOffSwitch;
     SendReceive sendReceive;
-    String deviceAddress;
-    SharedPreferences sharedPreferences;
-    IRobotConnector iRobotConnector;
     boolean start = true;
     MBotPathFinder pathFinder;
+
+    /**
+     * Primatelj poruka koje mu prosljeđuje dretva za primanje poruka od robota. Ovdje se odlučuje što će se uraditi na osnovi poruka koje smo primili.
+     */
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -74,17 +67,13 @@ public class ConnectedDialogFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        final Bundle bundle = this.getArguments();
 
-        sharedPreferences = getContext().getSharedPreferences("MazeSolver1", Context.MODE_PRIVATE);
         onOffSwitch = (Switch) getView().findViewById(R.id.swStartStop);
-        iRobotConnector = ConnectionController.getInstanceOfConnection();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                deviceAddress = (String) bundle.getSerializable(EXTRA_ADDRESS);
-                Connect(deviceAddress);
+                Connect();
             }
         }).start();
 
@@ -107,11 +96,8 @@ public class ConnectedDialogFragment extends Fragment {
 
     /**
      * Metoda čija je svrha kreiranje instance sendReceive klase i njezino pokretanje.
-     *
-     * @param deviceAddress Adresa uređaja
      */
-    private void Connect(String deviceAddress) {
-        //iRobotConnector.initializeSocket(deviceAddress, handler);
+    private void Connect() {
         sendReceive = Factory.createSendRecieve(handler);
         sendReceive.start();
     }

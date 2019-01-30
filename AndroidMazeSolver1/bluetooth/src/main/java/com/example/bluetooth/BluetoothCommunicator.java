@@ -27,6 +27,13 @@ public class BluetoothCommunicator implements IMessenger {
 
     private static IMessenger InstanceOfSender;
 
+    /**
+     * Kreiranje instance BluetoothCommunicator klase koja sadrži metode za komunikaciju s uređajem.
+     *
+     * @param context       Osigurava pristup aplikacijskim resursima
+     * @param deviceAddress Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     * @return              Instanca klase koja se priključuje na sučelje IMessenger
+     */
     public static IMessenger createBluetoothSender(Context context, String deviceAddress)
     {
         if(InstanceOfSender == null)
@@ -39,6 +46,12 @@ public class BluetoothCommunicator implements IMessenger {
         return InstanceOfSender;
     }
 
+    /**
+     * Konstruktor
+     *
+     * @param context       Osigurava pristup aplikacijskim resursima
+     * @param deviceAddress Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     */
     private BluetoothCommunicator(Context context, String deviceAddress)
     {
         this.context = context;
@@ -47,6 +60,11 @@ public class BluetoothCommunicator implements IMessenger {
         initializeSocket();
     }
 
+    /**
+     * Metoda koja preko izlaznog toka šalje instrukcije povezanom uređaju kao niz bajtova.
+     *
+     * @param command Instrukcije
+     */
     @Override
     public void send(String command) {
         byte[] message = command.getBytes();
@@ -57,6 +75,11 @@ public class BluetoothCommunicator implements IMessenger {
         }
     }
 
+    /**
+     * Metoda koja preko ulaznog toka zaprima poruke koje šalje povezani uređaj kao niz bajtova.
+     *
+     * @param channel Upravljač porukama. Ova metoda mu prosljeđuje zaprimljene poruke kao objekte tipa Message
+     */
     // TODO: 12/6/2018 POTREBNO TESTIRATI!!!
     /*TODO: Potrebno je osmisliti spremanje buffera koji je != null ili != "" u polje byte(ili string).
       TODO:  Metoda receive može vraćati to polje ako je zadnja dobivena informacija == "Over"  - ili možda osmisliti neko drugo rješenje. Razmisliti*/
@@ -83,11 +106,19 @@ public class BluetoothCommunicator implements IMessenger {
         }
     }
 
+    /**
+     * Metoda za dohvaćanje zaprimljene poruke.
+     *
+     * @return Zaprimljena poruka
+     */
     @Override
     public String getRcvdMsg() {
         return obtainedMsg;
     }
 
+    /**
+     * Metoda za inicijaliziranje komunikacijskog priključka (socketa) i stvaranje komunikacijskog kanala sa povezanim uređajem.
+     */
     private void initializeSocket(){
         try {
             bluetoothSocket = bluetoothAdapter.getRemoteDevice(deviceAddress).createRfcommSocketToServiceRecord(mUUID);
