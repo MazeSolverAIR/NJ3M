@@ -1,7 +1,9 @@
 package hr.foi.nj3m.wifi;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,7 @@ public class WiFiCommunicator implements IMessenger {
 
     private InputStream inputStream;
     private OutputStream outputStream;
+    private Context context;
     private Handler handler;
     private String address;
     private Socket socket;
@@ -27,10 +30,10 @@ public class WiFiCommunicator implements IMessenger {
      * @param address Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
      * @return        Instanca klase koja se priključuje na sučelje IMessenger
      */
-    public static IMessenger createWiFiSender(String address)
+    public static IMessenger createWiFiSender(Context context, String address)
     {
         if(InstanceOfSender == null)
-            InstanceOfSender = new WiFiCommunicator(address);
+            InstanceOfSender = new WiFiCommunicator(context, address);
 
         return InstanceOfSender;
     }
@@ -40,8 +43,9 @@ public class WiFiCommunicator implements IMessenger {
      *
      * @param address Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
      */
-    private WiFiCommunicator(String address)
+    private WiFiCommunicator(Context context, String address)
     {
+        this.context = context;
         this.address = address;
         socket = new Socket();
         initializeSocket();
@@ -56,7 +60,8 @@ public class WiFiCommunicator implements IMessenger {
     public void send(String command) {
         byte[] message = command.getBytes();
         try {
-            outputStream.write(message);
+            if (outputStream != null)
+                outputStream.write(message);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,11 +80,13 @@ public class WiFiCommunicator implements IMessenger {
 
         while (socket != null){
             try {
-                bytes = inputStream.read(buffer);
-                if (bytes > 0){
-                    Message msg = handler.obtainMessage(1, bytes, -1, buffer);
-                    msg.sendToTarget();
-                    obtainedMsg = msg.toString();
+                if (inputStream != null){
+                    bytes = inputStream.read(buffer);
+                    if (bytes > 0) {
+                        Message msg = handler.obtainMessage(1, bytes, -1, buffer);
+                        msg.sendToTarget();
+                        obtainedMsg = msg.toString();
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -101,16 +108,15 @@ public class WiFiCommunicator implements IMessenger {
      * Metoda za inicijaliziranje komunikacijskog priključka (socketa) i stvaranje komunikacijskog kanala sa povezanim uređajem.
      */
     private void initializeSocket(){
-        try {
             if (socket != null){
-                socket.connect(new InetSocketAddress(address, 8888), 500);
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
+                try {
+                    /*socket.connect(new InetSocketAddress(address, 8888), 500);
+                    inputStream = socket.getInputStream();
+                    outputStream = socket.getOutputStream();*/
+                } catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(context, "WiFi komunikacija nije implementirana", Toast.LENGTH_LONG).show();
+                }
             }
-            else
-                handler.obtainMessage(2, "WiFi komunikacija nije implementirana");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
