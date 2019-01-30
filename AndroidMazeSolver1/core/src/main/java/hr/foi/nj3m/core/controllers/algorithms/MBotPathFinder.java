@@ -45,6 +45,10 @@ public class MBotPathFinder {
 
     private static LineFollower lineFollower = null;
 
+    /**
+     * Kreira instancu klase
+     * @param sensors lista senzora dobivena iz fragmenta koji sluzi za odabir koristenih senzora
+     */
     public static MBotPathFinder createInstance(List<IUltraSonic> sensors)
     {
         Instance = new MBotPathFinder(sensors);
@@ -52,6 +56,11 @@ public class MBotPathFinder {
         return Instance;
     }
 
+    /**
+     * Kreira instancu MBotPathFinder klase
+     * @param i ako 1, kreiraju se tri UZ senzora. Ako 2, kreira se prenji UZ senzor i citac crte
+     * @return instancirani objekt
+     */
     public static MBotPathFinder createInstance(int i)
     {
         switch(i)
@@ -77,6 +86,8 @@ public class MBotPathFinder {
     {
     }
 
+
+
     private MBotPathFinder(List<IUltraSonic> sensors)
     {
         this.Sensors = sensors;
@@ -84,6 +95,10 @@ public class MBotPathFinder {
         setSensorVariables();
     }
 
+
+    /**
+     * Postavlja strane za senzore dobivene iz liste
+     */
     private void setSensorVariables() {
         for (IUltraSonic sensor : Sensors) {
             Sides sensorSide = sensor.getSensorSide();
@@ -99,6 +114,12 @@ public class MBotPathFinder {
 
     private static String currentRcvMessage = "";
 
+
+    /**
+     * Odlucuje koju naredbu sljedece poslati mBotu
+     * @param currentMsg dobivena poruka od mBota
+     * @return naredba koja se salje mBotu
+     */
     public CommandsToMBot FindPath(String currentMsg)
     {
         currentRcvMessage = currentMsg;
@@ -117,7 +138,6 @@ public class MBotPathFinder {
         {
             double rightWallDistance = this.RightSensor.getNumericValue();
             double leftWallDistance = setOtherSideWallDistance(rightWallDistance);
-
 
             //finalCommandList.add(centerMBotTwoOrMoreSensors(rightWallDistance, leftWallDistance));
             finalCmd = findPathTwoOrMoreSensors(rightWallDistance, leftWallDistance);
@@ -146,6 +166,12 @@ public class MBotPathFinder {
         return finalCmd;
     }
 
+
+    /**
+     * Izracunava udaljenost do drugog zida, ako je poznata udaljenost do jednog
+     * @param realDistance udaljenost do jednog zida
+     * @return udaljenost do drugog zida
+     */
     private double setOtherSideWallDistance(double realDistance)
     {
         double returnVal = 0;
@@ -158,6 +184,13 @@ public class MBotPathFinder {
             return returnVal;
     }
 
+
+    /**
+     * Pronalazi izlaz iz labirinta s 2 ili 3 UZ senzora
+     * @param rightWallDistance udaljenost do desnog zida
+     * @param leftWallDistance udaljenost do lijevog zida
+     * @return naredba koja se mora poslati mBotu
+     */
     private CommandsToMBot findPathTwoOrMoreSensors(double rightWallDistance, double leftWallDistance)
     {
         CommandsToMBot commandsToMBotList = Null;
@@ -175,6 +208,12 @@ public class MBotPathFinder {
         return commandsToMBotList;
     }
 
+    /**
+     * Crntrira mBota na sredinu staze labirinta
+     * @param rightWallDistance udaljenost do desnog zida
+     * @param leftWallDistance udaljenost do lijevog zida
+     * @return naredba koja se salje mBotu
+     */
     private CommandsToMBot centerMBotTwoOrMoreSensors(double rightWallDistance, double leftWallDistance)
     {
         CommandsToMBot returnCommand = Null;
@@ -198,6 +237,10 @@ public class MBotPathFinder {
     private static int numberOfRotatesInARow = 1;
     private static boolean mBotRotated = false;
 
+    /**
+     * Pronalazi izlaz iz labirinta uz pomoc prednjeg senzora
+     * @return naredba koja se salje mBotu
+     */
     private CommandsToMBot findPathFrontSensor()
     {
         CommandsToMBot returnCmd = Null;
@@ -222,6 +265,10 @@ public class MBotPathFinder {
         return returnCmd;
     }
 
+    /**
+     * Centrira mBota u stazu labirinta na temelju podataka od citaca crte
+     * @return naredba koja se salje mBotu
+     */
     private CommandsToMBot centerMBotFrontSensor()
     {
         CommandsToMBot returnCmd = StopMotors;
@@ -236,6 +283,10 @@ public class MBotPathFinder {
         return returnCmd;
     }
 
+    /**
+     * Odlucuje kako se mBot treba rotirati - jedan senzor
+     * @return naredba koja se salje mBotu
+     */
     private CommandsToMBot decideAboutWall()
     {
         CommandsToMBot returnCmd = Null;

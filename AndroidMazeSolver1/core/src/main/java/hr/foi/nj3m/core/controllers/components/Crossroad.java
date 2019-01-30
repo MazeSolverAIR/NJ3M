@@ -15,6 +15,9 @@ public class Crossroad {
         this.lastTurnSide = sideToTurn;
     }
 
+    /**
+     * Postavlja velicinu trenutnog raskrizja
+     */
     public void setCrossroadSize()
     {
 
@@ -29,6 +32,9 @@ public class Crossroad {
         maxNumberOfVisits++;
     }
 
+    /**
+     * Dodaje novi posjet na krizanje
+     */
     public void newVisit()
     {
         numberOfVisits++;

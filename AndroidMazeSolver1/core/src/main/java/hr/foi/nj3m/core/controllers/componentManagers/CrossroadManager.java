@@ -21,6 +21,11 @@ import static hr.foi.nj3m.interfaces.Enumerations.Sides.Right;
 
 public class CrossroadManager {
 
+    /**
+     * Provjerava nalazi li se mBot na krizanju
+     * @param sensorDistanceSum suma vrijednosti s bocnih senzora
+     * @return true ukoliko se mBota nalazi na krizanju
+     */
     public static boolean checkIfCrossroad(double sensorDistanceSum)
     {
         double distanceToCheck = sensorDistanceSum + MBotPathFinder.mBotWidth;
@@ -28,11 +33,21 @@ public class CrossroadManager {
         return (distanceToCheck > (MBotPathFinder.labyrinthWidth + 2*MBotPathFinder.ultrasonicSensorhWidth));
     }
 
+    /**
+     * Provjerava moze li mBot skrenuti na stranu unesene udaljenosti
+     * @param sensorDistanceFromWall udaljenost do zida
+     * @return true ukoliko moze skrenuti na tu stranu
+     */
     public static boolean checkCrossroadSide(double sensorDistanceFromWall)
     {
         return (sensorDistanceFromWall > (MBotPathFinder.labyrinthWidth-MBotPathFinder.mBotWidth));
     }
 
+    /**
+     * Testira nalazi li se mBot u slijepoj ulici
+     * @param sensorDistanceSum suma vrijednosti bocnih senzora
+     * @return true ukoliko se nalazi u slijepoj ulici
+     */
     private static boolean CheckIfDeadEnd(double sensorDistanceSum)
     {
         if(!checkIfCrossroad(sensorDistanceSum) && MBotPathFinder.FrontSensor.seesObstacle())
@@ -43,6 +58,12 @@ public class CrossroadManager {
 
     static double lastSensorsDistance = 0;
 
+    /**
+     * Odlucuje o naredbi koju je potrebno izvrsiti na krizanju
+     * @param rightWallDistance udaljenost desnog senzora od zida
+     * @param leftWallDistance udaljenost lijevog senzora od zida
+     * @return naredba za mBota
+     */
     public static CommandsToMBot manageCrossroad(double rightWallDistance, double leftWallDistance)
     {
         CommandsToMBot commandsToMBotList = Null;
@@ -77,6 +98,10 @@ public class CrossroadManager {
     }
 
 
+    /**
+     * Upravlja listom krizanja
+     * @param sideToTurn strana na koju ce mBot skrenuti
+     */
     private static void manageCrossroadsList(Sides sideToTurn)
     {
         Crossroad lastCRFromList = null;
@@ -98,15 +123,15 @@ public class CrossroadManager {
         }
     }
 
+    /**
+     * Provjerava moze li mBot ponovno skrenuti
+     * @param currentSensorDIstance suma bocnih senzora
+     * @return true ukoliko je ova suma razliciza od prosle sume
+     */
     private static boolean checkIfCanTurn(double currentSensorDIstance)
     {
-        if(lastSensorsDistance > currentSensorDIstance + 20)
-            return true;
+        return Math.abs(lastSensorsDistance - currentSensorDIstance) > 20;
 
-        if(lastSensorsDistance + 20 > currentSensorDIstance)
-            return true;
-
-        return false;
     }
 
 }

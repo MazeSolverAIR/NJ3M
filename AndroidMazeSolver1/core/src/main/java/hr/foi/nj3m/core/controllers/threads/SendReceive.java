@@ -1,6 +1,5 @@
 package hr.foi.nj3m.core.controllers.threads;
 import android.os.Handler;
-import android.util.Log;
 
 
 import hr.foi.nj3m.core.controllers.interfaceControllers.ConnectionController;
@@ -17,7 +16,7 @@ public class SendReceive extends Thread {
      * @param handler Upravljač porukama. Ova metoda mu prosljeđuje zaprimljene poruke kao objekte tipa Message
      */
     public SendReceive(Handler handler){
-        iMessenger = ConnectionController.getiMessenger();
+        iMessenger = ConnectionController.getIMessenger();
         this.handler = handler;
     }
 

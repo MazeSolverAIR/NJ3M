@@ -39,7 +39,7 @@ public class VirtualCrossroad {
 
     private static boolean checkIfDeadEnd(int sumDist, int prednjiSensor)
     {
-        return !checkIfCrossroad(sumDist) && !canMoveTo(prednjiSensor); //TODO: to mozda nije dobro
+        return !checkIfCrossroad(sumDist) && !canMoveTo(prednjiSensor);
     }
 
     public static boolean checkIfCrossroad(int sumDist)

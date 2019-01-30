@@ -22,14 +22,27 @@ public class ConnectionController {
     }
 
     private static IMessenger iMessenger;
+
+    /**
+     * Sprema objekt tipa IMessenger
+     * @param iMsngr objekt IMessenger
+     */
     public static void setIMessenger(IMessenger iMsngr){
         iMessenger = iMsngr;
     }
 
-    public static IMessenger getiMessenger(){
+    /**
+     * @return instanca objekta IMessenger
+     */
+    public static IMessenger getIMessenger(){
         return iMessenger;
     }
 
+    /**
+     * Kreira instancu IRobotConnect na temelju ulaznog stringa
+     * @param odabranNacinKomunikacije nacin komunikacije - bluetooth, wifi, virtualWifi
+     * @param context context
+     */
     public static IRobotConnector creteInstance(String odabranNacinKomunikacije, Context context)
     {
         new ConnectionController(odabranNacinKomunikacije, context);
@@ -37,6 +50,11 @@ public class ConnectionController {
         return InstanceOfConnection;
     }
 
+    /**
+     * Kreira instancu IRobotConnect na temelju ulaznog stringa
+     * @param odabranNacinKomunikacije nacin komunikacije - bluetooth, wifi, virtualWifi
+     * @param context context
+     */
     private ConnectionController(String odabranNacinKomunikacije, Context context)
     {
         if(odabranNacinKomunikacije.equals("bluetooth"))

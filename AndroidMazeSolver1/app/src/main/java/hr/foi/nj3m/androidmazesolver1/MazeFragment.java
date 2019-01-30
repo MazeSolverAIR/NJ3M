@@ -59,7 +59,7 @@ public class MazeFragment extends Fragment {
 
         IMsgContainer container = Factory.CreateVirtualContainer();
         IVirtualMsgSolverBot virtualMBot = Factory.CreateVirtualMbot(container, matrix, 14, 6, Sides.Left);
-        IMessenger messenger = ConnectionController.getiMessenger();
+        IMessenger messenger = ConnectionController.getIMessenger();
         AlgorithmVirtualRobot algoritamVirtualRobot = Factory.CreateAlgForVRobot();
 
         btnPocni.setOnClickListener(new View.OnClickListener() {
