@@ -2,6 +2,12 @@ package hr.foi.nj3m.core.controllers.algorithms.virtualMBotAlgorithm;
 
 public class VirtuaSensorMsgController {
 
+
+    /**
+     * Metoda koja postavlja u ulazni objekt, vrijednosti senzora koje mBot salje
+     * @param alg objekt tipa AlgorithmVirtualRobot kako bismo u tom objektu mogli promijeniti vrijednosti senzora
+     * @param msg trenutno primljena poruka od mBota - iz nje se uzimaju podaci
+     */
     public static void setSensorValues(AlgorithmVirtualRobot alg, String msg) {
 
         String pomocna = msg.substring(msg.indexOf(":")+1);

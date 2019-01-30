@@ -5,6 +5,12 @@ import hr.foi.nj3m.interfaces.Enumerations.Sides;
 
 public class VirtualMBotController {
 
+
+    /**
+     * Sluzi za orijentaciju robota, ovisno o smjeru prednjeg senzora, podese se svi ostali senzori
+     * @param alg instanca objekta AlgorithmVirtualRobot kako bi mu se izmjenile odgovarajuce vrijednosti
+     * @param smjerPrednjegSenzora strana (Sides) na koju se postavlja prednji senzor
+     */
     public static void setMBotRotation(AlgorithmVirtualRobot alg, Sides smjerPrednjegSenzora)
     {
         alg.prednjaStranae = smjerPrednjegSenzora;
@@ -33,6 +39,11 @@ public class VirtualMBotController {
         }
     }
 
+
+    /**
+     * "Pokrece virtualnog mBota"
+     * @param alg instanca objekta AlgorithmVirtualRobot kako bi se mogle promijeniti trenutne vrijednosti koordinata robota
+     */
     public static void move(AlgorithmVirtualRobot alg)
     {
         switch(alg.prednjaStranae)
@@ -52,6 +63,11 @@ public class VirtualMBotController {
         }
     }
 
+    /**
+     * Provjerava moze li se mBot kretati na stranu na kojoj je senzor koji daje ulaznu vrijednost parametra
+     * @param distance integer koji je udaljenost senzora koji se provjerava
+     * @return true ako robot mjeri udaljenost vecu od 1
+     */
     public static boolean canMoveTo(int distance)
     {
         return distance > 1;

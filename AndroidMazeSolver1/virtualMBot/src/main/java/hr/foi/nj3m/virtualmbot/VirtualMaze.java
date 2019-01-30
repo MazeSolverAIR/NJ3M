@@ -22,6 +22,9 @@ public class VirtualMaze implements IVirtualMaze {
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
 
+    /**
+     * @return vraca matricu tipa int[][] koja je labirint
+     */
     public int[][] getMatrix()
     {
         return matrix;
