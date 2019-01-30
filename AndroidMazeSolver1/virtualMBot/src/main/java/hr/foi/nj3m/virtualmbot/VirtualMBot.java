@@ -21,6 +21,14 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
     private int trenutnoY = 0;
 
 
+    /**
+     * Konstruktor virtualnog mBota
+     * @param vc spremnik za citanje i pisanje poruka
+     * @param matrix matrica labirinta
+     * @param startingXPosition pocetna x pozicija mBota u matrici
+     * @param startingYPosition pocetna y pozicija mBota u matrici
+     * @param smjerPrednjegSenzora pocetna orijentacija mBota
+     */
     public VirtualMBot (IMsgContainer vc, int[][] matrix, int startingXPosition, int startingYPosition, Sides smjerPrednjegSenzora)
     {
         this.maze = matrix;
@@ -36,6 +44,9 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
         vContainer = vc;
     }
 
+    /**
+     * Izvrsava radnju ovisno o procitanoj poruci
+     */
     public void izvrsiRadnju()
     {
         if(this.recvdMessage.equals("RL"))
@@ -48,11 +59,17 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
             moveForward();
     }
 
+    /**
+     * @return true ukoliko je mBot pronasao izlaz
+     */
     @Override
     public boolean isExit() {
         return exitFound;
     }
 
+    /**
+     * Preuzima poruku iz spremnika za citanje i pisanje
+     */
     @Override
     public void receieveMsg() {
         this.recvdMessage = vContainer.getMessage();
@@ -60,6 +77,10 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
 
 
     public boolean exitFound = false;
+
+    /**
+     * Pise poruku o informacijama sa senzora u spremnik za citanje i pisanje
+     */
     @Override
     public void sendSensorInfo() {
             String strToSend = "FS:" + FrontUltrasonic.measureSensor(trenutnoY, trenutnoX, maze);
@@ -69,6 +90,10 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
             vContainer.setMessage(strToSend);
     }
 
+    /**
+     * Mijenja strane, tj. smjerove na kojima se nalaze senzori, ovisno o ulaznom parametru, tj. prednjem senzpru
+     * @param smjerPrednjegSenzora zeljeni smjer prednjeg senzora
+     */
     private void setSensorSides(Sides smjerPrednjegSenzora)
     {
         FrontUltrasonic.setNewSensorSide(smjerPrednjegSenzora);
@@ -97,6 +122,9 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
         }
     }
 
+    /**
+     * Pokrece mBota - virtualna radnja kretanja po labirintu - matrici
+     */
     @Override
     public void moveForward()
     {
@@ -124,16 +152,26 @@ public class VirtualMBot implements IVirtualMsgSolverBot {
         maze[trenutnoY][trenutnoX] = 2;
     }
 
+    /**
+     * Rotira mBota desno u virtualnom labirintu - matrici
+     */
     @Override
     public void rotateRight() {
         setSensorSides(RightUltrasonic.getSensorSide());
     }
 
+
+    /**
+     * Rotira mBota lijevo u virtualnom labirintu - matrici
+     */
     @Override
     public void rotateLeft() {
         setSensorSides(LeftUltrasonic.getSensorSide());
     }
 
+    /**
+     * Rotira mBota za 180 stupnjeva u virtualnom labirintu - matrici
+     */
     @Override
     public void fullRotate() {
         rotateRight();

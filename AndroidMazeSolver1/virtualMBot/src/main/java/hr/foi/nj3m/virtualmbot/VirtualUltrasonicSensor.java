@@ -6,23 +6,44 @@ import hr.foi.nj3m.interfaces.virtualMBot.IVirtualUltrasonic;
 public class VirtualUltrasonicSensor implements IVirtualUltrasonic {
 
     private Sides CurrentSensorSide = null;
-    int CurrentValue = 0;
+    private int CurrentValue = 0;
 
+    /**
+     * Konstruktor senzora
+     * @param side strana na koju zelimo postaviti senzor
+     */
     public VirtualUltrasonicSensor(Sides side)
     {
         CurrentSensorSide = side;
     }
 
+
+    /**
+     * @return vraca trenutnu stranu senzora
+     */
     @Override
     public Sides getSensorSide() {
         return CurrentSensorSide;
     }
 
+
+    /**
+     * Mijenja stranu senzora
+     * @param side nova strana senzora
+     */
     @Override
     public void setNewSensorSide(Sides side) {
         this.CurrentSensorSide = side;
     }
 
+
+    /**
+     * Mjeri udaljenost senzora do zida
+     * @param y trenutna y koordinata
+     * @param x trenutna x koordinata
+     * @param matrix trenutni labirint
+     * @return udaljenost ovog senzora do zida
+     */
     @Override
     public int measureSensor(int y, int x, int[][] matrix) {
         CurrentValue = 0;

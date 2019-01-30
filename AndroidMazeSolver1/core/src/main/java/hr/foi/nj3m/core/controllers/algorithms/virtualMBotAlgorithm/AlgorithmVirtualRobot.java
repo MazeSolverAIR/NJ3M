@@ -29,13 +29,21 @@ public class AlgorithmVirtualRobot {
 
     private boolean inLoop = false;
 
+    /**
+     * Kreira objekt tipa AlgorithmVirtualRobot
+     */
     public AlgorithmVirtualRobot()
     {
         setMBotRotation(this, Sides.Left);
         this.mazeDrawer = new MazeDrawer();
-        mazeDrawer.addpathOn(trenutniX,trenutniY);
+        mazeDrawer.addPathOn(trenutniX,trenutniY);
     }
 
+    /**
+     * Metoda sluzi za pronalaza izlaza iz labirinta
+     * @param message primljena poruka od mBota
+     * @return naredba koja se salje mBotu
+     */
     public String FindPath(String message)
     {
         String returnString = "";
@@ -45,6 +53,7 @@ public class AlgorithmVirtualRobot {
 
         if(VirtualCrossroad.checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!= lastSensorSum)
             returnString = manageCrossroad(prednjiSenzor, desniSenzor, lijeviSenzor);
+
         else if(VirtualMBotController.canMoveTo(prednjiSenzor))
         {
             returnString = "RM";
@@ -65,6 +74,10 @@ public class AlgorithmVirtualRobot {
     }
 
 
+    /**
+     * Metoda koja, ovisno o tome što je algoritam FindPath odlucio poslati kao naredbu, izvršava radnje koje su potrebne za normalan rad algoritma
+     * @param returnString naredba koju metoda FindPath vraca do trenutka nastupa ove metode
+     */
     private void manageInternalAlgorithmWork(String returnString) {
         switch (returnString) {
             case "RR":
@@ -79,7 +92,7 @@ public class AlgorithmVirtualRobot {
                 break;
             case "RM":
                 VirtualMBotController.move(this);
-                mazeDrawer.addpathOn(trenutniX, trenutniY);
+                mazeDrawer.addPathOn(trenutniX, trenutniY);
                 inLoop = mazeDrawer.checkIfLoop();
                 break;
         }

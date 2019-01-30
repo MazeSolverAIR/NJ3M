@@ -35,22 +35,22 @@ public class LineFollower implements ILineFollower {
     //neka se ova metoda kod ove klase poziva kao setCurrentValue("")
     @Override
     public void setCurrentValue(String value) {
-        /*if(currentVal=="OnLine"){
+        if(value.equals("OnLine")){
             left=true;
             right=true;
         }
-        else if(currentVal=="RightOut"){
+        else if(value.equals("RightOut")){
             left=true;
             right=false;
         }
-        else if(currentVal=="LeftOut"){
+        else if(value.equals("LeftOut")){
             left=false;
             right=true;
         }
-        else if(currentVal=="BotbOut"){
+        else if(value.equals("BotbOut")){
             left=false;
             right=false;
-        }*/
+        }
         //true predstavlja da je senzor na liniji, false da je van linije
     }
 }
