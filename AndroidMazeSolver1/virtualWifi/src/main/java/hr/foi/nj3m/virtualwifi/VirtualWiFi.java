@@ -102,16 +102,29 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         return virtualDevices;
     }
 
+    /**
+     * Simulirana metoda koja poziva metodu za dodavanje uređaja u listu dostupnih uređaja. Svrha je osvježavanje liste dostupnih virtualnih uređaja.
+     *
+     * @param mBroadcastReceiver Slušatelj obavijesti o događaju
+     */
     @Override
     public void discover(BroadcastReceiver mBroadcastReceiver) {
         addDevices(device);
     }
 
+    /**
+     * Metoda koja dodaje hardkodirani virtualni uređaj u listu dostupnih virtualnih uređaja.
+     *
+     * @param devices Hardkodirani virtualni uređaj koji se dodaje u listu dostupnih virtualih uređaja
+     */
     @Override
     public void addDevices(ArrayList devices) {
-        virtualDevices.add("Virtual mBot");
+        virtualDevices.add(String.valueOf(devices.get(0)));
     }
 
+    /**
+     * Brisanje svih uređaja u listi. Ova metoda poziva se pritiskom na tipku "Traži uređaje" kako bi se osvježio prikaz dostupnih uređaja.
+     */
     @Override
     public void clearList() {
         virtualDevices.clear();
@@ -122,14 +135,30 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         return null;
     }
 
+    /**
+     * Metoda koja vraća ime virtualnog uređaja na odabranoj poziciji u listi.
+     *
+     * @param position Pozicija u listi
+     * @return         Ime virtualnog uređaja
+     */
     @Override
     public String getDeviceName(int position) {
-        return null;
+        return virtualDevices.get(0);
     }
 
+    /**
+     * Simulirana metoda koja uvijek vraća true, zato jer je virtualni uređaj uvijek dostupan, pošto je hardkodiran.
+     *
+     * @param deviceName Ime virtualnog uređaja.
+     * @return           True
+     */
     @Override
     public boolean deviceExists(String deviceName) {
-        return true;
+        boolean exists = false;
+        for (String device : virtualDevices)
+            if (device.equals(String.valueOf(deviceName)))
+                exists = true;
+        return exists;
     }
 
     @Override
