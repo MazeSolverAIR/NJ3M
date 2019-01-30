@@ -252,7 +252,7 @@ public class MBotPathFinder {
 
         if (frontSensorDist <= 22)
         {
-            decideAboutWall();
+            returnCmd = decideAboutWall();
             mBotRotated = false;
         }
         else if (frontSensorDist > 22)
