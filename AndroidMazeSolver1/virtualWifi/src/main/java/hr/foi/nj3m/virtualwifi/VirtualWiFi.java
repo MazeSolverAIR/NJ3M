@@ -3,8 +3,12 @@ package hr.foi.nj3m.virtualwifi;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
+import android.util.Log;
+import android.widget.Button;
+
 import java.util.ArrayList;
 import hr.foi.nj3m.interfaces.IRobotConnector;
 import hr.foi.nj3m.interfaces.communications.IMessenger;
@@ -17,6 +21,7 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
     public String recvdMessage = "";
     static IMsgContainer vContainer = null;
     ArrayList<String> virtualDevices;
+    ArrayList<String> device;
     private WifiManager wifiManager;
     private Context context;
 
@@ -49,6 +54,8 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         this.context = context;
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         virtualDevices = new ArrayList<>();
+        device = new ArrayList<>();
+        device.add("Virtual mBot");
     }
 
 
@@ -91,13 +98,13 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
      */
     @Override
     public ArrayList<String> getDeviceArray() {
-        virtualDevices.add("Virtual mBot");
+        addDevices(device);
         return virtualDevices;
     }
 
     @Override
     public void discover(BroadcastReceiver mBroadcastReceiver) {
-
+        addDevices(device);
     }
 
     @Override

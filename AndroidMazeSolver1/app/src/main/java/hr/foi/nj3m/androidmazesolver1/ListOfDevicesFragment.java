@@ -55,7 +55,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 bluetoothDevices.add(device);
                 iRobotConnector.addDevices(bluetoothDevices);
-                lvNewDevices.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
             if (action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -75,7 +75,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                                 wifiP2pDevices.add(device);
                             }
                             iRobotConnector.addDevices(wifiP2pDevices);
-                            lvNewDevices.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                         }
                     });
             }
@@ -132,7 +132,6 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
         lvNewDevices = (ListView) getView().findViewById(R.id.lvNewDevices);
         btnDiscover = (Button) getView().findViewById(R.id.btnDiscoverDevices);
         adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, iRobotConnector.getDeviceArray());
-        lvNewDevices.setAdapter(adapter);
         lvNewDevices.setOnItemClickListener(ListOfDevicesFragment.this);
 
         btnDiscover.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +139,8 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
             public void onClick(View v) {
                 iRobotConnector.clearList();
                 iRobotConnector.discover(mBroadcastReceiver);
+                lvNewDevices.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
         });
 
