@@ -1,8 +1,7 @@
 package hr.foi.nj3m.core.controllers.components;
 
-import hr.foi.nj3m.core.controllers.algorithms.MBotInfoCutter;
 import hr.foi.nj3m.interfaces.Enumerations.Sides;
-import hr.foi.nj3m.interfaces.IUltraSonic;
+import hr.foi.nj3m.interfaces.sensors.IUltraSonic;
 
 public class UltrasonicSensor implements IUltraSonic {
 
@@ -13,11 +12,17 @@ public class UltrasonicSensor implements IUltraSonic {
         this.SensorSide = sensorSide;
     }
 
+    /**
+     * @return strana na kojoj se ovaj senzor nalazi
+     */
     @Override
     public Sides getSensorSide() {
         return this.SensorSide;
     }
 
+    /**
+     * @return puna vrijednost poruke od mBota
+     */
     @Override
     public String getFullValue() {
         //Poruka je oblika FUsS:#, tj. FrontUltrasonicSensor: broj
@@ -26,6 +31,9 @@ public class UltrasonicSensor implements IUltraSonic {
     }
 
 
+    /**
+     * @return pretvara poruku od mBota u udaljenost
+     */
     public double getNumericValue()
     {
         double returnValue = 0;
@@ -42,6 +50,9 @@ public class UltrasonicSensor implements IUltraSonic {
         return returnValue;
     }
 
+    /**
+     * @return true ukoliko senzor ocitava vrijednost manju od 28cm
+     */
     @Override
     public boolean seesObstacle() {
         if(getNumericValue() < 28)
@@ -51,6 +62,9 @@ public class UltrasonicSensor implements IUltraSonic {
     }
 
 
+    /**
+     * @param value vrijednost primljena od mBota
+     */
     @Override
         public void setCurrentValue(String value) {
         this.CurrentValue = value;

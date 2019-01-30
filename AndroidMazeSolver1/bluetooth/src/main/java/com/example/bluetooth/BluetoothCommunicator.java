@@ -4,15 +4,16 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Handler;
+import android.os.Message;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
-import hr.foi.nj3m.communications.IRobotMessenger;
+import hr.foi.nj3m.interfaces.communications.IMessenger;
 
-public class BluetoothCommunicator implements IRobotMessenger {
+public class BluetoothCommunicator implements IMessenger {
 
     private static final UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     Context context;
@@ -20,33 +21,106 @@ public class BluetoothCommunicator implements IRobotMessenger {
     private OutputStream outputStream;
     private BluetoothSocket bluetoothSocket;
     private Handler handler;
-    private BluetoothAdapter mBluetoothAdapter;
+    private String deviceAddress;
+    private BluetoothAdapter bluetoothAdapter;
+    private String obtainedMsg;
 
-    private static BluetoothCommunicator InstanceOfSender;
+    private static IMessenger InstanceOfSender;
 
-    public static BluetoothCommunicator createBluetoothSender(Context context)
+    /**
+     * Kreiranje instance BluetoothCommunicator klase koja sadrži metode za komunikaciju s uređajem.
+     *
+     * @param context       Osigurava pristup aplikacijskim resursima
+     * @param deviceAddress Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     * @return              Instanca klase koja se priključuje na sučelje IMessenger
+     */
+    public static IMessenger createBluetoothSender(Context context, String deviceAddress)
     {
         if(InstanceOfSender == null)
-            InstanceOfSender = new BluetoothCommunicator(context);
+            InstanceOfSender = new BluetoothCommunicator(context, deviceAddress);
 
         return InstanceOfSender;
     }
 
-    private BluetoothCommunicator(Context context)
-    {
-        this.context = context;
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    public static IMessenger getBluetoothSender(){
+        return InstanceOfSender;
     }
 
+    /**
+     * Konstruktor
+     *
+     * @param context       Osigurava pristup aplikacijskim resursima
+     * @param deviceAddress Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     */
+    private BluetoothCommunicator(Context context, String deviceAddress)
+    {
+        this.context = context;
+        this.deviceAddress = deviceAddress;
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        initializeSocket();
+    }
+
+    /**
+     * Metoda koja preko izlaznog toka šalje instrukcije povezanom uređaju kao niz bajtova.
+     *
+     * @param command Instrukcije
+     */
     @Override
-    public void initializeSocket(String address, Handler handler) {
+    public void send(String command) {
+        byte[] message = command.getBytes();
         try {
-            bluetoothSocket = mBluetoothAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(mUUID);
+            outputStream.write(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Metoda koja preko ulaznog toka zaprima poruke koje šalje povezani uređaj kao niz bajtova.
+     *
+     * @param channel Upravljač porukama. Ova metoda mu prosljeđuje zaprimljene poruke kao objekte tipa Message
+     */
+    @Override
+    public void receive(Object channel) {
+        handler = (Handler) channel;
+        byte[] buffer = new byte[1024];
+        int bytes;
+        while (bluetoothSocket != null){
+            try {
+                bytes = inputStream.read(buffer);
+                Message msg = handler.obtainMessage(1, bytes, -1, buffer);
+                msg.sendToTarget();
+                obtainedMsg = msg.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            catch(NullPointerException ex)
+            {
+                obtainedMsg = "";
+            }
+        }
+    }
+
+    /**
+     * Metoda za dohvaćanje zaprimljene poruke.
+     *
+     * @return Zaprimljena poruka
+     */
+    @Override
+    public String getRcvdMsg() {
+        return obtainedMsg;
+    }
+
+    /**
+     * Metoda za inicijaliziranje komunikacijskog priključka (socketa) i stvaranje komunikacijskog kanala sa povezanim uređajem.
+     */
+    private void initializeSocket(){
+        try {
+            bluetoothSocket = bluetoothAdapter.getRemoteDevice(deviceAddress).createRfcommSocketToServiceRecord(mUUID);
             bluetoothSocket.connect();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.handler = handler;
 
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
@@ -60,35 +134,5 @@ public class BluetoothCommunicator implements IRobotMessenger {
 
         inputStream = tmpIn;
         outputStream = tmpOut;
-    }
-
-    @Override
-    public void sendCommand(String command) {
-        byte[] message = command.getBytes();
-        try {
-            outputStream.write(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // TODO: 12/6/2018 POTREBNO TESTIRATI!!!
-    /*TODO: Potrebno je osmisliti spremanje buffera koji je != null ili != "" u polje byte(ili string).
-      TODO:  Metoda receive može vraćati to polje ako je zadnja dobivena informacija == "Over"  - ili možda osmisliti neko drugo rješenje. Razmisliti*/
-    //TODO: Postaviti neki delay od npr 2ms
-    /*Znaci handler bude vracal polje stringova ili listu, svejedno samo ako je primil poruku Over, inace bude vracal null.*/
-    @Override
-    public void receive() {
-        byte[] buffer = new byte[1024];
-        int bytes;
-
-        while (bluetoothSocket != null){
-            try {
-                bytes = inputStream.read(buffer);
-                handler.obtainMessage(1, bytes, -1, buffer).sendToTarget();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

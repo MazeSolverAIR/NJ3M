@@ -2,7 +2,7 @@ package hr.foi.nj3m.core.controllers.interfaceControllers;
 
 import android.content.Context;
 
-import hr.foi.nj3m.communications.IWireless;
+import hr.foi.nj3m.interfaces.connections.IWireless;
 
 import static com.example.bluetooth.Bluetooth.createBluetoothInstance;
 import static hr.foi.nj3m.wifi.WiFi.createWiFiInstance;
