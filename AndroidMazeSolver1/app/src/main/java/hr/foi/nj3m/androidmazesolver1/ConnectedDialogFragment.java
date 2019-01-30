@@ -29,10 +29,7 @@ public class ConnectedDialogFragment extends Fragment {
     Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if (msg.what == 2)
-                Toast.makeText(getContext(), msg.arg1, Toast.LENGTH_LONG).show();
-
-            else if (msg.what == 1) {
+            if (msg.what == 1) {
                 byte[] readBuffer = (byte[]) msg.obj;
                 String message = new String(readBuffer, 0, msg.arg1);
 

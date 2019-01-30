@@ -24,7 +24,8 @@ public class SendReceive extends Thread {
      * Prilikom pokretanja ove dretve počinju se zaprimati poruke od povezanog uređaja; poziva se metoda receive klase za komunikaciju.
      */
     public void run(){
-        iMessenger.receive(handler);
+        if (iMessenger != null)
+            iMessenger.receive(handler);
     }
 
     /**

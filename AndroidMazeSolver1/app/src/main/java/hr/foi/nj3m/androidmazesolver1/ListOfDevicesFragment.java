@@ -75,6 +75,7 @@ public class ListOfDevicesFragment extends Fragment implements AdapterView.OnIte
                                 wifiP2pDevices.add(device);
                             }
                             iRobotConnector.addDevices(wifiP2pDevices);
+                            lvNewDevices.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
                     });

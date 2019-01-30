@@ -185,7 +185,7 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
                 Toast.makeText(context, "Greška prilikom spajanja", Toast.LENGTH_LONG).show();
             }
         });
-        return createWiFiSender(wifiP2pConfig.deviceAddress);
+        return createWiFiSender(context, wifiP2pConfig.deviceAddress);
     }
 
     /**
