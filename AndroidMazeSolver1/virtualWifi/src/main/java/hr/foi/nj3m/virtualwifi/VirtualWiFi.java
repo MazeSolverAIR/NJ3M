@@ -130,11 +130,6 @@ public class VirtualWiFi implements IMessenger, IDevice, IDiscover, IRobotConnec
         virtualDevices.clear();
     }
 
-    @Override
-    public String getDeviceAddress(int position) {
-        return null;
-    }
-
     /**
      * Metoda koja vraća ime virtualnog uređaja na odabranoj poziciji u listi.
      *

@@ -8,7 +8,6 @@ public interface IDiscover {
     void discover(BroadcastReceiver mBroadcastReceiver);
     void addDevices(ArrayList devices);
     void clearList();
-    String getDeviceAddress(int position);
     String getDeviceName(int position);
     boolean deviceExists(String deviceName);
 }

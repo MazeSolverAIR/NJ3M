@@ -133,8 +133,7 @@ public class WiFi implements IWireless, IDiscover, IRobotConnector {
      * @param position Pozicija u listi
      * @return         Adresa uređaja
      */
-    @Override
-    public String getDeviceAddress(int position) {
+    private String getDeviceAddress(int position) {
         return wifiP2pDevices.get(position).deviceAddress;
     }
 
