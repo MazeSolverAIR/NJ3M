@@ -244,44 +244,4 @@ public class Bluetooth extends Activity implements IWireless, IDiscover, IRobotC
             }
         }
     }
-/*
-    @Override
-    public void initializeSocket(String address, Handler handler) {
-        try {
-            bluetoothSocket = mBluetoothAdapter.getRemoteDevice(address).createRfcommSocketToServiceRecord(mUUID);
-            bluetoothSocket.connect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.handler = handler;
-
-        InputStream tmpIn = null;
-        OutputStream tmpOut = null;
-
-        try {
-            tmpIn = bluetoothSocket.getInputStream();
-            tmpOut = bluetoothSocket.getOutputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        inputStream = tmpIn;
-        outputStream = tmpOut;
-    }
-
-    protected static InputStream getInputStream() {
-        return inputStream;
-    }
-
-    protected static OutputStream getOutputStream() {
-        return outputStream;
-    }
-
-    protected static Handler getHandler() {
-        return handler;
-    }
-
-    protected static BluetoothSocket getBluetoothSocket(){
-        return bluetoothSocket;
-    }*/
 }

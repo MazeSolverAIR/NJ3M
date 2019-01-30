@@ -21,7 +21,13 @@ public class WiFiCommunicator implements IMessenger {
 
     private static WiFiCommunicator InstanceOfSender;
 
-    public static WiFiCommunicator createWiFiSender(String address)
+    /**
+     * Kreiranje instance WiFiCommunicator klase koja sadrži metode za komunikaciju s uređajem.
+     *
+     * @param address Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     * @return        Instanca klase koja se priključuje na sučelje IMessenger
+     */
+    public static IMessenger createWiFiSender(String address)
     {
         if(InstanceOfSender == null)
             InstanceOfSender = new WiFiCommunicator(address);
@@ -29,6 +35,11 @@ public class WiFiCommunicator implements IMessenger {
         return InstanceOfSender;
     }
 
+    /**
+     * Konstruktor
+     *
+     * @param address Adresa uređaja s kojim smo se povezali. Potrebna za stvaranje priključka za komunikaciju (socketa)
+     */
     private WiFiCommunicator(String address)
     {
         this.address = address;
@@ -36,6 +47,11 @@ public class WiFiCommunicator implements IMessenger {
         initializeSocket();
     }
 
+    /**
+     * Metoda koja preko izlaznog toka šalje instrukcije povezanom uređaju kao niz bajtova.
+     *
+     * @param command Instrukcije
+     */
     @Override
     public void send(String command) {
         byte[] message = command.getBytes();
@@ -46,6 +62,11 @@ public class WiFiCommunicator implements IMessenger {
         }
     }
 
+    /**
+     * Metoda koja preko ulaznog toka zaprima poruke koje šalje povezani uređaj kao niz bajtova.
+     *
+     * @param channel Upravljač porukama. Ova metoda mu prosljeđuje zaprimljene poruke kao objekte tipa Message
+     */
     @Override
     public void receive(Object channel) {
         handler = (Handler) channel;
@@ -66,11 +87,19 @@ public class WiFiCommunicator implements IMessenger {
         }
     }
 
+    /**
+     * Metoda za dohvaćanje zaprimljene poruke.
+     *
+     * @return Zaprimljena poruka
+     */
     @Override
     public String getRcvdMsg() {
         return this.obtainedMsg;
     }
 
+    /**
+     * Metoda za inicijaliziranje komunikacijskog priključka (socketa) i stvaranje komunikacijskog kanala sa povezanim uređajem.
+     */
     private void initializeSocket(){
         try {
             if (socket != null){

@@ -80,11 +80,6 @@ public class BluetoothCommunicator implements IMessenger {
      *
      * @param channel Upravljač porukama. Ova metoda mu prosljeđuje zaprimljene poruke kao objekte tipa Message
      */
-    // TODO: 12/6/2018 POTREBNO TESTIRATI!!!
-    /*TODO: Potrebno je osmisliti spremanje buffera koji je != null ili != "" u polje byte(ili string).
-      TODO:  Metoda receive može vraćati to polje ako je zadnja dobivena informacija == "Over"  - ili možda osmisliti neko drugo rješenje. Razmisliti*/
-    //TODO: Postaviti neki delay od npr 2ms
-    /*Znaci handler bude vracal polje stringova ili listu, svejedno samo ako je primil poruku Over, inace bude vracal null.*/
     @Override
     public void receive(Object channel) {
         handler = (Handler) channel;
