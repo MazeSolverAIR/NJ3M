@@ -53,6 +53,7 @@ public class AlgorithmVirtualRobot {
 
         if(VirtualCrossroad.checkIfCrossroad(sumBocnihSenzora) && sumBocnihSenzora!= lastSensorSum)
             returnString = manageCrossroad(prednjiSenzor, desniSenzor, lijeviSenzor);
+
         else if(VirtualMBotController.canMoveTo(prednjiSenzor))
         {
             returnString = "RM";
